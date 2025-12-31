@@ -1,0 +1,61 @@
+# Django
+*.pyc
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+*.log
+
+# Environment
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media and static files
+/media/
+/staticfiles/
+/import_export/
+
+# Database backups
+*.backup
+*.dump
+
+# Python
+.python-version
+pycache/
+Pipfile.lock
+poetry.lock
+
+# Temp files
+*.tmp
+*.temp
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+.coverage
+htmlcov/
+
+# Test
+.pytest_cache/

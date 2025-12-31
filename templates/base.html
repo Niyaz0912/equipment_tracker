@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Учет оборудования{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            padding-top: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .card {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            font-size: 0.85em;
+            padding: 4px 8px;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4 rounded shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand text-primary" href="/">
+                    <i class="bi bi-pc-display me-2"></i>
+                    Учет оборудования
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'equipments:equipment_list' %}">
+                                <i class="bi bi-list-ul me-1"></i>Оборудование
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'employees:employee_list' %}">
+                                <i class="bi bi-people me-1"></i>Сотрудники
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'equipments:equipment_import' %}">
+                                <i class="bi bi-upload me-1"></i>Импорт Excel
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/" target="_blank">
+                                <i class="bi bi-gear me-1"></i>Админка
+                            </a>
+                        </li>
+                    </ul>
+
+                    <form class="d-flex" method="get" action="{% url 'equipments:equipment_search' %}">
+                        <input class="form-control me-2" type="search" name="q"
+                            placeholder="Поиск по МЦ или названию..." aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+
+                    <!-- УМНАЯ КНОПКА ЭКСПОРТА -->
+                    {% if request.path|slice:":10" == "/equipment" %}
+                    <a href="{% url 'equipments:export_excel' %}?{{ request.GET.urlencode }}"
+                        class="btn btn-success btn-sm" title="Экспорт оборудования в Excel">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Экспорт
+                    </a>
+                    {% elif request.path|slice:":10" == "/employee" %}
+                    <a href="{% url 'employees:export_excel' %}?{{ request.GET.urlencode }}"
+                        class="btn btn-success btn-sm" title="Экспорт сотрудников в Excel">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Экспорт
+                    </a>
+                    {% endif %}
+                </div>
+
+            </div>
+    </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="row">
+        <div class="col-12">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="mt-5 pt-4 border-top text-muted text-center">
+        <p>Система учета оборудования © {% now "Y" %}</p>
+    </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

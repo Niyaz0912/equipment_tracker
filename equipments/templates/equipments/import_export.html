@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Импорт оборудования{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-upload me-2"></i>Импорт оборудования из Excel
+                </h5>
+            </div>
+            
+            <div class="card-body">
+                <!-- Инструкция -->
+                <div class="alert alert-info">
+                    <h6><i class="bi bi-info-circle me-2"></i>Инструкция:</h6>
+                    <ol class="mb-0">
+                        <li>Скачайте шаблон Excel</li>
+                        <li>Заполните данные по образцу</li>
+                        <li>Загрузите файл через форму ниже</li>
+                    </ol>
+                </div>
+                
+                <!-- Ссылка на шаблон -->
+                <div class="text-center mb-4">
+                    <a href="{% url 'equipments:export_template' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-download me-2"></i>Скачать шаблон Excel
+                    </a>
+                </div>
+                
+                <!-- Форма загрузки -->
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="excel_file" class="form-label">Выберите Excel файл:</label>
+                        <input type="file" class="form-control" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
+                        <div class="form-text">
+                            Поддерживаются файлы .xlsx и .xls
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload me-2"></i>Загрузить и импортировать
+                        </button>
+                        <a href="{% url 'equipments:equipment_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Назад к списку
+                        </a>
+                    </div>
+                </form>
+                
+                <!-- Формат данных -->
+                <div class="mt-4">
+                    <h6>Формат данных:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Столбец</th>
+                                    <th>Обязательно</th>
+                                    <th>Пример</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>МЦ номер</td>
+                                    <td>Да</td>
+                                    <td>123456</td>
+                                    <td>Номер материальной ценности</td>
+                                </tr>
+                                <tr>
+                                    <td>Тип</td>
+                                    <td>Да</td>
+                                    <td>ноутбук</td>
+                                    <td>Тип оборудования</td>
+                                </tr>
+                                <tr>
+                                    <td>Марка</td>
+                                    <td>Нет</td>
+                                    <td>Dell</td>
+                                    <td>Производитель</td>
+                                </tr>
+                                <tr>
+                                    <td>Модель</td>
+                                    <td>Нет</td>
+                                    <td>Latitude 5420</td>
+                                    <td>Модель оборудования</td>
+                                </tr>
+                                <tr>
+                                    <td>Сотрудник</td>
+                                    <td>Нет</td>
+                                    <td>Иванов Иван</td>
+                                    <td>Фамилия сотрудника</td>
+                                </tr>
+                                <tr>
+                                    <td>Статус</td>
+                                    <td>Нет</td>
+                                    <td>выдано</td>
+                                    <td>Статус оборудования</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Добавим ссылку в навигацию -->
+        <div class="text-center mt-3">
+            <a href="/admin/equipments/equipment/add/" class="btn btn-sm btn-outline-secondary" target="_blank">
+                <i class="bi bi-plus-circle me-1"></i>Добавить вручную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
