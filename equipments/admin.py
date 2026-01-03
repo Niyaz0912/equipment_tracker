@@ -4,19 +4,20 @@ from .models import Equipment
 
 @admin.register(Equipment)
 class EquipmentAdmin(admin.ModelAdmin):
-    list_display = ('mc_number', 'type', 'brand', 'model', 'assigned_to', 'status', 'purchase_date')
-    list_filter = ('type', 'status', 'assigned_to__department')
-    search_fields = ('mc_number', 'brand', 'model', 'serial_number', 'assigned_to__last_name', 'assigned_to__first_name')
+    list_display = ('mc_number', 'type', 'brand', 'model', 'assigned_to_display', 'status')
+    list_filter = ('type', 'status', 'assigned_department', 'assigned_to__department')
+    search_fields = ('mc_number', 'brand', 'model', 'assigned_to__last_name', 'assigned_to__first_name', 'assigned_department__name')
     ordering = ('mc_number',)
-    list_select_related = ('assigned_to',)
+    list_select_related = ('assigned_to', 'assigned_department')
     
     # Группировка полей в форме
     fieldsets = (
         ('Основная информация', {
-            'fields': ('mc_number', 'type', 'brand', 'model', 'serial_number')
+            'fields': ('mc_number', 'type', 'brand', 'model')
         }),
         ('Принадлежность', {
-            'fields': ('assigned_to', 'status')
+            'fields': ('assigned_to', 'assigned_department', 'status'),
+            'description': 'Можно закрепить либо за сотрудником, либо за отделом'
         }),
         ('Дополнительно', {
             'fields': ('purchase_date', 'warranty_until', 'notes'),

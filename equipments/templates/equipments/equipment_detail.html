@@ -12,13 +12,13 @@
                     <i class="bi bi-pc-display me-2"></i>Оборудование: {{ equipment.mc_number }}
                 </h5>
                 <div>
-                    <a href="/admin/equipments/equipment/{{ equipment.pk }}/change/" 
-                       class="btn btn-sm btn-outline-secondary" target="_blank">
+                    <a href="/admin/equipments/equipment/{{ equipment.pk }}/change/"
+                        class="btn btn-sm btn-outline-secondary" target="_blank">
                         <i class="bi bi-pencil me-1"></i>Редактировать
                     </a>
                 </div>
             </div>
-            
+
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -39,10 +39,6 @@
                                 <th>Модель:</th>
                                 <td>{{ equipment.model|default:"Не указана" }}</td>
                             </tr>
-                            <tr>
-                                <th>Серийный номер:</th>
-                                <td>{{ equipment.serial_number|default:"Не указан" }}</td>
-                            </tr>
                         </table>
                     </div>
                     <div class="col-md-6">
@@ -51,26 +47,29 @@
                                 <th style="width: 40%">Статус:</th>
                                 <td>
                                     {% if equipment.status == 'available' %}
-                                        <span class="badge bg-success">{{ equipment.get_status_display }}</span>
+                                    <span class="badge bg-success">{{ equipment.get_status_display }}</span>
                                     {% elif equipment.status == 'issued' %}
-                                        <span class="badge bg-primary">{{ equipment.get_status_display }}</span>
+                                    <span class="badge bg-primary">{{ equipment.get_status_display }}</span>
                                     {% elif equipment.status == 'broken' %}
-                                        <span class="badge bg-danger">{{ equipment.get_status_display }}</span>
+                                    <span class="badge bg-danger">{{ equipment.get_status_display }}</span>
                                     {% else %}
-                                        <span class="badge bg-warning text-dark">{{ equipment.get_status_display }}</span>
+                                    <span class="badge bg-warning text-dark">{{ equipment.get_status_display }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
-                                <th>Закреплено за:</th>
+                                <th>Закреплено:</th>
                                 <td>
                                     {% if equipment.assigned_to %}
-                                        <strong>{{ equipment.assigned_to.full_name }}</strong>
-                                        {% if equipment.assigned_to.department %}
-                                            <br><small class="text-muted">{{ equipment.assigned_to.department.name }}</small>
-                                        {% endif %}
+                                    <strong>Сотрудник:</strong> {{ equipment.assigned_to.full_name }}
+                                    {% if equipment.assigned_to.department %}
+                                    <br><small class="text-muted">Отдел: {{ equipment.assigned_to.department.name
+                                        }}</small>
+                                    {% endif %}
+                                    {% elif equipment.assigned_department %}
+                                    <strong>Отдел:</strong> {{ equipment.assigned_department.name }}
                                     {% else %}
-                                        <span class="text-muted">Не закреплено</span>
+                                    <span class="text-muted">Не закреплено</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -85,7 +84,7 @@
                         </table>
                     </div>
                 </div>
-                
+
                 {% if equipment.notes %}
                 <div class="mt-3">
                     <h6>Примечания:</h6>
@@ -99,7 +98,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- История и действия -->
     <div class="col-md-4">
         <!-- История -->
@@ -109,32 +108,32 @@
             </div>
             <div class="card-body">
                 {% if history %}
-                    <div class="list-group list-group-flush">
-                        {% for record in history|slice:":5" %}
-                        <div class="list-group-item">
-                            <small class="text-muted">{{ record.date }}</small>
-                            <div class="fw-bold">{{ record.get_action_display }}</div>
-                            <div>{{ record.employee.full_name }}</div>
-                            {% if record.notes %}
-                                <small class="text-muted">{{ record.notes|truncatechars:50 }}</small>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
+                <div class="list-group list-group-flush">
+                    {% for record in history|slice:":5" %}
+                    <div class="list-group-item">
+                        <small class="text-muted">{{ record.date }}</small>
+                        <div class="fw-bold">{{ record.get_action_display }}</div>
+                        <div>{{ record.employee.full_name }}</div>
+                        {% if record.notes %}
+                        <small class="text-muted">{{ record.notes|truncatechars:50 }}</small>
+                        {% endif %}
                     </div>
-                    {% if history.count > 5 %}
-                    <div class="text-center mt-2">
-                        <a href="/admin/history/equipmenthistory/?equipment__id__exact={{ equipment.pk }}" 
-                           class="btn btn-sm btn-outline-primary" target="_blank">
-                            Вся история
-                        </a>
-                    </div>
-                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% if history.count > 5 %}
+                <div class="text-center mt-2">
+                    <a href="/admin/history/equipmenthistory/?equipment__id__exact={{ equipment.pk }}"
+                        class="btn btn-sm btn-outline-primary" target="_blank">
+                        Вся история
+                    </a>
+                </div>
+                {% endif %}
                 {% else %}
-                    <p class="text-muted text-center mb-0">История отсутствует</p>
+                <p class="text-muted text-center mb-0">История отсутствует</p>
                 {% endif %}
             </div>
         </div>
-        
+
         <!-- Быстрые действия -->
         <div class="card">
             <div class="card-header">
@@ -142,12 +141,12 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="/admin/history/equipmenthistory/add/?equipment={{ equipment.pk }}" 
-                       class="btn btn-outline-primary" target="_blank">
+                    <a href="/admin/history/equipmenthistory/add/?equipment={{ equipment.pk }}"
+                        class="btn btn-outline-primary" target="_blank">
                         <i class="bi bi-arrow-right-circle me-1"></i>Добавить запись в историю
                     </a>
-                    <a href="{% url 'equipments:equipment_search' %}?q={{ equipment.mc_number }}" 
-                       class="btn btn-outline-secondary">
+                    <a href="{% url 'equipments:equipment_search' %}?q={{ equipment.mc_number }}"
+                        class="btn btn-outline-secondary">
                         <i class="bi bi-search me-1"></i>Поиск по этому МЦ
                     </a>
                 </div>

@@ -9,18 +9,23 @@
             <i class="bi bi-list-ul me-2"></i>Все оборудование
         </h5>
         <div>
+            <a href="{% url 'equipments:export_excel' %}?{{ request.GET.urlencode }}" 
+               class="btn btn-sm btn-success me-2" title="Экспорт оборудования в Excel">
+                <i class="bi bi-file-earmark-excel me-1"></i>Экспорт
+            </a>
             <a href="/admin/equipments/equipment/add/" class="btn btn-sm btn-primary" target="_blank">
                 <i class="bi bi-plus-circle me-1"></i>Добавить
             </a>
         </div>
     </div>
-    
+
     <div class="card-body">
         <!-- Фильтры -->
         <div class="row mb-4">
             <div class="col-md-6">
-                <form method="get" class="row g-2">
-                    <div class="col-auto">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Статус</label>
                         <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
                             <option value="">Все статусы</option>
                             <option value="available" {% if status_filter == 'available' %}selected{% endif %}>На складе</option>
@@ -30,7 +35,9 @@
                             <option value="written_off" {% if status_filter == 'written_off' %}selected{% endif %}>Списан</option>
                         </select>
                     </div>
-                    <div class="col-auto">
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Тип</label>
                         <select name="type" class="form-select form-select-sm" onchange="this.form.submit()">
                             <option value="">Все типы</option>
                             <option value="laptop" {% if type_filter == 'laptop' %}selected{% endif %}>Ноутбук</option>
@@ -44,6 +51,32 @@
                             <option value="phone" {% if type_filter == 'phone' %}selected{% endif %}>Телефон</option>
                             <option value="webcam" {% if type_filter == 'webcam' %}selected{% endif %}>Веб-камера</option>
                             <option value="other" {% if type_filter == 'other' %}selected{% endif %}>Другое</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Отдел сотрудника</label>
+                        <select name="department" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">Все отделы</option>
+                            {% for department in departments %}
+                                <option value="{{ department.id }}" 
+                                    {% if department_filter|stringformat:"s" == department.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ department.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Закреплено за отделом</label>
+                        <select name="assigned_department" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">Все отделы (закрепление)</option>
+                            {% for department in departments %}
+                                <option value="{{ department.id }}" 
+                                    {% if assigned_department_filter|stringformat:"s" == department.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ department.name }}
+                                </option>
+                            {% endfor %}
                         </select>
                     </div>
                 </form>
@@ -73,9 +106,10 @@
                     {% for item in equipments %}
                     <tr>
                         <td>
+                            {% if item.mc_number %}
                             <strong>{{ item.mc_number }}</strong>
-                            {% if item.serial_number %}
-                                <br><small class="text-muted">{{ item.serial_number }}</small>
+                            {% else %}
+                            <strong class="text-muted">Без МЦ</strong>
                             {% endif %}
                         </td>
                         <td>{{ item.get_type_display }}</td>
@@ -104,10 +138,16 @@
                         </td>
                         <td>
                             {% if item.assigned_to %}
-                                {{ item.assigned_to.full_name }}
+                                <a href="{% url 'employees:employee_detail' item.assigned_to.pk %}" class="text-decoration-none">
+                                    👤 {{ item.assigned_to.full_name }}
+                                </a>
                                 {% if item.assigned_to.department %}
                                     <br><small class="text-muted">{{ item.assigned_to.department.name }}</small>
                                 {% endif %}
+                            {% elif item.assigned_department %}
+                                <span class="text-decoration-none">
+                                    🏢 {{ item.assigned_department.name }}
+                                </span>
                             {% else %}
                                 <span class="text-muted">Не закреплено</span>
                             {% endif %}

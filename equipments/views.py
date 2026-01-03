@@ -9,13 +9,19 @@ import os
 from datetime import datetime
 from django.conf import settings
 
+
 def equipment_list(request):
-    """Список всего оборудования"""
-    equipments = Equipment.objects.select_related('assigned_to').all()
+    """Список всего оборудования с фильтрами"""
+    equipments = Equipment.objects.select_related('assigned_to', 'assigned_to__department', 'assigned_department').all()
     
-    # Простая фильтрация
+    from employees.models import Department, Employee
+    
+    # Фильтрация
     status_filter = request.GET.get('status')
     type_filter = request.GET.get('type')
+    department_filter = request.GET.get('department')
+    assigned_department_filter = request.GET.get('assigned_department')  # НОВОЕ
+    employee_filter = request.GET.get('employee')
     
     if status_filter:
         equipments = equipments.filter(status=status_filter)
@@ -23,12 +29,30 @@ def equipment_list(request):
     if type_filter:
         equipments = equipments.filter(type=type_filter)
     
+    if department_filter:
+        equipments = equipments.filter(assigned_to__department_id=department_filter)
+    
+    if assigned_department_filter:  # НОВОЕ
+        equipments = equipments.filter(assigned_department_id=assigned_department_filter)
+    
+    if employee_filter:
+        equipments = equipments.filter(assigned_to_id=employee_filter)
+    
+    departments = Department.objects.all()
+    employees = Employee.objects.filter(is_active=True)
+    
     context = {
         'equipments': equipments,
         'status_filter': status_filter,
         'type_filter': type_filter,
+        'department_filter': department_filter,
+        'assigned_department_filter': assigned_department_filter,  # НОВОЕ
+        'employee_filter': employee_filter,
+        'departments': departments,
+        'employees': employees,
     }
     return render(request, 'equipments/equipment_list.html', context)
+
 
 def equipment_search(request):
     """Поиск оборудования"""
@@ -40,7 +64,6 @@ def equipment_search(request):
             Q(mc_number__icontains=query) |
             Q(brand__icontains=query) |
             Q(model__icontains=query) |
-            Q(serial_number__icontains=query) |
             Q(notes__icontains=query) |
             Q(assigned_to__last_name__icontains=query) |
             Q(assigned_to__first_name__icontains=query)
@@ -89,9 +112,8 @@ def equipment_import(request):
                 try:
                     # Получаем данные из строки
                     mc_number = str(row.get('МЦ номер', '')).strip()
-                    if not mc_number:
-                        errors.append(f"Строка {index + 2}: Отсутствует МЦ номер")
-                        continue
+                    if mc_number == 'nan' or mc_number == 'None' or not mc_number:
+                        mc_number = None
                     
                     # Преобразуем тип оборудования
                     type_mapping = {
@@ -126,7 +148,7 @@ def equipment_import(request):
                     employee_name = str(row.get('Сотрудник', '')).strip()
                     assigned_to = None
                     
-                    if employee_name:
+                    if employee_name and employee_name.lower() not in ['nan', 'none', '']:
                         from employees.models import Employee
                         # Пробуем найти сотрудника по ФИО
                         try:
@@ -137,14 +159,24 @@ def equipment_import(request):
                         except:
                             pass
                     
+                    # Ищем отдел для закрепления
+                    department_name = str(row.get('Отдел', '')).strip()
+                    assigned_department = None
+                    
+                    if department_name and department_name.lower() not in ['nan', 'none', '']:
+                        from employees.models import Department
+                        assigned_department = Department.objects.filter(
+                            name__icontains=department_name
+                        ).first()
+                    
                     # Создаем оборудование
                     Equipment.objects.create(
                         mc_number=mc_number,
                         type=equipment_type,
                         brand=str(row.get('Марка', '')).strip(),
                         model=str(row.get('Модель', '')).strip(),
-                        serial_number=str(row.get('Серийный номер', '')).strip(),
                         assigned_to=assigned_to,
+                        assigned_department=assigned_department,  # НОВОЕ ПОЛЕ
                         status=status,
                         notes=str(row.get('Примечания', '')).strip(),
                     )
@@ -176,13 +208,15 @@ def equipment_import(request):
 # equipments/views.py - добавляем или убеждаемся что есть
 def export_equipment_excel(request):
     """Экспорт отфильтрованного оборудования в Excel"""
-    # Применяем те же фильтры, что и в списке
-    equipments = Equipment.objects.select_related('assigned_to', 'assigned_to__department').all()
+    from employees.models import Department
+    
+    equipments = Equipment.objects.select_related('assigned_to', 'assigned_to__department', 'assigned_department').all()
     
     # Фильтрация
     status_filter = request.GET.get('status')
     type_filter = request.GET.get('type')
     department_filter = request.GET.get('department')
+    assigned_department_filter = request.GET.get('assigned_department')
     employee_filter = request.GET.get('employee')
     search_query = request.GET.get('q')
     
@@ -195,6 +229,9 @@ def export_equipment_excel(request):
     if department_filter:
         equipments = equipments.filter(assigned_to__department_id=department_filter)
     
+    if assigned_department_filter:
+        equipments = equipments.filter(assigned_department_id=assigned_department_filter)
+    
     if employee_filter:
         equipments = equipments.filter(assigned_to_id=employee_filter)
     
@@ -203,24 +240,24 @@ def export_equipment_excel(request):
             Q(mc_number__icontains=search_query) |
             Q(brand__icontains=search_query) |
             Q(model__icontains=search_query) |
-            Q(serial_number__icontains=search_query) |
             Q(notes__icontains=search_query) |
             Q(assigned_to__last_name__icontains=search_query) |
-            Q(assigned_to__first_name__icontains=search_query)
+            Q(assigned_to__first_name__icontains=search_query) |
+            Q(assigned_department__name__icontains=search_query)
         )
     
     # Создаем DataFrame
     data = []
     for eq in equipments:
         data.append({
-            'МЦ номер': eq.mc_number,
+            'МЦ номер': eq.mc_number or 'Без МЦ',
             'Тип': eq.get_type_display(),
             'Марка': eq.brand or '',
             'Модель': eq.model or '',
-            'Серийный номер': eq.serial_number or '',
             'Статус': eq.get_status_display(),
             'Сотрудник': eq.assigned_to.full_name if eq.assigned_to else '',
-            'Отдел': eq.assigned_to.department.name if eq.assigned_to and eq.assigned_to.department else '',
+            'Отдел (сотрудника)': eq.assigned_to.department.name if eq.assigned_to and eq.assigned_to.department else '',
+            'Закреплено за отделом': eq.assigned_department.name if eq.assigned_department else '',
             'Дата добавления': eq.created_at.strftime('%d.%m.%Y') if eq.created_at else '',
             'Примечания': eq.notes or '',
         })
@@ -249,7 +286,6 @@ def export_template(request):
             'Тип': 'ноутбук',
             'Марка': 'Dell',
             'Модель': 'Latitude 5420',
-            'Серийный номер': 'ABC123',
             'Сотрудник': 'Иванов Иван',
             'Статус': 'выдано',
             'Примечания': 'Пример записи'
@@ -259,7 +295,6 @@ def export_template(request):
             'Тип': 'монитор',
             'Марка': 'Samsung',
             'Модель': 'S24F350',
-            'Серийный номер': 'DEF456',
             'Сотрудник': '',
             'Статус': 'на складе',
             'Примечания': ''

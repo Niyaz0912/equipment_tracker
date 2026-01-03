@@ -1,0 +1,12 @@
+# Python cache files
+*.pyc
+__pycache__/
+
+# Temporary scripts
+check_encoding.py
+create_fixtures.py
+create_report.py
+fix_encoding.py
+export_fixtures.py
+simple_check.py
+db.sqlite3
