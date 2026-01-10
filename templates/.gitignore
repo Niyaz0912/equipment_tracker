@@ -1,61 +1,27 @@
-# Django
-*.pyc
+# Python
 __pycache__/
-db.sqlite3
-db.sqlite3-journal
-*.log
-
-# Environment
-.env
-.venv/
-env/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
 venv/
-ENV/
-env.bak/
-venv.bak/
-*.env
-.env.local
+env/
+.env
+.venv
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
 
 # IDE
-.idea/
 .vscode/
+.idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Media and static files
-/media/
-/staticfiles/
-/import_export/
-
-# Database backups
-*.backup
-*.dump
-
-# Python
-.python-version
-pycache/
-Pipfile.lock
-poetry.lock
-
-# Temp files
-*.tmp
-*.temp
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Coverage
-.coverage
-htmlcov/
-
-# Test
-.pytest_cache/

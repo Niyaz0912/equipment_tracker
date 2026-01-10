@@ -10,4 +10,5 @@ urlpatterns = [
     path('equipment/', include('equipments.urls')),
     path('employees/', include('employees.urls')),
     path('', RedirectView.as_view(url='/equipment/', permanent=False)),
+    path('export/', include('excel_export.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

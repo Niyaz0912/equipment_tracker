@@ -1,6 +1,6 @@
 # equipments/views.py
-from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Equipment
 import pandas as pd
 from django.http import HttpResponse
@@ -66,7 +66,9 @@ def equipment_search(request):
             Q(model__icontains=query) |
             Q(notes__icontains=query) |
             Q(assigned_to__last_name__icontains=query) |
-            Q(assigned_to__first_name__icontains=query)
+            Q(assigned_to__first_name__icontains=query) |
+            Q(assigned_to__middle_name__icontains=query) |  # Добавили
+            Q(assigned_department__name__icontains=query)   # Добавили - НЕТ запятой в конце!
         )
     
     context = {
