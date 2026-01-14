@@ -13,8 +13,9 @@ class Equipment(models.Model):
         ('printer', 'Принтер'),
         ('scanner', 'Сканер'),
         ('headphones', 'Наушники'),
-        ('phone', 'Стационарный телефон'),
+        ('phone', 'Телефон'),
         ('webcam', 'Веб-камера'),
+        ('calculator', 'Калькулятор'),
         ('other', 'Другое'),
     ]
     
