@@ -14,7 +14,11 @@ SECRET_KEY = 'django-insecure-uc6z44gaa+ekzym(e63%1gq4#^en^ur$(owk4@q*g!5hmxl=bt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.1.100',
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -127,3 +131,5 @@ MEDIA_URL = '/media/'
 
 EXCEL_FOLDER = BASE_DIR / 'import_export'
 os.makedirs(EXCEL_FOLDER, exist_ok=True)
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
