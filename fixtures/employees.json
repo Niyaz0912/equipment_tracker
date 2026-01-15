@@ -1,9 +1,9 @@
-п»ї[
+[
 {
   "model": "employees.department",
   "pk": 1,
   "fields": {
-    "name": "IT пїЅпїЅпїЅпїЅпїЅ",
+    "name": "IT отдел",
     "short_name": ""
   }
 },
@@ -11,7 +11,7 @@
   "model": "employees.department",
   "pk": 2,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ",
+    "name": "Финансовый отдел",
     "short_name": ""
   }
 },
@@ -19,7 +19,7 @@
   "model": "employees.department",
   "pk": 3,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел продаж",
     "short_name": ""
   }
 },
@@ -27,7 +27,7 @@
   "model": "employees.department",
   "pk": 4,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ",
+    "name": "Технический отдел",
     "short_name": ""
   }
 },
@@ -35,7 +35,7 @@
   "model": "employees.department",
   "pk": 5,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Комната мастеров",
     "short_name": ""
   }
 },
@@ -43,7 +43,7 @@
   "model": "employees.department",
   "pk": 6,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Приемная",
     "short_name": ""
   }
 },
@@ -51,7 +51,7 @@
   "model": "employees.department",
   "pk": 7,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел кадров",
     "short_name": ""
   }
 },
@@ -59,7 +59,7 @@
   "model": "employees.department",
   "pk": 8,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел планирования",
     "short_name": ""
   }
 },
@@ -67,7 +67,7 @@
   "model": "employees.department",
   "pk": 9,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Служба главного электрика",
     "short_name": ""
   }
 },
@@ -75,7 +75,7 @@
   "model": "employees.department",
   "pk": 10,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Служба главного механика",
     "short_name": ""
   }
 },
@@ -83,7 +83,7 @@
   "model": "employees.department",
   "pk": 11,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел обеспечения",
     "short_name": ""
   }
 },
@@ -91,7 +91,7 @@
   "model": "employees.department",
   "pk": 12,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Департамент персонала",
     "short_name": ""
   }
 },
@@ -99,7 +99,7 @@
   "model": "employees.department",
   "pk": 13,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел эффективности",
     "short_name": ""
   }
 },
@@ -107,7 +107,7 @@
   "model": "employees.department",
   "pk": 14,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Департамент качества",
     "short_name": ""
   }
 },
@@ -115,7 +115,7 @@
   "model": "employees.department",
   "pk": 15,
   "fields": {
-    "name": "пїЅпїЅпїЅ",
+    "name": "ОТК",
     "short_name": ""
   }
 },
@@ -123,7 +123,7 @@
   "model": "employees.department",
   "pk": 16,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел производства",
     "short_name": ""
   }
 },
@@ -131,7 +131,7 @@
   "model": "employees.department",
   "pk": 17,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Заготовительный участок",
     "short_name": ""
   }
 },
@@ -139,7 +139,7 @@
   "model": "employees.department",
   "pk": 18,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ",
+    "name": "склад",
     "short_name": ""
   }
 },
@@ -147,7 +147,7 @@
   "model": "employees.department",
   "pk": 19,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел обучения",
     "short_name": ""
   }
 },
@@ -155,7 +155,7 @@
   "model": "employees.department",
   "pk": 20,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел охраны труда и техники безопасности",
     "short_name": ""
   }
 },
@@ -163,7 +163,7 @@
   "model": "employees.department",
   "pk": 21,
   "fields": {
-    "name": "PR пїЅпїЅпїЅпїЅпїЅ",
+    "name": "PR отдел",
     "short_name": ""
   }
 },
@@ -171,7 +171,7 @@
   "model": "employees.department",
   "pk": 22,
   "fields": {
-    "name": "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "name": "Отдел маркетинга",
     "short_name": ""
   }
 },
@@ -179,7 +179,7 @@
   "model": "employees.department",
   "pk": 23,
   "fields": {
-    "name": "пїЅпїЅпїЅ",
+    "name": "КПП",
     "short_name": ""
   }
 },
@@ -187,11 +187,11 @@
   "model": "employees.employee",
   "pk": 1,
   "fields": {
-    "last_name": "пїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Шум",
+    "first_name": "Евгений",
     "middle_name": "",
     "department": 1,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник отдела по информационным проектам",
     "is_active": true
   }
 },
@@ -199,11 +199,11 @@
   "model": "employees.employee",
   "pk": 2,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Коннов",
+    "first_name": "Никита",
     "middle_name": "",
     "department": 1,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "сисадмин",
     "is_active": true
   }
 },
@@ -211,11 +211,11 @@
   "model": "employees.employee",
   "pk": 3,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Хасанов",
+    "first_name": "Нияз",
     "middle_name": "",
     "department": 1,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "сисадмин",
     "is_active": true
   }
 },
@@ -223,11 +223,11 @@
   "model": "employees.employee",
   "pk": 4,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Сорокина",
+    "first_name": "Наталья",
     "middle_name": "",
     "department": 8,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник отдела планирования",
     "is_active": true
   }
 },
@@ -235,11 +235,11 @@
   "model": "employees.employee",
   "pk": 5,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Тарасова",
+    "first_name": "Дарья",
     "middle_name": "",
     "department": 8,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер по планированию 1 категории",
     "is_active": true
   }
 },
@@ -247,11 +247,11 @@
   "model": "employees.employee",
   "pk": 6,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Мингазова",
+    "first_name": "Венера",
     "middle_name": "",
     "department": 8,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер по планированию",
     "is_active": true
   }
 },
@@ -259,11 +259,11 @@
   "model": "employees.employee",
   "pk": 7,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Карпец",
+    "first_name": "Василь",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ I пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 10 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-конструктор I категории 10 разряда",
     "is_active": true
   }
 },
@@ -271,11 +271,11 @@
   "model": "employees.employee",
   "pk": 8,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Валеев",
+    "first_name": "Марат",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "ведущий инженер-конструктор",
     "is_active": true
   }
 },
@@ -283,11 +283,11 @@
   "model": "employees.employee",
   "pk": 9,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Захаров",
+    "first_name": "Дмитрий",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ II пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 7 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-конструктор II категории 7 разряда",
     "is_active": true
   }
 },
@@ -295,11 +295,11 @@
   "model": "employees.employee",
   "pk": 10,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Баскаков",
+    "first_name": "Олег",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ II пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 4 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-конструктор II категории 4 разряда",
     "is_active": true
   }
 },
@@ -307,11 +307,11 @@
   "model": "employees.employee",
   "pk": 11,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Богатырева",
+    "first_name": "Александра",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник технического отдела",
     "is_active": true
   }
 },
@@ -319,11 +319,11 @@
   "model": "employees.employee",
   "pk": 12,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Гайнутдинова",
+    "first_name": "Мария",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-технолог лазерной резки",
     "is_active": true
   }
 },
@@ -331,11 +331,11 @@
   "model": "employees.employee",
   "pk": 13,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Левченко",
+    "first_name": "Елена",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-технолог",
     "is_active": true
   }
 },
@@ -343,11 +343,11 @@
   "model": "employees.employee",
   "pk": 14,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Лушникова",
+    "first_name": "Ольга",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-технолог по термической обработке",
     "is_active": true
   }
 },
@@ -355,11 +355,11 @@
   "model": "employees.employee",
   "pk": 15,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Миронов",
+    "first_name": "Максим",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "ведущий инженер-технолог по механической обработке",
     "is_active": true
   }
 },
@@ -367,11 +367,11 @@
   "model": "employees.employee",
   "pk": 16,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Муллаяров",
+    "first_name": "Данил",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "архивариус",
     "is_active": true
   }
 },
@@ -379,11 +379,11 @@
   "model": "employees.employee",
   "pk": 17,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Пирская",
+    "first_name": "Анна",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-технолог лазерной резки",
     "is_active": true
   }
 },
@@ -391,11 +391,11 @@
   "model": "employees.employee",
   "pk": 18,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Поздеев",
+    "first_name": "Владлен",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ II пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 6 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-конструктор II категории 6 разряда",
     "is_active": true
   }
 },
@@ -403,11 +403,11 @@
   "model": "employees.employee",
   "pk": 19,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Руденко",
+    "first_name": "Юлия",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "ведущий инженер-технолог по механической обработке",
     "is_active": true
   }
 },
@@ -415,11 +415,11 @@
   "model": "employees.employee",
   "pk": 20,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Савушкин",
+    "first_name": "Михаил",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ I пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 9 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-конструктор I категории 9 разряда",
     "is_active": true
   }
 },
@@ -427,11 +427,11 @@
   "model": "employees.employee",
   "pk": 21,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Ситникова",
+    "first_name": "Мария",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-технолог",
     "is_active": true
   }
 },
@@ -439,11 +439,11 @@
   "model": "employees.employee",
   "pk": 22,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Барышева",
+    "first_name": "Эльвира",
     "middle_name": "",
     "department": 4,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ III пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1 пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-конструктор III категории 1 разряда",
     "is_active": true
   }
 },
@@ -451,11 +451,11 @@
   "model": "employees.employee",
   "pk": 23,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Грачев",
+    "first_name": "Дмитрий",
     "middle_name": "",
     "department": 11,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник отдела обеспечения",
     "is_active": true
   }
 },
@@ -463,11 +463,11 @@
   "model": "employees.employee",
   "pk": 24,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Сакадеев",
+    "first_name": "Артем",
     "middle_name": "",
     "department": 11,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер по снабжению",
     "is_active": true
   }
 },
@@ -475,11 +475,11 @@
   "model": "employees.employee",
   "pk": 25,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Севрюкова",
+    "first_name": "Татьяна",
     "middle_name": "",
     "department": 11,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер по снабжению",
     "is_active": true
   }
 },
@@ -487,11 +487,11 @@
   "model": "employees.employee",
   "pk": 26,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Тихоненко",
+    "first_name": "Татьяна",
     "middle_name": "",
     "department": 11,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "логист",
     "is_active": true
   }
 },
@@ -499,11 +499,11 @@
   "model": "employees.employee",
   "pk": 27,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Воробьева",
+    "first_name": "Елизавета",
     "middle_name": "",
     "department": 12,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "руководитель",
     "is_active": true
   }
 },
@@ -511,11 +511,11 @@
   "model": "employees.employee",
   "pk": 28,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Брызгунова",
+    "first_name": "Алена",
     "middle_name": "",
     "department": 12,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник отдела персонала",
     "is_active": true
   }
 },
@@ -523,11 +523,11 @@
   "model": "employees.employee",
   "pk": 29,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Гордеева",
+    "first_name": "Анна",
     "middle_name": "",
     "department": 12,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "специалист кадрового производства",
     "is_active": true
   }
 },
@@ -535,11 +535,11 @@
   "model": "employees.employee",
   "pk": 30,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Кириллова",
+    "first_name": "Алёна",
     "middle_name": "",
     "department": 12,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер службы должностных папок",
     "is_active": true
   }
 },
@@ -547,11 +547,11 @@
   "model": "employees.employee",
   "pk": 31,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Кубович",
+    "first_name": "Екатерина",
     "middle_name": "",
     "department": 12,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник отдела коммуникаций",
     "is_active": true
   }
 },
@@ -559,11 +559,11 @@
   "model": "employees.employee",
   "pk": 32,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Логинова",
+    "first_name": "Ольга",
     "middle_name": "",
     "department": 13,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник отдела эффективности",
     "is_active": true
   }
 },
@@ -571,11 +571,11 @@
   "model": "employees.employee",
   "pk": 33,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Малкова",
+    "first_name": "Полина",
     "middle_name": "",
     "department": 13,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер службы инспекций",
     "is_active": true
   }
 },
@@ -583,11 +583,11 @@
   "model": "employees.employee",
   "pk": 34,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Суворова",
+    "first_name": "Наталья",
     "middle_name": "",
     "department": 12,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "ведущий специалист кадрового делопроизводства",
     "is_active": true
   }
 },
@@ -595,11 +595,11 @@
   "model": "employees.employee",
   "pk": 35,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Юшковская",
+    "first_name": "Кристина",
     "middle_name": "",
     "department": 12,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "рекрутер",
     "is_active": true
   }
 },
@@ -607,11 +607,11 @@
   "model": "employees.employee",
   "pk": 36,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Ерохин",
+    "first_name": "Никита",
     "middle_name": "",
     "department": 1,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер по информационным проектам",
     "is_active": true
   }
 },
@@ -619,11 +619,11 @@
   "model": "employees.employee",
   "pk": 37,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Курзаев",
+    "first_name": "Евгений",
     "middle_name": "",
     "department": 14,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ",
+    "position": "начальник ОТК",
     "is_active": true
   }
 },
@@ -631,11 +631,11 @@
   "model": "employees.employee",
   "pk": 38,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Никитин",
+    "first_name": "Сергей",
     "middle_name": "",
     "department": 14,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "руководитель департамента контроля качества",
     "is_active": true
   }
 },
@@ -643,8 +643,8 @@
   "model": "employees.employee",
   "pk": 39,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Смирнягин",
+    "first_name": "Владимир",
     "middle_name": "",
     "department": null,
     "position": "",
@@ -655,11 +655,11 @@
   "model": "employees.employee",
   "pk": 40,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Ярмухаметова",
+    "first_name": "Диана",
     "middle_name": "",
     "department": null,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "экономист",
     "is_active": true
   }
 },
@@ -667,8 +667,8 @@
   "model": "employees.employee",
   "pk": 41,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Ревина",
+    "first_name": "Дарья",
     "middle_name": "",
     "department": null,
     "position": "",
@@ -679,11 +679,11 @@
   "model": "employees.employee",
   "pk": 42,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Черемисин",
+    "first_name": "Игорь",
     "middle_name": "",
     "department": 10,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "Главный электрик",
     "is_active": true
   }
 },
@@ -691,11 +691,11 @@
   "model": "employees.employee",
   "pk": 43,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Малыхин",
+    "first_name": "Василий",
     "middle_name": "",
     "department": 10,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "мастер участка по техническому обслуживанию и ремонту",
     "is_active": true
   }
 },
@@ -703,11 +703,11 @@
   "model": "employees.employee",
   "pk": 44,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Зайдуллин",
+    "first_name": "Равиль",
     "middle_name": "",
     "department": 9,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "Главный электрик",
     "is_active": true
   }
 },
@@ -715,11 +715,11 @@
   "model": "employees.employee",
   "pk": 45,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Ишметьева",
+    "first_name": "Елена",
     "middle_name": "",
     "department": 15,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ",
+    "position": "контролер ОТК",
     "is_active": true
   }
 },
@@ -727,11 +727,11 @@
   "model": "employees.employee",
   "pk": 46,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Шибанова",
+    "first_name": "Наталья",
     "middle_name": "",
     "department": null,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "помощник гендиректора",
     "is_active": true
   }
 },
@@ -739,11 +739,11 @@
   "model": "employees.employee",
   "pk": 47,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Панова",
+    "first_name": "Ольга",
     "middle_name": "",
     "department": null,
-    "position": "пїЅпїЅпїЅпїЅпїЅ",
+    "position": "юрист",
     "is_active": true
   }
 },
@@ -751,8 +751,8 @@
   "model": "employees.employee",
   "pk": 48,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Коржук",
+    "first_name": "Юлия",
     "middle_name": "",
     "department": 2,
     "position": "",
@@ -763,11 +763,11 @@
   "model": "employees.employee",
   "pk": 49,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Бердникова",
+    "first_name": "Наталья",
     "middle_name": "",
     "department": 2,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "главный бухгалтер",
     "is_active": true
   }
 },
@@ -775,11 +775,11 @@
   "model": "employees.employee",
   "pk": 50,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Уналбаева",
+    "first_name": "Динара",
     "middle_name": "",
     "department": 2,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ",
+    "position": "бухгалтер по расчету з/п",
     "is_active": true
   }
 },
@@ -787,11 +787,11 @@
   "model": "employees.employee",
   "pk": 51,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Коледа",
+    "first_name": "Виктория",
     "middle_name": "",
     "department": 2,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "бухгалтер по расчету материалов",
     "is_active": true
   }
 },
@@ -799,11 +799,11 @@
   "model": "employees.employee",
   "pk": 52,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅ",
+    "last_name": "Кильдиярова",
+    "first_name": "Юлия",
     "middle_name": "",
     "department": 2,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "бухгалтер",
     "is_active": true
   }
 },
@@ -811,11 +811,11 @@
   "model": "employees.employee",
   "pk": 53,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Шакирьянов",
+    "first_name": "Роман",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "мастер участка мехобработки",
     "is_active": true
   }
 },
@@ -823,11 +823,11 @@
   "model": "employees.employee",
   "pk": 54,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Копрыгин",
+    "first_name": "Василий",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ",
+    "position": "мастер сборочного цеха",
     "is_active": true
   }
 },
@@ -835,11 +835,11 @@
   "model": "employees.employee",
   "pk": 55,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Ищанов",
+    "first_name": "Батыр",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "старший мастер механического участка",
     "is_active": true
   }
 },
@@ -847,11 +847,11 @@
   "model": "employees.employee",
   "pk": 56,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Фефелов",
+    "first_name": "Максим",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "мастер участка комплектовки",
     "is_active": true
   }
 },
@@ -859,11 +859,11 @@
   "model": "employees.employee",
   "pk": 57,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Замушинская",
+    "first_name": "Дарья",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "делопроизводитель",
     "is_active": true
   }
 },
@@ -871,11 +871,11 @@
   "model": "employees.employee",
   "pk": 58,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Голубых",
+    "first_name": "Антон",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-технолог",
     "is_active": true
   }
 },
@@ -883,8 +883,8 @@
   "model": "employees.employee",
   "pk": 59,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Гончаров",
+    "first_name": "Максим",
     "middle_name": "",
     "department": 16,
     "position": "",
@@ -895,11 +895,11 @@
   "model": "employees.employee",
   "pk": 60,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Музжерин",
+    "first_name": "Павел",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "мастер участка фрезерной обработки",
     "is_active": true
   }
 },
@@ -907,11 +907,11 @@
   "model": "employees.employee",
   "pk": 61,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Сморжок",
+    "first_name": "Михаил",
     "middle_name": "",
     "department": 9,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "инженер-электроник",
     "is_active": true
   }
 },
@@ -919,11 +919,11 @@
   "model": "employees.employee",
   "pk": 62,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Караваев",
+    "first_name": "Евгений",
     "middle_name": "",
     "department": 17,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "мастер заготовительного участка",
     "is_active": true
   }
 },
@@ -931,11 +931,11 @@
   "model": "employees.employee",
   "pk": 63,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Игнатьев",
+    "first_name": "Дмитрий",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ",
+    "position": "мастер цеха лазерной резки",
     "is_active": true
   }
 },
@@ -943,11 +943,11 @@
   "model": "employees.employee",
   "pk": 64,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Кайгородова",
+    "first_name": "Анастасия",
     "middle_name": "",
     "department": 18,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник склада",
     "is_active": true
   }
 },
@@ -955,11 +955,11 @@
   "model": "employees.employee",
   "pk": 65,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Филипцевич",
+    "first_name": "Екатерина",
     "middle_name": "",
     "department": 18,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "кладовщик",
     "is_active": true
   }
 },
@@ -967,11 +967,11 @@
   "model": "employees.employee",
   "pk": 66,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Тепикин",
+    "first_name": "Игорь",
     "middle_name": "",
     "department": 20,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ",
+    "position": "руководитель службы охраны труда",
     "is_active": true
   }
 },
@@ -979,11 +979,11 @@
   "model": "employees.employee",
   "pk": 67,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Тимашов",
+    "first_name": "Алексей",
     "middle_name": "",
     "department": 3,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер по тендерам",
     "is_active": true
   }
 },
@@ -991,11 +991,11 @@
   "model": "employees.employee",
   "pk": 68,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Нурмухаметов",
+    "first_name": "Рустам",
     "middle_name": "",
     "department": 3,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер отдела продаж",
     "is_active": true
   }
 },
@@ -1003,11 +1003,11 @@
   "model": "employees.employee",
   "pk": 69,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Наумов",
+    "first_name": "Александр",
     "middle_name": "",
     "department": 3,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "менеджер отдела продаж",
     "is_active": true
   }
 },
@@ -1015,11 +1015,11 @@
   "model": "employees.employee",
   "pk": 70,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Дымова",
+    "first_name": "Мария",
     "middle_name": "",
     "department": 3,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "специалист сопровождения продаж",
     "is_active": true
   }
 },
@@ -1027,11 +1027,11 @@
   "model": "employees.employee",
   "pk": 71,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Ванюков",
+    "first_name": "Артем",
     "middle_name": "",
     "department": 3,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "ведущий менеджер отдела продаж",
     "is_active": true
   }
 },
@@ -1039,11 +1039,11 @@
   "model": "employees.employee",
   "pk": 72,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Шаляев",
+    "first_name": "Александр",
     "middle_name": "",
     "department": 22,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "руководитель отдела маркетинга",
     "is_active": true
   }
 },
@@ -1051,11 +1051,11 @@
   "model": "employees.employee",
   "pk": 73,
   "fields": {
-    "last_name": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
-    "first_name": "пїЅпїЅпїЅпїЅпїЅ",
+    "last_name": "Леонтьев",
+    "first_name": "Федор",
     "middle_name": "",
     "department": 16,
-    "position": "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+    "position": "начальник отдела производства",
     "is_active": true
   }
 }
