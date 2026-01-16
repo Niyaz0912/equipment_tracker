@@ -1,0 +1,21 @@
+#!/bin/bash
+# Управление фикстурами для Equipment Tracker
+
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_SCRIPT="$PROJECT_DIR/fixture_tool.py"
+
+# Проверяем наличие Python скрипта
+if [ ! -f "$PYTHON_SCRIPT" ]; then
+    echo "Ошибка: файл $PYTHON_SCRIPT не найден"
+    exit 1
+fi
+
+# Проверяем виртуальное окружение
+if [ -d "$PROJECT_DIR/venv" ]; then
+    if [ -f "$PROJECT_DIR/venv/bin/activate" ]; then
+        source "$PROJECT_DIR/venv/bin/activate"
+    fi
+fi
+
+# Запускаем Python скрипт
+python3 "$PYTHON_SCRIPT" "$@"
