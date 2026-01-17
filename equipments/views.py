@@ -16,38 +16,102 @@ def equipment_list(request):
     
     from employees.models import Department, Employee
     
-    # Фильтрация
-    status_filter = request.GET.get('status')
-    type_filter = request.GET.get('type')
+    # Получаем GET параметры
+    status_filter = request.GET.getlist('status')  # Множественный выбор
+    type_filter = request.GET.getlist('type')      # Множественный выбор
     department_filter = request.GET.get('department')
-    assigned_department_filter = request.GET.get('assigned_department')  # НОВОЕ
+    assigned_department_filter = request.GET.get('assigned_department')
     employee_filter = request.GET.get('employee')
+    missing_filter = request.GET.get('missing')    # Новый фильтр
+    sort_filter = request.GET.get('sort', 'mc_number')  # По умолчанию по МЦ номеру
     
+    # Фильтрация по статусу (может быть несколько)
     if status_filter:
-        equipments = equipments.filter(status=status_filter)
+        equipments = equipments.filter(status__in=status_filter)
     
+    # Фильтрация по типу (может быть несколько)
     if type_filter:
-        equipments = equipments.filter(type=type_filter)
+        equipments = equipments.filter(type__in=type_filter)
     
+    # Фильтрация по отделу сотрудника
     if department_filter:
         equipments = equipments.filter(assigned_to__department_id=department_filter)
     
-    if assigned_department_filter:  # НОВОЕ
+    # Фильтрация по закрепленному отделу
+    if assigned_department_filter:
         equipments = equipments.filter(assigned_department_id=assigned_department_filter)
     
+    # Фильтрация по сотруднику
     if employee_filter:
         equipments = equipments.filter(assigned_to_id=employee_filter)
     
+    # Фильтр "Что не заполнено"
+    if missing_filter:
+        if missing_filter == 'mc':
+            equipments = equipments.filter(Q(mc_number__isnull=True) | Q(mc_number=''))
+        elif missing_filter == 'brand':
+            equipments = equipments.filter(Q(brand__isnull=True) | Q(brand=''))
+        elif missing_filter == 'model':
+            equipments = equipments.filter(Q(model__isnull=True) | Q(model=''))
+    
+    # Сортировка (используем правильные имена полей)
+    if sort_filter == 'mc':
+        sort_filter = 'mc_number'
+    
+    
+    # Подготовка данных для контекста
     departments = Department.objects.all()
     employees = Employee.objects.filter(is_active=True)
+    
+    # Для отображения в чипах
+    status_filter_display = None
+    if status_filter:
+        status_dict = dict(Equipment.STATUS_CHOICES)
+        status_filter_display = ', '.join([status_dict.get(s, s) for s in status_filter])
+    
+    type_filter_display = None
+    if type_filter:
+        type_dict = dict(Equipment.TYPE_CHOICES)
+        type_filter_display = ', '.join([type_dict.get(t, t) for t in type_filter])
+    
+    missing_filter_display = None
+    if missing_filter == 'mc':
+        missing_filter_display = 'МЦ'
+    elif missing_filter == 'brand':
+        missing_filter_display = 'марки'
+    elif missing_filter == 'model':
+        missing_filter_display = 'модели'
+    
+    # Подсчет активных фильтров
+    active_filters_count = 0
+    active_filters_count += len(status_filter)
+    active_filters_count += len(type_filter)
+    active_filters_count += 1 if missing_filter else 0
+    active_filters_count += 1 if department_filter else 0
+    active_filters_count += 1 if assigned_department_filter else 0
     
     context = {
         'equipments': equipments,
         'status_filter': status_filter,
         'type_filter': type_filter,
         'department_filter': department_filter,
-        'assigned_department_filter': assigned_department_filter,  # НОВОЕ
+        'assigned_department_filter': assigned_department_filter,
         'employee_filter': employee_filter,
+        'missing_filter': missing_filter,
+        'sort_filter': sort_filter,
+        
+        # Для отображения
+        'status_filter_display': status_filter_display,
+        'type_filter_display': type_filter_display,
+        'missing_filter_display': missing_filter_display,
+        'active_filters_count': active_filters_count,
+        
+        # Для модалки
+        'status_choices': Equipment.STATUS_CHOICES,
+        'type_choices': Equipment.TYPE_CHOICES,
+        'selected_statuses': status_filter,
+        'selected_types': type_filter,
+        
         'departments': departments,
         'employees': employees,
     }

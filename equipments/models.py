@@ -15,7 +15,6 @@ class Equipment(models.Model):
         ('headphones', 'Наушники'),
         ('phone', 'Телефон'),
         ('webcam', 'Веб-камера'),
-        ('calculator', 'Калькулятор'),
         ('other', 'Другое'),
     ]
     
