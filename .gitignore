@@ -1,12 +1,76 @@
 # Python cache files
-*.pyc
+*.py[cod]
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Temporary scripts
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+
+# Environments
+venv/
+env/
+.venv/
+.venv_*/
+.virtualenv/
+virtualenv/
+pip-wheel-metadata/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project specific
+*.db
+*.sqlite3
+
+# Temporary scripts (как у вас)
 check_encoding.py
 create_fixtures.py
 create_report.py
 fix_encoding.py
 export_fixtures.py
 simple_check.py
-db.sqlite3
+
+# Media files (если есть)
+/media/
+/staticfiles/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+secrets.py
+
+# Coverage reports
+.coverage
+htmlcov/
+.coverage.*
+
+# Pytest
+.pytest_cache/
+.tox/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+logs/
+*.log
+
+# Excel export files (если генерируете временные)
+*.xlsx
+*.xls
+/temp_exports/
