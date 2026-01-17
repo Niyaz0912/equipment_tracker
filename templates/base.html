@@ -22,7 +22,7 @@
 </head>
 
 <body class="bg-image">
-    
+
     <!-- Навигация -->
     <nav class="navbar navbar-expand-lg navbar-light navbar-glass mb-4">
         <div class="container">
@@ -47,6 +47,13 @@
                             <i class="bi bi-people me-1"></i>Сотрудники
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'printer_status' %}">
+                            📊 Мониторинг принтеров
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'equipments:equipment_import' %}">
                             <i class="bi bi-download me-1"></i>Импорт Excel
@@ -60,8 +67,8 @@
                 </ul>
 
                 <form class="d-flex me-2" method="get" action="{% url 'equipments:equipment_search' %}">
-                    <input class="form-control me-2" type="search" name="q"
-                        placeholder="Поиск по МЦ или названию..." aria-label="Search">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Поиск по МЦ или названию..."
+                        aria-label="Search">
                     <button class="btn btn-outline-primary" type="submit">
                         <i class="bi bi-search"></i>
                     </button>

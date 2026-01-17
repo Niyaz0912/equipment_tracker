@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="bi bi-pc-display me-2"></i>Оборудование: {{ equipment.mc_number }}
+                    <i class="bi bi-pc-display me-2"></i>Оборудование: {{ equipment.display_mc }}
                 </h5>
                 <div>
                     <a href="/admin/equipments/equipment/{{ equipment.pk }}/change/"
@@ -25,11 +25,22 @@
                         <table class="table table-borderless">
                             <tr>
                                 <th style="width: 40%">МЦ номер:</th>
-                                <td><strong>{{ equipment.mc_number }}</strong></td>
+                                <td><strong>{{ equipment.display_mc }}</strong></td>
                             </tr>
                             <tr>
                                 <th>Тип:</th>
-                                <td>{{ equipment.get_type_display }}</td>
+                                <td>
+                                    {{ equipment.get_type_display }}
+                                    {% if equipment.type == 'printer' and equipment.ip_address %}
+                                    <span class="badge bg-info ms-2">
+                                        <i class="bi bi-wifi"></i> Сетевой
+                                    </span>
+                                    {% elif equipment.type == 'printer' %}
+                                    <span class="badge bg-secondary ms-2">
+                                        <i class="bi bi-usb-plug"></i> Локальный
+                                    </span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             <tr>
                                 <th>Марка:</th>
@@ -39,6 +50,26 @@
                                 <th>Модель:</th>
                                 <td>{{ equipment.model|default:"Не указана" }}</td>
                             </tr>
+                            {% if equipment.type == 'printer' and equipment.ip_address %}
+                            <tr>
+                                <th>IP адрес:</th>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-wifi"></i> {{ equipment.ip_address }}
+                                    </span>
+                                    <small class="text-muted">(сетевой принтер)</small>
+                                </td>
+                            </tr>
+                            {% elif equipment.type == 'printer' %}
+                            <tr>
+                                <th>Тип подключения:</th>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-usb-plug"></i> Локальный (USB)
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endif %}
                         </table>
                     </div>
                     <div class="col-md-6">
@@ -52,8 +83,10 @@
                                     <span class="badge bg-primary">{{ equipment.get_status_display }}</span>
                                     {% elif equipment.status == 'broken' %}
                                     <span class="badge bg-danger">{{ equipment.get_status_display }}</span>
-                                    {% else %}
+                                    {% elif equipment.status == 'repair' %}
                                     <span class="badge bg-warning text-dark">{{ equipment.get_status_display }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ equipment.get_status_display }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -63,8 +96,7 @@
                                     {% if equipment.assigned_to %}
                                     <strong>Сотрудник:</strong> {{ equipment.assigned_to.full_name }}
                                     {% if equipment.assigned_to.department %}
-                                    <br><small class="text-muted">Отдел: {{ equipment.assigned_to.department.name
-                                        }}</small>
+                                    <br><small class="text-muted">Отдел: {{ equipment.assigned_to.department.name }}</small>
                                     {% endif %}
                                     {% elif equipment.assigned_department %}
                                     <strong>Отдел:</strong> {{ equipment.assigned_department.name }}
@@ -75,11 +107,20 @@
                             </tr>
                             <tr>
                                 <th>Дата покупки:</th>
-                                <td>{{ equipment.purchase_date|default:"Не указана" }}</td>
+                                <td>{{ equipment.purchase_date|default:"Не указана"|date:"d.m.Y" }}</td>
                             </tr>
                             <tr>
                                 <th>Гарантия до:</th>
-                                <td>{{ equipment.warranty_until|default:"Не указана" }}</td>
+                                <td>
+                                    {{ equipment.warranty_until|default:"Не указана"|date:"d.m.Y" }}
+                                    {% if equipment.warranty_until %}
+                                        {% if equipment.is_warranty_active %}
+                                            <span class="badge bg-success ms-2">Активна</span>
+                                        {% else %}
+                                            <span class="badge bg-danger ms-2">Истекла</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -111,7 +152,7 @@
                 <div class="list-group list-group-flush">
                     {% for record in history|slice:":5" %}
                     <div class="list-group-item">
-                        <small class="text-muted">{{ record.date }}</small>
+                        <small class="text-muted">{{ record.date|date:"d.m.Y H:i" }}</small>
                         <div class="fw-bold">{{ record.get_action_display }}</div>
                         <div>{{ record.employee.full_name }}</div>
                         {% if record.notes %}
@@ -124,7 +165,7 @@
                 <div class="text-center mt-2">
                     <a href="/admin/history/equipmenthistory/?equipment__id__exact={{ equipment.pk }}"
                         class="btn btn-sm btn-outline-primary" target="_blank">
-                        Вся история
+                        Вся история ({{ history.count }})
                     </a>
                 </div>
                 {% endif %}
@@ -145,10 +186,16 @@
                         class="btn btn-outline-primary" target="_blank">
                         <i class="bi bi-arrow-right-circle me-1"></i>Добавить запись в историю
                     </a>
-                    <a href="{% url 'equipments:equipment_search' %}?q={{ equipment.mc_number }}"
+                    <a href="{% url 'equipments:equipment_search' %}?q={{ equipment.mc_number|default:'' }}"
                         class="btn btn-outline-secondary">
                         <i class="bi bi-search me-1"></i>Поиск по этому МЦ
                     </a>
+                    {% if equipment.type == 'printer' and equipment.ip_address %}
+                    <a href="http://{{ equipment.ip_address }}" 
+                       class="btn btn-outline-info" target="_blank">
+                        <i class="bi bi-wifi"></i> Перейти к веб-интерфейсу принтера
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

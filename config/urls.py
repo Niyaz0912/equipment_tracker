@@ -11,4 +11,5 @@ urlpatterns = [
     path('employees/', include('employees.urls')),
     path('', RedirectView.as_view(url='/equipment/', permanent=False)),
     path('export/', include('excel_export.urls')),
+    path('printers/', include('printer_monitor.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

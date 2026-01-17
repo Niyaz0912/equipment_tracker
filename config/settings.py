@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'employees', 
     'history',
     'excel_export',
+    'printer_monitor',
 ]
 
 MIDDLEWARE = [

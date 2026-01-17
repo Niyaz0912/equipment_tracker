@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📊 Статус принтеров</h1>
+        <div>
+            <a href="{% url 'check_printers' %}" class="btn btn-primary">
+                🔄 Проверить сейчас
+            </a>
+        </div>
+    </div>
+    
+    {% if just_checked %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        ✅ Проверено {{ checked_count }} принтеров
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+    
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Всего принтеров</h5>
+                    <p class="card-text display-4">{{ total_printers }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">С IP-адресом</h5>
+                    <p class="card-text display-4">{{ printers_with_ip }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Без IP</h5>
+                    <p class="card-text display-4">{{ total_printers|add:"-"|add:printers_with_ip }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Список принтеров</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>МЦ номер</th>
+                        <th>Производитель</th>
+                        <th>Модель</th>
+                        <th>IP-адрес</th>
+                        <th>Статус</th>
+                        <th>Последняя проверка</th>
+                        <th>Время ответа</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for status in printer_statuses %}
+                    <tr>
+                        <td>
+                            <strong>{{ status.printer.mc_number }}</strong>
+                        </td>
+                        <td>{{ status.printer.brand|default:"-" }}</td>
+                        <td>{{ status.printer.model|default:"-" }}</td>
+                        <td>
+                            {% if status.printer.ip_address %}
+                                <code>{{ status.printer.ip_address }}</code>
+                            {% else %}
+                                <span class="text-danger">Нет IP</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if status.last_check %}
+                                {% if status.last_check.is_online %}
+                                    <span class="badge bg-success">✅ Онлайн</span>
+                                {% else %}
+                                    <span class="badge bg-danger">❌ Офлайн</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge bg-secondary">Не проверялся</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if status.last_check %}
+                                {{ status.last_check.checked_at|date:"d.m.Y H:i" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if status.last_check and status.last_check.response_time %}
+                                {{ status.last_check.response_time }} мс
+                            {% elif status.last_check %}
+                                <small class="text-muted">Нет данных</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <div class="text-muted">Нет данных о принтерах</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">📝 Как добавить IP-адреса?</h5>
+            </div>
+            <div class="card-body">
+                <p>Для мониторинга нужно добавить IP-адреса принтеров:</p>
+                <ol>
+                    <li>Зайдите в <a href="/admin/equipments/equipment/">админку оборудования</a></li>
+                    <li>Найдите принтер</li>
+                    <li>Добавьте поле "IP-адрес"</li>
+                    <li>Сохраните изменения</li>
+                </ol>
+                <p class="mb-0 text-muted">
+                    <small>Принтер проверяется по порту 9100 (стандартный порт печати)</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

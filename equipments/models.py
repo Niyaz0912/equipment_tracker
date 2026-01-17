@@ -31,6 +31,15 @@ class Equipment(models.Model):
     brand = models.CharField('Марка', max_length=100, blank=True)
     model = models.CharField('Модель', max_length=100, blank=True)
     
+    # НОВОЕ ПОЛЕ: IP адрес для сетевых принтеров
+    ip_address = models.CharField(
+        'IP адрес',
+        max_length=15,  # IPv4: 255.255.255.255
+        blank=True,
+        null=True,
+        help_text='IPv4 адрес для сетевых принтеров (например: 192.168.1.100)'
+    )
+    
     # Закрепление за сотрудником
     assigned_to = models.ForeignKey(
         Employee, 
@@ -57,6 +66,63 @@ class Equipment(models.Model):
     notes = models.TextField('Примечания', blank=True)
     created_at = models.DateTimeField('Дата добавления', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
+    
+    # НОВЫЙ МЕТОД: Проверка является ли принтер сетевым
+    @property
+    def is_network_printer(self):
+        """Возвращает True если это принтер и у него есть IP адрес"""
+        return self.type == 'printer' and bool(self.ip_address)
+    
+    # НОВЫЙ МЕТОД: Валидация IP адреса (опционально)
+    def clean(self):
+        """Валидация данных перед сохранением"""
+        super().clean()
+        
+        if self.ip_address:
+            # Проверяем что IP указан только для принтеров
+            if self.type != 'printer':
+                raise ValidationError({'ip_address': 'IP адрес можно указывать только для принтеров'})
+            
+            # Простая валидация формата IPv4
+            try:
+                ipaddress.IPv4Address(self.ip_address)
+            except ipaddress.AddressValueError:
+                raise ValidationError({'ip_address': 'Введите корректный IPv4 адрес'})
+    
+    # НОВЫЙ МЕТОД: Отображение информации о сетевом принтере
+    @property
+    def network_info(self):
+        """Информация о сетевом подключении"""
+        if self.type == 'printer':
+            if self.ip_address:
+                return f"🖨️ Сетевой принтер ({self.ip_address})"
+            else:
+                return f"🖨️ Локальный принтер (USB)"
+        return None
+    
+    # Обновляем __str__ чтобы показывать IP для принтеров
+    def __str__(self):
+        if self.mc_number:
+            equipment_info = f"{self.mc_number} - {self.get_type_display()}"
+        else:
+            equipment_info = f"Без МЦ - {self.get_type_display()}"
+            
+        if self.brand:
+            equipment_info += f" {self.brand}"
+        if self.model:
+            equipment_info += f" {self.model}"
+        
+        # Показываем IP для сетевых принтеров
+        if self.type == 'printer' and self.ip_address:
+            equipment_info += f" [{self.ip_address}]"
+        
+        # Показываем кому/чему закреплено
+        if self.assigned_to:
+            equipment_info += f" ({self.assigned_to.last_name})"
+        elif self.assigned_department:
+            equipment_info += f" [{self.assigned_department.name}]"
+        
+        return equipment_info
     
     class Meta:
         verbose_name = 'Оборудование'
