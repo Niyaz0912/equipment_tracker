@@ -1,4 +1,6 @@
 # equipments/models.py
+import ipaddress
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from employees.models import Employee, Department  # добавляем импорт Department

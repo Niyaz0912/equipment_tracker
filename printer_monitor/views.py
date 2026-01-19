@@ -15,7 +15,7 @@ class PrinterStatusView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         
         # Все принтеры
-        printers = Equipment.objects.filter(type='Принтер')
+        printers = Equipment.objects.filter(type='printer')
         
         # Последняя проверка для каждого принтера
         printer_statuses = []
