@@ -1,138 +1,234 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Статус принтеров{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
+    <!-- Заголовок и кнопки -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>📊 Статус принтеров</h1>
+        <h1><i class="bi bi-printer-fill me-2"></i>Мониторинг принтеров</h1>
         <div>
-            <a href="{% url 'check_printers' %}" class="btn btn-primary">
-                🔄 Проверить сейчас
+            <a href="{% url 'printer_monitor:check_printers' %}" class="btn btn-primary me-2">
+                <i class="bi bi-arrow-clockwise me-1"></i>Проверить сейчас
+            </a>
+            <a href="{% url 'printer_monitor:stats' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-graph-up me-1"></i>Статистика
             </a>
         </div>
     </div>
-    
-    {% if just_checked %}
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-        ✅ Проверено {{ checked_count }} принтеров
+
+    <!-- Уведомления -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+        {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+    {% endfor %}
     {% endif %}
-    
+
+    <!-- Карточки статистики -->
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Всего принтеров</h5>
-                    <p class="card-text display-4">{{ total_printers }}</p>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Всего принтеров</h5>
+                    <p class="card-text display-6 text-primary">{{ total_printers }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">С IP-адресом</h5>
-                    <p class="card-text display-4">{{ printers_with_ip }}</p>
+        
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">С IP-адресом</h5>
+                    <p class="card-text display-6 text-success">{{ printers_with_ip }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Без IP</h5>
-                    <p class="card-text display-4">{{ total_printers|add:"-"|add:printers_with_ip }}</p>
+        
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Сетевые</h5>
+                    <p class="card-text display-6 text-warning">
+                        {% with network_count=printer_statuses|length %}{{ network_count }}{% endwith %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-secondary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Онлайн сейчас</h5>
+                    <p class="card-text display-6 text-secondary">
+                        {% with online_count=printer_statuses|length %}
+                        {% widthratio printer_statuses|length 1 1 %}{% endwith %}
+                    </p>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Список принтеров</h5>
+
+    <!-- Таблица принтеров -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Сетевые принтеры</h5>
         </div>
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>МЦ номер</th>
-                        <th>Производитель</th>
-                        <th>Модель</th>
-                        <th>IP-адрес</th>
-                        <th>Статус</th>
-                        <th>Последняя проверка</th>
-                        <th>Время ответа</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for status in printer_statuses %}
-                    <tr>
-                        <td>
-                            <strong>{{ status.printer.mc_number }}</strong>
-                        </td>
-                        <td>{{ status.printer.brand|default:"-" }}</td>
-                        <td>{{ status.printer.model|default:"-" }}</td>
-                        <td>
-                            {% if status.printer.ip_address %}
-                                <code>{{ status.printer.ip_address }}</code>
-                            {% else %}
-                                <span class="text-danger">Нет IP</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if status.last_check %}
-                                {% if status.last_check.is_online %}
-                                    <span class="badge bg-success">✅ Онлайн</span>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>МЦ номер</th>
+                            <th>Название</th>
+                            <th>IP-адрес</th>
+                            <th>Отдел</th>
+                            <th>Статус</th>
+                            <th>Последняя проверка</th>
+                            <th>Время ответа</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for status in printer_statuses %}
+                        <tr>
+                            <td><strong>{{ status.printer.mc_number|default:"-" }}</strong></td>
+                            <td>{{ status.printer.name }}</td>
+                            <td>
+                                {% if status.printer.ip_address %}
+                                <code class="badge bg-info">{{ status.printer.ip_address }}</code>
                                 {% else %}
-                                    <span class="badge bg-danger">❌ Офлайн</span>
+                                <span class="text-danger">—</span>
                                 {% endif %}
-                            {% else %}
-                                <span class="badge bg-secondary">Не проверялся</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if status.last_check %}
-                                {{ status.last_check.checked_at|date:"d.m.Y H:i" }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if status.last_check and status.last_check.response_time %}
-                                {{ status.last_check.response_time }} мс
-                            {% elif status.last_check %}
-                                <small class="text-muted">Нет данных</small>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center py-4">
-                            <div class="text-muted">Нет данных о принтерах</div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            </td>
+                            <td>{{ status.printer.department.name|default:"Не указан" }}</td>
+                            <td>
+                                {% if status.last_check %}
+                                    {% if status.last_check.is_online %}
+                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Онлайн</span>
+                                    {% else %}
+                                    <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Офлайн</span>
+                                    {% endif %}
+                                {% else %}
+                                <span class="badge bg-secondary"><i class="bi bi-question-circle me-1"></i>Не проверялся</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if status.last_check %}
+                                {{ status.last_check.checked_at|timesince }} назад
+                                {% else %}
+                                <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if status.last_check and status.last_check.response_time %}
+                                <span class="text-muted">{{ status.last_check.response_time|floatformat:0 }} мс</span>
+                                {% else %}
+                                <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'equipments:equipment_detail' status.printer.pk %}" 
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Подробнее">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <div class="text-muted mb-2">
+                                    <i class="bi bi-printer" style="font-size: 2rem;"></i>
+                                </div>
+                                <h5 class="text-muted">Нет сетевых принтеров</h5>
+                                <p class="text-muted small">Добавьте IP-адреса принтерам в карточке оборудования</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-muted small">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Обновлено: {{ now|date:"H:i" }}</span>
+                <span>Проверяется порт 9100 (JetDirect)</span>
+            </div>
         </div>
     </div>
-    
-    <div class="mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">📝 Как добавить IP-адреса?</h5>
+
+    <!-- Информационный блок -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-info-circle me-1"></i>Как добавить IP-адрес?</h6>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li>Найдите принтер в <a href="{% url 'equipments:equipment_list' %}">списке оборудования</a></li>
+                        <li>Нажмите "Редактировать"</li>
+                        <li>Добавьте IP-адрес в соответствующее поле</li>
+                        <li>Сохраните изменения</li>
+                    </ol>
+                </div>
             </div>
-            <div class="card-body">
-                <p>Для мониторинга нужно добавить IP-адреса принтеров:</p>
-                <ol>
-                    <li>Зайдите в <a href="/admin/equipments/equipment/">админку оборудования</a></li>
-                    <li>Найдите принтер</li>
-                    <li>Добавьте поле "IP-адрес"</li>
-                    <li>Сохраните изменения</li>
-                </ol>
-                <p class="mb-0 text-muted">
-                    <small>Принтер проверяется по порту 9100 (стандартный порт печати)</small>
-                </p>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-lightbulb me-1"></i>Полезная информация</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li><strong>Порт 9100</strong> — стандартный порт для сетевых принтеров</li>
+                        <li><strong>Время ответа</strong> — чем меньше, тем лучше (норма: 50-200 мс)</li>
+                        <li><strong>Офлайн</strong> — принтер не отвечает более 2 секунд</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Автообновление страницы каждые 60 секунд
+setTimeout(function() {
+    window.location.reload();
+}, 60000);
+
+// Подсветка строк по статусу
+document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const statusBadge = row.querySelector('.badge');
+        if (statusBadge) {
+            if (statusBadge.classList.contains('bg-success')) {
+                row.classList.add('table-success-light');
+            } else if (statusBadge.classList.contains('bg-danger')) {
+                row.classList.add('table-danger-light');
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.table-success-light {
+    background-color: rgba(25, 135, 84, 0.05) !important;
+}
+.table-danger-light {
+    background-color: rgba(220, 53, 69, 0.05) !important;
+}
+.badge {
+    font-weight: 500;
+}
+</style>
 {% endblock %}
