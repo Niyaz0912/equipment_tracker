@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}Статистика принтеров{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-graph-up me-2"></i>Статистика принтеров</h1>
+        <a href="{% url 'printer_monitor:status' %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-1"></i>Назад к списку
+        </a>
+    </div>
+
+    <!-- Основные метрики -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-printer-fill text-primary" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ stats.total }}</h3>
+                    <p class="text-muted mb-0">Всего принтеров</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-wifi text-success" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ stats.with_ip }}</h3>
+                    <p class="text-muted mb-0">С IP-адресом</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-speedometer2 text-warning" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ uptime_24h }}%</h3>
+                    <p class="text-muted mb-0">Uptime (24ч)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Распределение по отделам -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-building me-1"></i>По отделам</h5>
+                </div>
+                <div class="card-body">
+                    {% if by_department %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Отдел</th>
+                                    <th>Количество</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dept in by_department %}
+                                <tr>
+                                    <td>{{ dept.department__name|default:"Не указан" }}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ dept.count }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center mb-0">Нет данных</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Проблемные принтеры -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-1"></i>Проблемные принтеры</h5>
+                </div>
+                <div class="card-body">
+                    {% if problem_printers %}
+                    <div class="list-group list-group-flush">
+                        {% for printer, reason in problem_printers %}
+                        <a href="{% url 'equipments:equipment_detail' printer.pk %}" 
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ printer.name }}</h6>
+                                    <small class="text-muted">{{ printer.department.name|default:"Без отдела" }}</small>
+                                </div>
+                                <span class="badge bg-warning">{{ reason }}</span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-3">
+                        <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2 text-success">Проблем нет!</h5>
+                        <p class="text-muted small">Все принтеры в порядке</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Типы подключения -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-plug me-1"></i>Типы подключения</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <i class="bi bi-wifi text-primary" style="font-size: 1.5rem;"></i>
+                                <h4 class="mt-2">{{ stats.network }}</h4>
+                                <p class="text-muted mb-0">Сетевые</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <i class="bi bi-usb-plug text-secondary" style="font-size: 1.5rem;"></i>
+                                <h4 class="mt-2">{{ stats.usb }}</h4>
+                                <p class="text-muted mb-0">USB</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <i class="bi bi-question-circle text-warning" style="font-size: 1.5rem;"></i>
+                                <h4 class="mt-2">{{ stats.total|add:"-"|add:stats.network|add:"-"|add:stats.usb }}</h4>
+                                <p class="text-muted mb-0">Не указано</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

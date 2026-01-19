@@ -1,183 +1,197 @@
-from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, ListView, DetailView
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import TemplateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.db.models import Count, Q
+from django.utils import timezone
+from datetime import timedelta
+
 from equipments.models import Equipment
-from .models import PrinterCurrentStatus, PrinterDetailCheck
-from .services import PrinterMonitorService
+from .models import PrinterCheck, PrinterCurrentStatus
 
-class PrinterDashboardView(LoginRequiredMixin, TemplateView):
-    """
-    Дашборд со статусами всех принтеров
-    """
-    template_name = 'printer_monitor/dashboard.html'
+
+class PrinterStatusView(LoginRequiredMixin, TemplateView):
+    """Главная страница мониторинга принтеров"""
+    template_name = 'printer_monitor/status.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Получаем статистику
-        stats = PrinterMonitorService.get_printer_statistics()
+        # Все принтеры
+        printers = Equipment.objects.filter(type='printer').order_by('mc_number')
         
-        # Получаем текущие статусы принтеров
+        # Для каждого принтера пробуем получить статус
+        printer_data = []
+        for printer in printers:
+            # Пробуем получить текущий статус
+            try:
+                current_status = PrinterCurrentStatus.objects.get(printer=printer)
+                last_check = PrinterCheck.objects.filter(
+                    printer=printer
+                ).order_by('-checked_at').first()
+            except PrinterCurrentStatus.DoesNotExist:
+                current_status = None
+                last_check = None
+            
+            printer_data.append({
+                'printer': printer,
+                'current_status': current_status,
+                'last_check': last_check,
+                'has_ip': bool(printer.ip_address),
+            })
+        
+        context.update({
+            'total_printers': printers.count(),
+            'printers_with_ip': printers.filter(ip_address__isnull=False).count(),
+            'printer_data': printer_data,  # используем эту переменную!
+            'now': timezone.now(),
+        })
+        return context
+
+class CheckPrintersView(LoginRequiredMixin, TemplateView):
+    """Ручная проверка всех принтеров"""
+    template_name = 'printer_monitor/status.html'
+    
+    def get(self, request, *args, **kwargs):
+        """Проверяем принтеры и показываем результаты"""
+        from .services import check_printer
+        
+        printers_with_ip = Equipment.objects.filter(
+            type='printer', 
+            ip_address__isnull=False
+        )
+        
+        checked_count = 0
+        
+        for printer in printers_with_ip:
+            result = check_printer(printer.ip_address)
+            PrinterCheck.objects.create(
+                printer=printer,
+                is_online=result['online'],
+                response_time=result.get('response_time')
+            )
+            checked_count += 1
+        
+        messages.success(
+            request, 
+            f'Проверено {checked_count} принтеров'
+        )
+        
+        return super().get(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        """Добавляем флаг, что только что проверили"""
+        context = super().get_context_data(**kwargs)
+        context['just_checked'] = True
+        context['checked_count'] = Equipment.objects.filter(
+            type='printer', ip_address__isnull=False
+        ).count()
+        return context
+
+
+class PrinterStatsView(LoginRequiredMixin, TemplateView):
+    """Статистика по принтерам"""
+    template_name = 'printer_monitor/stats.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
         printers = Equipment.objects.filter(type='printer')
-        current_statuses = PrinterCurrentStatus.objects.filter(
-            printer__in=printers
-        ).select_related('printer').order_by('printer__name')
         
-        context.update({
-            'stats': stats,
-            'printers': current_statuses,
-            'page_title': 'Мониторинг принтеров'
-        })
-        return context
-
-class PrinterDetailView(LoginRequiredMixin, DetailView):
-    """
-    Детальная информация о принтере
-    """
-    model = Equipment
-    template_name = 'printer_monitor/printer_detail.html'
-    context_object_name = 'printer'
-    
-    def get_queryset(self):
-        return Equipment.objects.filter(type='printer')
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        # Основная статистика
+        stats = {
+            'total': printers.count(),
+            'with_ip': printers.filter(ip_address__isnull=False).count(),
+            # 'network': printers.filter(connection_type='network').count(),
+            # 'usb': printers.filter(connection_type='usb').count(),
+            'network': printers.filter(ip_address__isnull=False).count(),
+            'usb': printers.filter(ip_address__isnull=True).count(),
+        }
         
-        printer = self.object
+        # По отделам
+        by_department = printers.values(
+            'assigned_department__name'
+        ).annotate(
+            count=Count('id')
+        ).order_by('-count')
         
-        # Текущий статус
-        current_status = PrinterCurrentStatus.objects.filter(
-            printer=printer
-        ).first()
-        
-        # История проверок (последние 20)
-        from .models import PrinterStatusCheck
-        recent_checks = PrinterStatusCheck.objects.filter(
-            printer=printer
-        ).order_by('-checked_at')[:20]
-        
-        # Детальные проверки
-        detail_checks = PrinterDetailCheck.objects.filter(
-            printer=printer
-        ).order_by('-checked_at')[:10]
-        
-        context.update({
-            'current_status': current_status,
-            'recent_checks': recent_checks,
-            'detail_checks': detail_checks,
-            'last_24h_stats': self.get_last_24h_stats(printer)
-        })
-        return context
-    
-    def get_last_24h_stats(self, printer):
-        """Статистика за последние 24 часа"""
-        from django.utils import timezone
-        from django.db.models import Count, Avg, Q
-        from datetime import timedelta
-        
+        # По статусу (последние 24 часа)
         day_ago = timezone.now() - timedelta(hours=24)
-        
-        from .models import PrinterStatusCheck
-        checks = PrinterStatusCheck.objects.filter(
-            printer=printer,
+        recent_checks = PrinterCheck.objects.filter(
             checked_at__gte=day_ago
         )
         
-        if checks.exists():
-            total = checks.count()
-            online = checks.filter(is_online=True).count()
-            
-            return {
-                'total_checks': total,
-                'online_count': online,
-                'uptime_percent': round((online / total * 100), 1) if total > 0 else 0,
-                'avg_response': checks.filter(is_online=True).aggregate(
-                    avg=Avg('response_time')
-                )['avg']
-            }
-        return None
-
-class CheckSinglePrinterView(LoginRequiredMixin, DetailView):
-    """
-    Проверка одного принтера (AJAX-совместимо)
-    """
-    model = Equipment
-    http_method_names = ['post']  # Только POST
-    
-    def post(self, request, *args, **kwargs):
-        printer = self.get_object()
-        
-        # Запускаем проверку
-        result = PrinterMonitorService.check_printer_availability(printer)
-        PrinterMonitorService.save_check_result(printer, result)
-        
-        # Для AJAX запросов
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            from django.http import JsonResponse
-            return JsonResponse({
-                'success': True,
-                'online': result['online'],
-                'printer': printer.name,
-                'status': 'online' if result['online'] else 'offline'
-            })
-        
-        # Для обычных запросов
-        messages.success(
-            request, 
-            f"Принтер {printer.name}: {'✅ Онлайн' if result['online'] else '❌ Офлайн'}"
-        )
-        return redirect('printer_monitor:dashboard')
-
-@require_POST
-def check_all_printers_view(request):
-    """
-    Ручная проверка всех принтеров
-    """
-    if not request.user.is_authenticated:
-        return redirect('login')
-    
-    results = PrinterMonitorService.check_all_printers()
-    
-    online_count = sum(1 for r in results if r['online'])
-    total_count = len(results)
-    
-    messages.success(
-        request,
-        f"Проверено {total_count} принтеров. Онлайн: {online_count}"
-    )
-    
-    return redirect('printer_monitor:dashboard')
-
-class ProblemPrintersView(LoginRequiredMixin, ListView):
-    """
-    Список проблемных принтеров
-    """
-    template_name = 'printer_monitor/problem_printers.html'
-    context_object_name = 'problem_printers'
-    
-    def get_queryset(self):
-        # Принтеры, которые офлайн или с низким тонером
-        return PrinterCurrentStatus.objects.filter(
-            models.Q(is_online=False) | 
-            models.Q(black_toner_level__lt=20) |
-            models.Q(has_errors=True)
-        ).select_related('printer').order_by('is_online', 'printer__name')
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        # Группируем проблемы
-        offline = self.get_queryset().filter(is_online=False)
-        low_toner = self.get_queryset().filter(black_toner_level__lt=20)
-        with_errors = self.get_queryset().filter(has_errors=True)
+        if recent_checks.exists():
+            online_count = recent_checks.filter(is_online=True).count()
+            uptime = (online_count / recent_checks.count()) * 100
+        else:
+            uptime = 0
         
         context.update({
-            'offline_count': offline.count(),
-            'low_toner_count': low_toner.count(),
-            'errors_count': with_errors.count(),
-            'page_title': 'Проблемные принтеры'
+            'stats': stats,
+            'by_department': by_department,
+            'uptime_24h': round(uptime, 1),
+            'problem_printers': self.get_problem_printers(),
         })
         return context
+    
+    def get_problem_printers(self):
+        """Находим принтеры с проблемами"""
+        printers = Equipment.objects.filter(type='printer')
+    
+        problems = []
+        for printer in printers:
+            # Проверяем, есть ли IP
+            if not printer.ip_address:
+                problems.append((printer, 'Нет IP-адреса'))
+            else:
+                # Проверяем последнюю проверку
+                from .models import PrinterCheck
+                last_check = PrinterCheck.objects.filter(
+                    printer=printer
+                ).order_by('-checked_at').first()
+            
+                if not last_check:
+                    problems.append((printer, 'Никогда не проверялся'))
+                elif not last_check.is_online:
+                    problems.append((printer, 'Офлайн'))
+    
+        return problems
+
+class ProblemPrintersView(LoginRequiredMixin, ListView):
+    """Список проблемных принтеров"""
+    template_name = 'printer_monitor/problems.html'
+    context_object_name = 'problems'
+    
+    def get_queryset(self):
+        """Находим принтеры с проблемами"""
+        problems = []
+        printers = Equipment.objects.filter(type='printer')
+        
+        for printer in printers:
+            status = self.get_printer_status(printer)
+            if status['has_problems']:
+                problems.append({
+                    'printer': printer,
+                    'status': status
+                })
+        
+        return problems
+    
+    def get_printer_status(self, printer):
+        """Определяем статус принтера"""
+        last_check = PrinterCheck.objects.filter(
+            printer=printer
+        ).order_by('-checked_at').first()
+        
+        if not last_check:
+            return {'has_problems': True, 'reason': 'Не проверялся'}
+        
+        time_since_check = timezone.now() - last_check.checked_at
+        
+        if not last_check.is_online:
+            return {'has_problems': True, 'reason': 'Офлайн'}
+        elif time_since_check > timedelta(hours=24):
+            return {'has_problems': True, 'reason': 'Давно не проверялся'}
+        
+        return {'has_problems': False}

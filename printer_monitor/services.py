@@ -1,144 +1,207 @@
 import socket
 import time
-from datetime import datetime
-from django.db import transaction
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Q
+from .models import PrinterCheck, PrinterCurrentStatus
 from equipments.models import Equipment
-from .models import PrinterCheck, PrinterStatusCheck, PrinterCurrentStatus
 
-class PrinterMonitorService:
+
+def check_printer(ip_address, port=9100, timeout=2):
     """
-    Сервис для мониторинга принтеров
-    Вся бизнес-логика здесь
+    Проверяет доступность принтера по TCP порту
+    
+    Args:
+        ip_address: IP принтера
+        port: порт для проверки (обычно 9100 для печати)
+        timeout: таймаут в секундах
+    
+    Returns:
+        dict: {'online': bool, 'response_time': float, 'error': str}
     """
+    start_time = time.time()
     
-    @staticmethod
-    def check_printer_availability(printer):
-        """Проверка доступности принтера"""
-        if not printer.ip_address:
-            return {'online': False, 'error': 'Нет IP-адреса'}
+    try:
+        # Пробуем подключиться к порту принтера
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        result = sock.connect_ex((ip_address, port))
+        sock.close()
         
-        ip = printer.ip_address
-        result = {'printer': printer, 'ip': ip, 'online': False}
+        response_time = (time.time() - start_time) * 1000  # в мс
         
-        try:
-            # Порт 9100 - стандартный для JetDirect
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(3)
-            
-            start_time = time.time()
-            connection_result = sock.connect_ex((ip, 9100))
-            response_time = (time.time() - start_time) * 1000  # мс
-            
-            if connection_result == 0:
-                result['online'] = True
-                result['response_time'] = round(response_time, 2)
-                result['method'] = 'port_9100'
-            else:
-                # Пробуем порт 80 (HTTP)
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sock.settimeout(2)
-                if sock.connect_ex((ip, 80)) == 0:
-                    result['online'] = True
-                    result['method'] = 'http'
-                else:
-                    result['error'] = 'Все порты закрыты'
-                    
-            sock.close()
-            
-        except socket.timeout:
-            result['error'] = 'Таймаут соединения'
-        except Exception as e:
-            result['error'] = str(e)
+        if result == 0:
+            return {
+                'online': True,
+                'response_time': response_time,
+                'port': port
+            }
         
-        return result
-    
-    @classmethod
-    @transaction.atomic
-    def save_check_result(cls, printer, result):
-        """Сохраняем результат проверки"""
-        # 1. Старая модель (для совместимости)
-        PrinterCheck.objects.create(
-            printer=printer,
-            is_online=result['online'],
-            response_time=result.get('response_time'),
-            notes=result.get('error', '')
-        )
+        # Если основной порт не ответил, пробуем другие порты
+        common_printer_ports = [9100, 515, 631, 80, 443]
         
-        # 2. Новая модель быстрых проверок
-        status_check = PrinterStatusCheck.objects.create(
-            printer=printer,
-            is_online=result['online'],
-            response_time=result.get('response_time'),
-            ping_success=result.get('method') == 'port_9100',
-            http_success=result.get('method') == 'http',
-            snmp_success=False
-        )
-        
-        # 3. Обновляем текущий статус
-        current, created = PrinterCurrentStatus.objects.get_or_create(
-            printer=printer
-        )
-        
-        if result['online']:
-            current.is_online = True
-            current.last_seen = datetime.now()
-            current.response_time = result.get('response_time')
-            current.status = 'online'
-            current.has_errors = False
-            current.last_error = ''
-        else:
-            current.is_online = False
-            current.status = 'offline'
-            current.has_errors = True
-            current.last_error = result.get('error', 'Нет соединения')
-        
-        current.last_updated = datetime.now()
-        current.save()
-        
-        return status_check
-    
-    @classmethod
-    def check_all_printers(cls):
-        """Проверить все принтеры с IP"""
-        printers = Equipment.objects.filter(
-            type='printer'
-        ).exclude(
-            ip_address__isnull=True
-        ).exclude(
-            ip_address=''
-        )
-        
-        results = []
-        for printer in printers:
-            check_result = cls.check_printer_availability(printer)
-            saved_check = cls.save_check_result(printer, check_result)
-            results.append({
-                'printer': printer.name,
-                'online': check_result['online'],
-                'response_time': check_result.get('response_time'),
-                'check_id': saved_check.id
-            })
-        
-        return results
-    
-    @classmethod
-    def get_printer_statistics(cls):
-        """Получить статистику по принтерам"""
-        printers = Equipment.objects.filter(type='printer')
-        printers_with_ip = printers.exclude(ip_address='').exclude(ip_address__isnull=True)
-        
-        # Текущие статусы
-        current_statuses = PrinterCurrentStatus.objects.filter(
-            printer__in=printers
-        )
-        
-        online_count = current_statuses.filter(is_online=True).count()
-        offline_count = current_statuses.filter(is_online=False).count()
+        for port in common_printer_ports:
+            if check_port(ip_address, port, timeout):
+                return {
+                    'online': True,
+                    'response_time': response_time,
+                    'port': port
+                }
         
         return {
-            'total': printers.count(),
-            'with_ip': printers_with_ip.count(),
-            'online': online_count,
-            'offline': offline_count,
-            'availability': round((online_count / printers_with_ip.count() * 100), 1) if printers_with_ip.count() > 0 else 0
+            'online': False,
+            'response_time': response_time,
+            'error': 'Все порты закрыты'
         }
+        
+    except socket.timeout:
+        return {
+            'online': False,
+            'response_time': timeout * 1000,
+            'error': 'Таймаут'
+        }
+    except Exception as e:
+        return {
+            'online': False,
+            'response_time': 0,
+            'error': str(e)
+        }
+
+
+def check_port(ip, port, timeout=1):
+    """Быстрая проверка конкретного порта"""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        result = sock.connect_ex((ip, port))
+        sock.close()
+        return result == 0
+    except:
+        return False
+
+
+def get_printer_summary():
+    """Краткая сводка по принтерам для дашборда"""
+    printers = Equipment.objects.filter(type='printer')
+    
+    summary = {
+        'total': printers.count(),
+        'with_ip': printers.filter(ip_address__isnull=False).count(),
+        'recently_online': 0,
+        'recently_offline': 0,
+    }
+    
+    # Проверяем статус за последний час
+    hour_ago = timezone.now() - timedelta(hours=1)
+    
+    for printer in printers.filter(ip_address__isnull=False):
+        last_check = PrinterCheck.objects.filter(
+            printer=printer,
+            checked_at__gte=hour_ago
+        ).order_by('-checked_at').first()
+        
+        if last_check:
+            if last_check.is_online:
+                summary['recently_online'] += 1
+            else:
+                summary['recently_offline'] += 1
+    
+    return summary
+
+
+def update_printer_status(printer, check_result):
+    """
+    Обновляет текущий статус принтера после проверки
+    
+    Args:
+        printer: объект Equipment (принтер)
+        check_result: результат от check_printer()
+    """
+    # Получаем или создаем текущий статус
+    current_status, created = PrinterCurrentStatus.objects.get_or_create(
+        printer=printer
+    )
+    
+    # Обновляем поля
+    current_status.is_online = check_result['online']
+    current_status.last_updated = timezone.now()
+    
+    if check_result['online']:
+        current_status.last_seen = timezone.now()
+        current_status.response_time = check_result.get('response_time')
+        current_status.status = 'online'
+    else:
+        current_status.status = 'offline'
+    
+    # Сохраняем
+    current_status.save()
+    
+    return current_status
+
+
+def check_all_printers():
+    """
+    Проверяет все принтеры с IP-адресами
+    
+    Returns:
+        list: результаты проверки каждого принтера
+    """
+    printers = Equipment.objects.filter(
+        type='printer',
+        ip_address__isnull=False
+    )
+    
+    results = []
+    
+    for printer in printers:
+        # Проверяем принтер
+        check_result = check_printer(printer.ip_address)
+        
+        # Сохраняем проверку
+        printer_check = PrinterCheck.objects.create(
+            printer=printer,
+            is_online=check_result['online'],
+            response_time=check_result.get('response_time'),
+            notes=check_result.get('error', '')
+        )
+        
+        # Обновляем текущий статус
+        update_printer_status(printer, check_result)
+        
+        results.append({
+            'printer': printer,
+            'check': printer_check,
+            'result': check_result
+        })
+    
+    return results
+
+
+def get_problem_printers():
+    """
+    Находит принтеры с проблемами
+    
+    Returns:
+        list: принтеры с проблемами и причинами
+    """
+    problems = []
+    
+    # Принтеры с IP, которые офлайн
+    printers_with_ip = Equipment.objects.filter(
+        type='printer',
+        ip_address__isnull=False
+    )
+    
+    for printer in printers_with_ip:
+        last_check = PrinterCheck.objects.filter(
+            printer=printer
+        ).order_by('-checked_at').first()
+        
+        if not last_check:
+            problems.append((printer, 'Никогда не проверялся'))
+        elif not last_check.is_online:
+            problems.append((printer, 'Офлайн'))
+        elif last_check.checked_at < timezone.now() - timedelta(hours=24):
+            problems.append((printer, 'Давно не проверялся'))
+    
+    return problems
