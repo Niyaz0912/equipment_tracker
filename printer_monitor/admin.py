@@ -1,14 +1,14 @@
+# printer_monitor/admin.py
 from django.contrib import admin
-from .models import PrinterCheck
+from .models import (
+    PrinterCheck,  # Добавьте старую модель
+    PrinterStatusCheck, 
+    PrinterDetailCheck, 
+    PrinterCurrentStatus
+)
 
-@admin.register(PrinterCheck)
-class PrinterCheckAdmin(admin.ModelAdmin):
-    list_display = ('printer', 'is_online', 'checked_at', 'response_time')
-    list_filter = ('is_online', 'checked_at')
-    search_fields = ('printer__mc_number', 'printer__brand', 'printer__model')
-    readonly_fields = ('checked_at',)
-    ordering = ('-checked_at',)
-    
-    def has_add_permission(self, request):
-        # Запрещаем ручное добавление - только через мониторинг
-        return False
+# Регистрируем ВСЕ модели
+admin.site.register(PrinterCheck)
+admin.site.register(PrinterStatusCheck)
+admin.site.register(PrinterDetailCheck)
+admin.site.register(PrinterCurrentStatus)
