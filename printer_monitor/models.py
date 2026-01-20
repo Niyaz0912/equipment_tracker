@@ -7,101 +7,36 @@ class PrinterCheck(models.Model):
     printer = models.ForeignKey(
         Equipment,
         on_delete=models.CASCADE,
-        limit_choices_to={'type': 'Принтер'},
+        limit_choices_to={'type': 'printer'},  # Исправлено: 'printer' вместо 'Принтер'
         related_name='printer_checks'
     )
     checked_at = models.DateTimeField(default=timezone.now)
     is_online = models.BooleanField(default=False)
     response_time = models.FloatField(null=True, blank=True)
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True, null=True)
     
     class Meta:
         ordering = ['-checked_at']
         verbose_name = "Проверка принтера"
         verbose_name_plural = "Проверки принтеров"
+        indexes = [
+            models.Index(fields=['printer', '-checked_at']),
+            models.Index(fields=['checked_at']),
+            models.Index(fields=['is_online']),
+        ]
     
     def __str__(self):
         status = "✅ Онлайн" if self.is_online else "❌ Офлайн"
         return f"{self.printer} - {status} ({self.checked_at:%H:%M})"
+    
+    def get_status_display(self) -> str:
+        """Возвращает человекочитаемый статус"""
+        return "В сети" if self.is_online else "Не в сети"
 
-# 1. Быстрые проверки доступности (каждые 5 минут)
-class PrinterStatusCheck(models.Model):
-    """
-    Для частых проверок доступности
-    Хранится 24-48 часов, затем агрегируется
-    """
-    printer = models.ForeignKey(
-        Equipment,
-        on_delete=models.CASCADE,
-        related_name='status_checks'
-    )
-    checked_at = models.DateTimeField(default=timezone.now)
-    is_online = models.BooleanField(default=False)
-    response_time = models.FloatField(null=True, blank=True)  # в мс
-    ping_success = models.BooleanField(default=False)
-    http_success = models.BooleanField(default=False)
-    snmp_success = models.BooleanField(default=False)
-    
-    class Meta:
-        ordering = ['-checked_at']
-        indexes = [
-            models.Index(fields=['printer', '-checked_at']),
-            models.Index(fields=['checked_at']),
-        ]
-        verbose_name = "Быстрая проверка"
-        verbose_name_plural = "Быстрые проверки"
 
-# 2. Детальная проверка (раз в день/неделю)
-class PrinterDetailCheck(models.Model):
-    """
-    Подробная проверка с данными о расходниках
-    Выполняется реже (раз в день или при проблемах)
-    """
-    printer = models.ForeignKey(
-        Equipment,
-        on_delete=models.CASCADE,
-        related_name='detail_checks'
-    )
-    checked_at = models.DateTimeField(default=timezone.now)
-    
-    STATUS_CHOICES = [
-        ('online', 'В сети'),
-        ('offline', 'Не в сети'),
-        ('warning', 'Предупреждение'),
-        ('error', 'Ошибка'),
-        ('sleep', 'Спящий режим'),
-    ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    
-    # Основные счетчики
-    total_pages = models.IntegerField(null=True, blank=True)
-    color_pages = models.IntegerField(null=True, blank=True)
-    monochrome_pages = models.IntegerField(null=True, blank=True)
-    
-    # Уровни расходников (0-100%)
-    black_toner = models.IntegerField(null=True, blank=True)
-    cyan_toner = models.IntegerField(null=True, blank=True)
-    magenta_toner = models.IntegerField(null=True, blank=True)
-    yellow_toner = models.IntegerField(null=True, blank=True)
-    
-    # Остальные данные - в JSON для гибкости
-    extra_data = models.JSONField(default=dict, blank=True)
-    # Может содержать: серийный номер, версию прошивки, ошибки и т.д.
-    
-    # Была ли проверка успешной
-    check_successful = models.BooleanField(default=False)
-    error_message = models.TextField(blank=True)
-    
-    class Meta:
-        ordering = ['-checked_at']
-        verbose_name = "Детальная проверка"
-        verbose_name_plural = "Детальные проверки"
-
-# 3. Текущее состояние (обновляется при каждой проверке)
 class PrinterCurrentStatus(models.Model):
     """
     Текущее состояние принтера - всегда актуальные данные
-    Обновляется при каждой проверке любого типа
     """
     printer = models.OneToOneField(
         Equipment,
@@ -110,13 +45,20 @@ class PrinterCurrentStatus(models.Model):
     )
     last_updated = models.DateTimeField(auto_now=True)
     
-    # Быстрый статус (из PrinterStatusCheck)
+    # Быстрый статус
     is_online = models.BooleanField(default=False)
     last_seen = models.DateTimeField(null=True, blank=True)
     response_time = models.FloatField(null=True, blank=True)
     
-    # Детальный статус (из PrinterDetailCheck)
-    status = models.CharField(max_length=20, choices=PrinterDetailCheck.STATUS_CHOICES, default='offline')
+    # Детальный статус
+    STATUS_CHOICES = [
+        ('online', 'В сети'),
+        ('offline', 'Не в сети'),
+        ('warning', 'Предупреждение'),
+        ('error', 'Ошибка'),
+        ('sleep', 'Спящий режим'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='offline')
     
     # Актуальные данные о расходниках
     black_toner_level = models.IntegerField(null=True, blank=True)
@@ -131,12 +73,23 @@ class PrinterCurrentStatus(models.Model):
     last_error = models.TextField(blank=True)
     
     # Статистика
-    uptime_24h = models.FloatField(default=0.0)  # % за последние 24 часа
+    uptime_24h = models.FloatField(default=0.0)
     last_successful_check = models.DateTimeField(null=True, blank=True)
     
     class Meta:
         verbose_name = "Текущий статус"
         verbose_name_plural = "Текущие статусы"
+        indexes = [
+            models.Index(fields=['is_online']),
+            models.Index(fields=['last_updated']),
+        ]
+    
+    def __str__(self):
+        return f"{self.printer} - {self.get_status_display()}"
+    
+    def get_status_display(self) -> str:
+        """Возвращает человекочитаемый статус"""
+        return dict(self.STATUS_CHOICES).get(self.status, 'Неизвестно')
     
     def update_from_status_check(self, check):
         """Обновить из быстрой проверки"""
@@ -162,3 +115,14 @@ class PrinterCurrentStatus(models.Model):
             self.status = check.status
             self.last_updated = timezone.now()
             self.save()
+    
+    @property
+    def is_problematic(self) -> bool:
+        """Есть ли проблемы у принтера"""
+        if not self.is_online:
+            return True
+        if self.has_errors:
+            return True
+        if self.status in ['error', 'offline']:
+            return True
+        return False

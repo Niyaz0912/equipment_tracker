@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Проверка принтеров</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Информация</h5>
+            <p>Всего принтеров с IP-адресами: {{ printers_count }}</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    Запустить проверку всех принтеров
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if check_results %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Результаты проверки</h5>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Принтер</th>
+                        <th>IP-адрес</th>
+                        <th>Статус</th>
+                        <th>Время отклика</th>
+                        <th>Ошибка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in check_results %}
+                    <tr>
+                        <td>{{ result.printer.name }}</td>
+                        <td>{{ result.printer.ip_address }}</td>
+                        <td>
+                            {% if result.result.online %}
+                                <span class="badge bg-success">В сети</span>
+                            {% else %}
+                                <span class="badge bg-danger">Не в сети</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if result.result.response_time %}
+                                {{ result.result.response_time|floatformat:2 }} мс
+                            {% endif %}
+                        </td>
+                        <td>{{ result.result.error|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
