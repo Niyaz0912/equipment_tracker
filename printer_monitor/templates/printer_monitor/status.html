@@ -90,7 +90,13 @@
                         {% for item in printer_statuses %}
                         <tr>
                             <td><strong>{{ item.printer.mc_number|default:"-" }}</strong></td>
-                            <td>{{ item.printer.name }}</td>
+                            <td>
+                                {% if item.printer.brand or item.printer.model %}
+                                {{ item.printer.brand }} {{ item.printer.model }}
+                                {% else %}
+                                {{ item.printer.get_type_display }}
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if item.printer.ip_address %}
                                 <code class="badge bg-info">{{ item.printer.ip_address }}</code>

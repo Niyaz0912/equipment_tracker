@@ -78,12 +78,17 @@ class CheckPrintersView(LoginRequiredMixin, TemplateView):
         """POST запрос для проверки принтеров"""
         # Используем сервис для проверки
         results = PrinterMonitorService.check_all_printers()
-        
+    
+        # Отладочная информация
+        print(f"DEBUG: Получено {len(results)} результатов")
+        if results:
+            print(f"DEBUG: Первый результат keys: {results[0].keys()}")
+    
         messages.success(
             request, 
             f'Проверено {len(results)} принтеров'
         )
-        
+    
         context = self.get_context_data(**kwargs)
         context['check_results'] = results
         return self.render_to_response(context)

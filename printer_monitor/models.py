@@ -1,6 +1,10 @@
 from django.db import models
 from django.utils import timezone
 from equipments.models import Equipment
+import requests
+from bs4 import BeautifulSoup
+import re
+
 
 class PrinterCheck(models.Model):
     """Старая модель для обратной совместимости"""
