@@ -129,6 +129,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
+
 # Настройки аутентификации
 LOGIN_URL = '/admin/login/'  # Используем админку для входа
 LOGIN_REDIRECT_URL = '/printers/'  # После входа на страницу принтеров
