@@ -15,12 +15,13 @@ def equipment_list(request):
     equipments = Equipment.objects.select_related('assigned_to', 'assigned_to__department', 'assigned_department').all()
     
     from employees.models import Department, Employee
+    from django.urls import reverse  # ДОБАВИТЬ ИМПОРТ
     
     # Фильтрация
-    status_filter = request.GET.get('status')
+    status_filter = request.GET.get('status')  # ДОБАВИТЬ ЭТУ СТРОКУ!
     type_filter = request.GET.get('type')
     department_filter = request.GET.get('department')
-    assigned_department_filter = request.GET.get('assigned_department')  # НОВОЕ
+    assigned_department_filter = request.GET.get('assigned_department')
     employee_filter = request.GET.get('employee')
     
     if status_filter:
@@ -32,7 +33,7 @@ def equipment_list(request):
     if department_filter:
         equipments = equipments.filter(assigned_to__department_id=department_filter)
     
-    if assigned_department_filter:  # НОВОЕ
+    if assigned_department_filter:
         equipments = equipments.filter(assigned_department_id=assigned_department_filter)
     
     if employee_filter:
@@ -46,13 +47,13 @@ def equipment_list(request):
         'status_filter': status_filter,
         'type_filter': type_filter,
         'department_filter': department_filter,
-        'assigned_department_filter': assigned_department_filter,  # НОВОЕ
+        'assigned_department_filter': assigned_department_filter,
         'employee_filter': employee_filter,
         'departments': departments,
         'employees': employees,
+        'printer_status_url': reverse('printer_monitor:printer_monitor'),
     }
     return render(request, 'equipments/equipment_list.html', context)
-
 
 def equipment_search(request):
     """Поиск оборудования"""

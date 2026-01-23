@@ -4,8 +4,10 @@ from . import views
 app_name = 'printer_monitor'
 
 urlpatterns = [
-    path('', views.PrinterStatusView.as_view(), name='status'),
-    path('check/', views.CheckPrintersView.as_view(), name='check_printers'),  # GET и POST
-    path('stats/', views.PrinterStatsView.as_view(), name='stats'),
-    path('problems/', views.ProblemPrintersView.as_view(), name='problems'),
+    path('', views.PrinterStatusView.as_view(), name='printer_monitor'),
+    
+    # API для AJAX
+    path('api/check-printer/<str:ip>/', views.api_check_printer, name='api_check_printer'),
+    path('api/check-all-printers/', views.api_check_all_printers, name='api_check_all_printers'),
+    path('', views.PrinterStatusView.as_view(), name='printer_monitor'),
 ]
