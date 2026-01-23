@@ -50,11 +50,7 @@
                     </tr>
                 </table>
                 
-                <div class="d-grid gap-2 mt-3">
-                    <a href="/admin/employees/employee/{{ employee.pk }}/change/" 
-                       class="btn btn-outline-secondary" target="_blank">
-                        <i class="bi bi-pencil me-1"></i>Редактировать
-                    </a>
+                <div class="d-grid gap-2 mt-3">                    
                     <a href="{% url 'excel_export:export_excel' %}?model=equipment&employee={{ employee.id }}"
                        class="btn btn-success">
                         <i class="bi bi-file-earmark-excel me-1"></i>Экспорт в Excel

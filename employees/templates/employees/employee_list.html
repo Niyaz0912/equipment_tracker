@@ -8,10 +8,7 @@
         <h5 class="mb-0">
             <i class="bi bi-people me-2"></i>Сотрудники
         </h5>
-        <div>
-            <a href="/admin/employees/employee/add/" class="btn btn-sm btn-primary" target="_blank">
-                <i class="bi bi-person-plus me-1"></i>Добавить
-            </a>
+        <div>            
         </div>
     </div>
     
@@ -49,8 +46,7 @@
                         <th>ФИО</th>
                         <th>Отдел</th>
                         <th>Должность</th>
-                        <th>Оборудование</th>
-                        <th>Действия</th>
+                        <th>Оборудование</th>                        
                     </tr>
                 </thead>
                 <tbody>
@@ -83,14 +79,7 @@
                                 </a>
                             {% else %}
                                 <span class="text-muted">Нет</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="/admin/employees/employee/{{ employee.pk }}/change/" 
-                               class="btn btn-sm btn-outline-secondary" target="_blank">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                        </td>
+                            {% endif %}                        
                     </tr>
                     {% endfor %}
                 </tbody>
