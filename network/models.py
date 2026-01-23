@@ -1,5 +1,15 @@
 from django.db import models
 
+PURPOSE_CHOICES = [
+    ('client', 'Клиентская сеть'),
+    ('server', 'Серверная сеть'),
+    ('infrastructure', 'Сетевая инфраструктура'),
+    ('management', 'Управление'),
+    ('dmz', 'DMZ'),
+    ('wireless', 'Беспроводная сеть'),
+    ('other', 'Другое'),
+]
+
 class Location(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название места")
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
@@ -87,18 +97,45 @@ class NetworkEquipment(models.Model):
         return self.name
 
 
-# (Остальные модели пока оставляем как есть)
-class NetworkDevice(models.Model):
-    # Зарезервировано для будущего использования
-    name = models.CharField(max_length=200)
-    
-    class Meta:
-        db_table = 'network_networkdevice'
-
-
 class Subnet(models.Model):
-    # Зарезервировано для будущего использования
-    name = models.CharField(max_length=200)
+    network = models.CharField("Подсеть", max_length=18, default="192.168.1.0/24")
+    description = models.CharField("Описание", max_length=200, default="Нет описания")
+    vlan_id = models.IntegerField("VLAN ID", blank=True, null=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
+    purpose = models.CharField("Назначение", max_length=50, choices=PURPOSE_CHOICES, default="client")
+    date_added = models.DateTimeField("Дата добавления", auto_now_add=True)
+    added_by = models.CharField("Кем добавлено", max_length=100, default="admin")
+    comment = models.TextField("Комментарий", blank=True, default="")
     
     class Meta:
         db_table = 'network_subnet'
+    
+    def __str__(self):
+        return f"{self.network} ({self.description})"        
+
+class IPAddress(models.Model):
+    STATUS_CHOICES = [
+        ('free', 'Свободен'),
+        ('reserved', 'Зарезервирован'),
+        ('dynamic', 'DHCP'),
+        ('occupied', 'Занят'),
+    ]
+    
+    address = models.CharField("IP-адрес", max_length=15)  # 192.168.1.10
+    subnet = models.ForeignKey(Subnet, on_delete=models.CASCADE, verbose_name="Подсеть")
+    status = models.CharField("Статус", max_length=10, choices=STATUS_CHOICES, default='free')
+    description = models.CharField("Описание", max_length=200, blank=True)
+    device = models.ForeignKey(NetworkEquipment, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Оборудование")
+    mac_address = models.CharField("MAC-адрес", max_length=17, blank=True)
+    dns_name = models.CharField("DNS имя", max_length=100, blank=True)
+    last_updated = models.DateTimeField("Последнее обновление", auto_now=True)
+    note = models.TextField("Заметки", blank=True)
+    
+    class Meta:
+        db_table = 'network_ipaddress'
+        verbose_name = 'IP-адрес'
+        verbose_name_plural = 'IP-адреса'
+        ordering = ['address']
+    
+    def __str__(self):
+        return f"{self.address} ({self.get_status_display()})"
