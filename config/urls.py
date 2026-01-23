@@ -6,10 +6,15 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from django.contrib.auth import views as auth_views
 
+def redirect_to_admin_login(request):
+    """Перенаправляет на страницу логина админки"""
+    return redirect('/admin/login/?next=' + request.GET.get('next', '/printers/'))
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('equipment/', include('equipments.urls')),
     path('employees/', include('employees.urls')),
+    path('network/', include('network.urls')),
     path('', RedirectView.as_view(url='/equipment/', permanent=False)),
     path('export/', include('excel_export.urls')),
     path('printers/', include('printer_monitor.urls')),

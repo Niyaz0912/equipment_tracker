@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 col-6 mb-3">
             <div class="card border-success">
                 <div class="card-body text-center">
@@ -47,31 +47,25 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 col-6 mb-3">
             <div class="card border-warning">
                 <div class="card-body text-center">
                     <h5 class="card-title text-muted">Сетевые</h5>
-                    <p class="card-text display-6 text-warning">
-                        {% with network_count=printer_statuses|length %}{{ network_count }}{% endwith %}
-                    </p>
+                    <p class="card-text display-6 text-warning">{{ printer_statuses|length }}</p>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 col-6 mb-3">
             <div class="card border-secondary">
                 <div class="card-body text-center">
                     <h5 class="card-title text-muted">Онлайн сейчас</h5>
-                    <p class="card-text display-6 text-secondary">
-                        {% with online_count=printer_statuses|length %}
-                        {% widthratio printer_statuses|length 1 1 %}{% endwith %}
-                    </p>
+                    <p class="card-text display-6 text-secondary">{{ online_count }}</p>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Таблица принтеров -->
     <div class="card shadow-sm">
         <div class="card-header bg-light">
@@ -93,47 +87,59 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for status in printer_statuses %}
+                        {% for item in printer_statuses %}
                         <tr>
-                            <td><strong>{{ status.printer.mc_number|default:"-" }}</strong></td>
-                            <td>{{ status.printer.name }}</td>
+                            <td><strong>{{ item.printer.mc_number|default:"-" }}</strong></td>
                             <td>
-                                {% if status.printer.ip_address %}
-                                <code class="badge bg-info">{{ status.printer.ip_address }}</code>
+                                {% if item.printer.brand or item.printer.model %}
+                                {{ item.printer.brand }} {{ item.printer.model }}
+                                {% else %}
+                                {{ item.printer.get_type_display }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.printer.ip_address %}
+                                <code class="badge bg-info">{{ item.printer.ip_address }}</code>
                                 {% else %}
                                 <span class="text-danger">—</span>
                                 {% endif %}
                             </td>
-                            <td>{{ status.printer.department.name|default:"Не указан" }}</td>
+                            <td>{{ item.printer.assigned_department.name|default:"Не указан" }}</td>
                             <td>
-                                {% if status.last_check %}
-                                    {% if status.last_check.is_online %}
-                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Онлайн</span>
-                                    {% else %}
-                                    <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Офлайн</span>
-                                    {% endif %}
+                                {% if item.last_check %}
+                                {% if item.last_check.is_online %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Онлайн</span>
                                 {% else %}
-                                <span class="badge bg-secondary"><i class="bi bi-question-circle me-1"></i>Не проверялся</span>
+                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Офлайн</span>
+                                {% endif %}
+                                {% elif item.current_status %}
+                                {% if item.current_status.is_online %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Онлайн</span>
+                                {% else %}
+                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Офлайн</span>
+                                {% endif %}
+                                {% else %}
+                                <span class="badge bg-secondary"><i class="bi bi-question-circle me-1"></i>Не
+                                    проверялся</span>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if status.last_check %}
-                                {{ status.last_check.checked_at|timesince }} назад
+                                {% if item.last_check %}
+                                {{ item.last_check.checked_at|timesince }} назад
                                 {% else %}
                                 <span class="text-muted">—</span>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if status.last_check and status.last_check.response_time %}
-                                <span class="text-muted">{{ status.last_check.response_time|floatformat:0 }} мс</span>
+                                {% if item.last_check and item.last_check.response_time %}
+                                <span class="text-muted">{{ item.last_check.response_time|floatformat:0 }} мс</span>
                                 {% else %}
                                 <span class="text-muted">—</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{% url 'equipments:equipment_detail' status.printer.pk %}" 
-                                   class="btn btn-sm btn-outline-primary"
-                                   title="Подробнее">
+                                <a href="{% url 'equipments:equipment_detail' item.printer.pk %}"
+                                    class="btn btn-sm btn-outline-primary" title="Подробнее">
                                     <i class="bi bi-eye"></i>
                                 </a>
                             </td>
@@ -170,7 +176,8 @@
                 </div>
                 <div class="card-body">
                     <ol class="mb-0">
-                        <li>Найдите принтер в <a href="{% url 'equipments:equipment_list' %}">списке оборудования</a></li>
+                        <li>Найдите принтер в <a href="{% url 'equipments:equipment_list' %}">списке оборудования</a>
+                        </li>
                         <li>Нажмите "Редактировать"</li>
                         <li>Добавьте IP-адрес в соответствующее поле</li>
                         <li>Сохраните изменения</li>
@@ -178,7 +185,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -199,36 +206,38 @@
 
 {% block scripts %}
 <script>
-// Автообновление страницы каждые 60 секунд
-setTimeout(function() {
-    window.location.reload();
-}, 60000);
+    // Автообновление страницы каждые 60 секунд
+    setTimeout(function () {
+        window.location.reload();
+    }, 60000);
 
-// Подсветка строк по статусу
-document.addEventListener('DOMContentLoaded', function() {
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        const statusBadge = row.querySelector('.badge');
-        if (statusBadge) {
-            if (statusBadge.classList.contains('bg-success')) {
-                row.classList.add('table-success-light');
-            } else if (statusBadge.classList.contains('bg-danger')) {
-                row.classList.add('table-danger-light');
+    // Подсветка строк по статусу
+    document.addEventListener('DOMContentLoaded', function () {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const statusBadge = row.querySelector('.badge');
+            if (statusBadge) {
+                if (statusBadge.classList.contains('bg-success')) {
+                    row.classList.add('table-success-light');
+                } else if (statusBadge.classList.contains('bg-danger')) {
+                    row.classList.add('table-danger-light');
+                }
             }
-        }
+        });
     });
-});
 </script>
 
 <style>
-.table-success-light {
-    background-color: rgba(25, 135, 84, 0.05) !important;
-}
-.table-danger-light {
-    background-color: rgba(220, 53, 69, 0.05) !important;
-}
-.badge {
-    font-weight: 500;
-}
+    .table-success-light {
+        background-color: rgba(25, 135, 84, 0.05) !important;
+    }
+
+    .table-danger-light {
+        background-color: rgba(220, 53, 69, 0.05) !important;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
 </style>
 {% endblock %}

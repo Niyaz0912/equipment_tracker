@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ equipment.name }} - Equipment Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Заголовок и действия -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/network/">Сетевое оборудование</a></li>
+                    <li class="breadcrumb-item active">{{ equipment.name }}</li>
+                </ol>
+            </nav>
+            <h1><i class="bi bi-router"></i> {{ equipment.name }}</h1>
+        </div>
+        <div class="btn-group">
+            <a href="/network/equipment/{{ equipment.id }}/edit/" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil"></i> Редактировать
+            </a>
+            <a href="/network/equipment/{{ equipment.id }}/delete/" class="btn btn-outline-danger">
+                <i class="bi bi-trash"></i> Удалить
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Основная информация -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Основная информация</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Тип оборудования:</strong><br>
+                            {{ equipment.get_equipment_type_display }}</p>
+                            
+                            <p><strong>Модель:</strong><br>
+                            {{ equipment.model|default:"Не указана" }}</p>
+                            
+                            <p><strong>Серийный номер:</strong><br>
+                            {{ equipment.serial_number|default:"Не указан" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Инвентарный номер:</strong><br>
+                            {{ equipment.inventory_number|default:"Не указан" }}</p>
+                            
+                            <p><strong>Статус:</strong><br>
+                            {% if equipment.status == 'active' %}
+                            <span class="badge bg-success">Активно</span>
+                            {% elif equipment.status == 'backup' %}
+                            <span class="badge bg-info">Резерв</span>
+                            {% elif equipment.status == 'repair' %}
+                            <span class="badge bg-warning text-dark">В ремонте</span>
+                            {% elif equipment.status == 'decommissioned' %}
+                            <span class="badge bg-secondary">Списано</span>
+                            {% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Сетевая информация -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Сетевая информация</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>IP-адрес:</strong><br>
+                            {% if equipment.ip_address %}
+                            <code>{{ equipment.ip_address }}</code>
+                            {% else %}
+                            Не указан
+                            {% endif %}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>MAC-адрес:</strong><br>
+                            {{ equipment.mac_address|default:"Не указан" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Примечания -->
+            {% if equipment.notes %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Примечания</h5>
+                </div>
+                <div class="card-body">
+                    {{ equipment.notes|linebreaks }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Боковая панель -->
+        <div class="col-md-4">
+            <!-- Местоположение -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="bi bi-geo-alt"></i> Местоположение</h5>
+                </div>
+                <div class="card-body">
+                    {% if equipment.location %}
+                    <p><strong>Место:</strong><br>
+                    {{ equipment.location.name }}</p>
+                    
+                    {% if equipment.rack %}
+                    <p><strong>Стойка:</strong><br>
+                    {{ equipment.rack }}</p>
+                    {% endif %}
+                    
+                    {% if equipment.unit %}
+                    <p><strong>Юнит:</strong><br>
+                    {{ equipment.unit }}</p>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-muted">Местоположение не указано</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Информация о записи -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="bi bi-info-circle"></i> Информация</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Дата создания:</strong><br>
+                    {{ equipment.created_at|date:"d.m.Y H:i" }}</p>
+                    
+                    <p><strong>Последнее обновление:</strong><br>
+                    {{ equipment.updated_at|date:"d.m.Y H:i" }}</p>
+                    
+                    <hr>
+                    
+                    <a href="{% url 'admin:network_networkequipment_change' equipment.id %}" 
+                       class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-gear"></i> Редактировать в админке
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
