@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Удаление оборудования - Equipment Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Подтверждение удаления
+                    </h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-trash display-1 text-danger"></i>
+                        <h4 class="mt-3">Вы уверены, что хотите удалить это оборудование?</h4>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <strong>Внимание!</strong> Это действие нельзя отменить.
+                        Все данные об оборудовании будут удалены безвозвратно.
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body text-start">
+                            <p><strong>Оборудование:</strong> {{ equipment.name }}</p>
+                            <p><strong>Тип:</strong> {{ equipment.get_equipment_type_display }}</p>
+                            <p><strong>Модель:</strong> {{ equipment.model|default:"Не указана" }}</p>
+                            <p><strong>Серийный номер:</strong> {{ equipment.serial_number|default:"Не указан" }}</p>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="/network/equipment/{{ equipment.id }}/" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Отмена
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Да, удалить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
