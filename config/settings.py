@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'history',
     'excel_export',
     'printer_monitor',
+    'network',
 ]
 
 MIDDLEWARE = [

@@ -14,6 +14,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('equipment/', include('equipments.urls')),
     path('employees/', include('employees.urls')),
+    path('network/', include('network.urls')),
     path('', RedirectView.as_view(url='/equipment/', permanent=False)),
     path('export/', include('excel_export.urls')),
     path('printers/', include('printer_monitor.urls')),

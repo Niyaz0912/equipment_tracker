@@ -1,0 +1,88 @@
+/* Стили для модального окна сети */
+.network-link-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.2s ease;
+}
+
+.network-link-card:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+    color: inherit;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.network-link-card i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.network-link-card h6 {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+.network-link-card p {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Прогресс-бар для dashboard */
+.network-progress {
+    height: 25px;
+    border-radius: 4px;
+}
+
+.network-progress .progress-bar {
+    border-radius: 4px;
+    font-size: 0.8rem;
+    line-height: 25px;
+}
+
+/* Карточки статистики */
+.network-stat-card {
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+}
+
+.network-stat-card h1 {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.network-stat-card h6 {
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Боковая панель навигации */
+.network-sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+.network-sidebar .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 0.75rem 1rem;
+}
+
+.network-sidebar .list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.network-sidebar .card-header {
+    padding: 0.75rem 1rem;
+}
