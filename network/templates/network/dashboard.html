@@ -1,79 +1,133 @@
 <!-- network/templates/network/dashboard.html -->
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Сеть - Учет оборудования{% endblock %}
+{% block title %}Дашборд сети - Equipment Tracker{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card">
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1><i class="bi bi-speedometer2"></i> Дашборд сети</h1>
+            <p class="text-muted">Обзор сетевого оборудования и инфраструктуры</p>
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h1>{{ equipment_count }}</h1>
+                    <p>Оборудования</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h1>{{ location_count }}</h1>
+                    <p>Мест размещения</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h1>{{ subnet_count|default:"0" }}</h1>
+                    <p>Подсетей</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h1>{{ ip_count|default:"0" }}</h1>
+                    <p>IP-адресов</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Последнее оборудование -->
+    <div class="card mb-4">
         <div class="card-header">
-            <h4 class="mb-0">
-                <i class="bi bi-diagram-3"></i> Сетевое оборудование
-            </h4>
+            <h5 class="card-title mb-0">
+                <i class="bi bi-router"></i> Последнее добавленное оборудование
+            </h5>
         </div>
         <div class="card-body">
-            <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body text-center">
-                            <h1>{{ equipment_count }}</h1>
-                            <p>Оборудования</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body text-center">
-                            <h1>{{ location_count }}</h1>
-                            <p>Мест размещения</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             {% if equipment %}
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Название</th>
-                        <th>Тип</th>
-                        <th>IP-адрес</th>
-                        <th>Статус</th>
-                        <th>Место</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in equipment %}
-                    <tr>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.get_type_display }}</td>
-                        <td>{{ item.ip_address|default:"-" }}</td>
-                        <td>
-                            <span class="badge 
-                                {% if item.status == 'active' %}bg-success
-                                {% elif item.status == 'inactive' %}bg-secondary
-                                {% else %}bg-warning{% endif %}">
-                                {{ item.get_status_display }}
-                            </span>
-                        </td>
-                        <td>{{ item.location.name|default:"-" }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Тип</th>
+                            <th>IP-адрес</th>
+                            <th>Статус</th>
+                            <th>Место</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in equipment %}
+                        <tr>
+                            <td>
+                                <a href="/network/equipment/{{ item.id }}/">{{ item.name }}</a>
+                            </td>
+                            <td>{{ item.get_type_display }}</td>
+                            <td>
+                                {% if item.ip_address %}
+                                <code>{{ item.ip_address }}</code>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if item.status == 'active' %}bg-success
+                                    {% elif item.status == 'backup' %}bg-info
+                                    {% elif item.status == 'repair' %}bg-warning
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ item.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ item.location.name|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% else %}
             <div class="alert alert-info">
-                <p>Нет сетевого оборудования. Добавьте через админку.</p>
+                <i class="bi bi-info-circle"></i> Нет сетевого оборудования.
             </div>
             {% endif %}
-            
-            <div class="mt-4">
-                <a href="/admin/network/networkequipment/" class="btn btn-primary">
-                    <i class="bi bi-gear"></i> Управление оборудованием
-                </a>
-                <a href="/admin/network/location/" class="btn btn-success ms-2">
-                    <i class="bi bi-geo-alt"></i> Управление местами
-                </a>
+        </div>
+    </div>
+
+    <!-- Быстрые ссылки -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-link-45deg"></i> Быстрые ссылки
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/network/" class="btn btn-outline-primary">
+                            <i class="bi bi-list"></i> Все сетевое оборудование
+                        </a>
+                        <a href="/admin/network/networkequipment/" class="btn btn-outline-secondary">
+                            <i class="bi bi-gear"></i> Управление оборудованием (админка)
+                        </a>
+                        <a href="/admin/network/subnet/" class="btn btn-outline-success">
+                            <i class="bi bi-diagram-3"></i> Управление подсетями (админка)
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

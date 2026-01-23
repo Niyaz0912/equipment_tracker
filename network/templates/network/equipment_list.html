@@ -5,37 +5,33 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-    <!-- Заголовок и кнопки -->
+    <!-- Заголовок -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-router"></i> Сетевое оборудование</h1>
-        <div>
-            <a href="/network/equipment/create/" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Добавить оборудование
-            </a>
-        </div>
+        <!-- УБРАЛИ кнопку "Добавить оборудование" -->
     </div>
 
     <!-- Фильтры и поиск -->
     <div class="card mb-4">
         <div class="card-body">
             <form method="get" class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <input type="text" name="search" class="form-control" 
-                           placeholder="Поиск по названию, модели, серийному номеру..."
+                           placeholder="Поиск по названию, модели, серийному номеру, инвентарному номеру или IP..."
                            value="{{ search_query }}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">Все статусы</option>
                         <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Активно</option>
-                        <option value="backup" {% if status_filter == 'backup' %}selected{% endif %}>Резерв</option>
+                        <option value="backup" {% if status_filter == 'backup' %}selected{% endif %}>В резерве</option>
                         <option value="repair" {% if status_filter == 'repair' %}selected{% endif %}>В ремонте</option>
                         <option value="decommissioned" {% if status_filter == 'decommissioned' %}selected{% endif %}>Списано</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <button type="submit" class="btn btn-outline-primary w-100">
-                        <i class="bi bi-search"></i> Найти
+                        <i class="bi bi-search"></i>
                     </button>
                 </div>
             </form>
@@ -81,6 +77,7 @@
     <!-- Таблица оборудования -->
     <div class="card">
         <div class="card-body">
+            {% if equipments %}
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -102,8 +99,26 @@
                                 {% if equipment.inventory_number %}
                                 <br><small class="text-muted">Инв. №: {{ equipment.inventory_number }}</small>
                                 {% endif %}
+                                {% if equipment.serial_number %}
+                                <br><small class="text-muted">S/N: {{ equipment.serial_number }}</small>
+                                {% endif %}
                             </td>
-                            <td>{{ equipment.get_equipment_type_display }}</td>
+                            <td>
+                                {% if equipment.type == 'router' %}
+                                    <i class="bi bi-wifi" title="Маршрутизатор"></i>
+                                {% elif equipment.type == 'switch' %}
+                                    <i class="bi bi-hdd-network" title="Коммутатор"></i>
+                                {% elif equipment.type == 'firewall' %}
+                                    <i class="bi bi-shield-check" title="Файрвол"></i>
+                                {% elif equipment.type == 'server' %}
+                                    <i class="bi bi-server" title="Сервер"></i>
+                                {% elif equipment.type == 'access_point' %}
+                                    <i class="bi bi-broadcast" title="Точка доступа"></i>
+                                {% else %}
+                                    <i class="bi bi-pc-display" title="Другое"></i>
+                                {% endif %}
+                                {{ equipment.get_type_display }}
+                            </td>
                             <td>{{ equipment.model|default:"-" }}</td>
                             <td>
                                 {% if equipment.location %}
@@ -126,7 +141,7 @@
                                 {% if equipment.status == 'active' %}
                                 <span class="badge bg-success">Активно</span>
                                 {% elif equipment.status == 'backup' %}
-                                <span class="badge bg-info">Резерв</span>
+                                <span class="badge bg-info">В резерве</span>
                                 {% elif equipment.status == 'repair' %}
                                 <span class="badge bg-warning text-dark">В ремонте</span>
                                 {% elif equipment.status == 'decommissioned' %}
@@ -134,36 +149,28 @@
                                 {% endif %}
                             </td>
                             <td>
+                                <!-- ОСТАВИЛИ только кнопку просмотра -->
                                 <div class="btn-group btn-group-sm">
                                     <a href="/network/equipment/{{ equipment.id }}/" 
                                        class="btn btn-outline-primary" title="Просмотр">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="/network/equipment/{{ equipment.id }}/edit/" 
-                                       class="btn btn-outline-secondary" title="Редактировать">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/network/equipment/{{ equipment.id }}/delete/" 
-                                       class="btn btn-outline-danger" title="Удалить">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-eye"></i> Подробнее
                                     </a>
                                 </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center py-4">
-                                <i class="bi bi-inbox display-6 text-muted"></i>
-                                <p class="mt-2">Сетевое оборудование не найдено</p>
-                                <a href="/network/equipment/create/" class="btn btn-primary mt-2">
-                                    Добавить первое оборудование
-                                </a>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-inbox display-6 text-muted"></i>
+                <p class="mt-2">Сетевое оборудование не найдено</p>
+                {% if search_query or status_filter %}
+                <p class="text-muted">Попробуйте изменить параметры поиска</p>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
