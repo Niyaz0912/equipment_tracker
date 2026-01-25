@@ -1,31 +1,38 @@
+<!-- network/templates/network/network_map.html -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Карта сети - Equipment Tracker{% endblock %}
 
+{% block extra_head %}
+<link href="{% static 'css/network.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<!-- Внутренняя навигация -->
 {% include 'network/_navigation.html' %}
+
+<!-- Контейнер для данных (скрыт) -->
+<div id="network-data" 
+     data-nodes='{{ network_nodes_json|safe }}'
+     data-edges='{{ network_edges_json|safe }}'
+     style="display: none;"></div>
 
 <div class="container-fluid py-4">
     <!-- Заголовок -->
     <div class="row mb-4">
         <div class="col-md-12">
             <h1><i class="bi bi-diagram-3"></i> Карта сети</h1>
-            <p class="text-muted">Топология сетевого оборудования по локациям</p>
+            <p class="text-muted">Интерактивная векторная схема сетевой инфраструктуры</p>
         </div>
     </div>
 
-    <!-- Фильтры -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Фильтры</h5>
-        </div>
+    <!-- Панель управления -->
+    <div class="card mb-3">
         <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
+            <div class="row g-3">
+                <div class="col-md-3">
                     <label class="form-label">Локация:</label>
-                    <select name="location" class="form-select">
+                    <select id="location-filter" class="form-select form-select-sm">
                         <option value="">Все локации</option>
                         {% for location in all_locations %}
                         <option value="{{ location.id }}" 
@@ -35,9 +42,9 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Тип оборудования:</label>
-                    <select name="type" class="form-select">
+                    <select id="type-filter" class="form-select form-select-sm">
                         <option value="">Все типы</option>
                         <option value="router" {% if type_filter == 'router' %}selected{% endif %}>Роутеры</option>
                         <option value="switch" {% if type_filter == 'switch' %}selected{% endif %}>Коммутаторы</option>
@@ -46,9 +53,9 @@
                         <option value="access_point" {% if type_filter == 'access_point' %}selected{% endif %}>Точки доступа</option>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Статус:</label>
-                    <select name="status" class="form-select">
+                    <select id="status-filter" class="form-select form-select-sm">
                         <option value="">Все статусы</option>
                         <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Активно</option>
                         <option value="backup" {% if status_filter == 'backup' %}selected{% endif %}>Резерв</option>
@@ -56,210 +63,259 @@
                         <option value="decommissioned" {% if status_filter == 'decommissioned' %}selected{% endif %}>Списано</option>
                     </select>
                 </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-funnel"></i> Применить фильтры
-                    </button>
-                    <a href="{% url 'network:network_map' %}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Сбросить
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Общая статистика -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body text-center">
-                    <h3>{{ total_devices }}</h3>
-                    <p>Всего устройств</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body text-center">
-                    <h3>{{ total_locations }}</h3>
-                    <p>Локаций</p>
+                <div class="col-md-3">
+                    <label class="form-label">Управление:</label>
+                    <div class="btn-group w-100" role="group">
+                        <button id="btn-zoom-in" class="btn btn-outline-primary btn-sm" title="Увеличить">
+                            <i class="bi bi-zoom-in"></i>
+                        </button>
+                        <button id="btn-zoom-out" class="btn btn-outline-primary btn-sm" title="Уменьшить">
+                            <i class="bi bi-zoom-out"></i>
+                        </button>
+                        <button id="btn-reset" class="btn btn-outline-secondary btn-sm" title="Сбросить вид">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                        <button id="btn-export" class="btn btn-outline-success btn-sm" title="Экспорт PNG">
+                            <i class="bi bi-download"></i>
+                        </button>
+                        <button id="btn-fullscreen" class="btn btn-outline-info btn-sm" title="Полный экран">
+                            <i class="bi bi-fullscreen"></i>
+                        </button>
+                        <button id="btn-reset-filters" class="btn btn-outline-warning btn-sm" title="Сбросить фильтры">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body text-center">
-                    <h3>
-                        {{ network_topology|length }}
-                    </h3>
-                    <p>Групп оборудования</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-dark">
-                <div class="card-body text-center">
-                    <h3>
-                        {% with total=0 %}
-                            {% for location in network_topology %}
-                                {% with total=total|add:location.devices|length %}{% endwith %}
-                            {% endfor %}
-                            {{ total_devices }}
-                        {% endwith %}
-                    </h3>
-                    <p>Устройств отфильтровано</p>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="physics-toggle" checked>
+                        <label class="form-check-label" for="physics-toggle">Динамическая физика (перетаскивание узлов)</label>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Топология -->
+    <!-- Контейнер для схемы -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="bi bi-layout-wtf"></i> Топология сети</h5>
-            <span class="badge bg-secondary">{{ total_devices }} устройств</span>
-        </div>
-        <div class="card-body">
-            {% if network_topology %}
-                {% for location in network_topology %}
-                <div class="network-location mb-5 p-3 border rounded">
-                    <h4 class="border-bottom pb-2 mb-3">
-                        <i class="bi bi-building"></i> 
-                        {{ location.name|default:"Без локации" }}
-                        <span class="badge bg-primary float-end">
-                            {{ location.devices|length }} устройств
-                        </span>
-                    </h4>
-                    
-                    <!-- Статистика по типам в локации -->
-                    <div class="mb-3">
-                        <h6>Типы оборудования:</h6>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            {% for type_name, count in location.device_stats.items %}
-                            {% if count > 0 %}
-                            <span class="badge 
-                                {% if type_name == 'router' %}bg-primary
-                                {% elif type_name == 'switch' %}bg-info
-                                {% elif type_name == 'server' %}bg-success
-                                {% elif type_name == 'firewall' %}bg-danger
-                                {% elif type_name == 'access_point' %}bg-warning
-                                {% else %}bg-secondary{% endif %}">
-                                {% if type_name == 'router' %}<i class="bi bi-router"></i>
-                                {% elif type_name == 'switch' %}<i class="bi bi-hdd-stack"></i>
-                                {% elif type_name == 'server' %}<i class="bi bi-server"></i>
-                                {% elif type_name == 'firewall' %}<i class="bi bi-shield"></i>
-                                {% elif type_name == 'access_point' %}<i class="bi bi-wifi"></i>
-                                {% else %}<i class="bi bi-pc"></i>{% endif %}
-                                {{ type_name|title }}: {{ count }}
-                            </span>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <!-- Оборудование в локации -->
-                    <div class="row">
-                        {% for device in location.devices %}
-                        <div class="col-md-3 mb-3">
-                            <div class="card h-100 border
-                                {% if device.status == 'active' %}border-success
-                                {% elif device.status == 'repair' %}border-danger
-                                {% elif device.status == 'backup' %}border-warning
-                                {% elif device.status == 'decommissioned' %}border-secondary
-                                {% else %}border-info{% endif %}">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <strong class="text-truncate" title="{{ device.name }}">
-                                        <i class="bi 
-                                            {% if device.type == 'router' %}bi-router
-                                            {% elif device.type == 'switch' %}bi-hdd-stack
-                                            {% elif device.type == 'server' %}bi-server
-                                            {% elif device.type == 'firewall' %}bi-shield
-                                            {% elif device.type == 'access_point' %}bi-wifi
-                                            {% else %}bi-pc{% endif %}"></i>
-                                        {{ device.name }}
-                                    </strong>
-                                    <span class="badge bg-{% if device.status == 'active' %}success{% elif device.status == 'repair' %}danger{% elif device.status == 'backup' %}warning{% elif device.status == 'decommissioned' %}secondary{% else %}info{% endif %}">
-                                        {{ device.get_status_display }}
-                                    </span>
-                                </div>
-                                <div class="card-body">
-                                    <p class="mb-1"><small>Модель:</small> {{ device.model|default:"-" }}</p>
-                                    <p class="mb-1"><small>IP:</small> <code>{{ device.ip_address|default:"-" }}</code></p>
-                                    <p class="mb-1"><small>Серийный:</small> {{ device.serial_number|default:"-" }}</p>
-                                    <p class="mb-0"><small>Инвентарный:</small> {{ device.inventory_number|default:"-" }}</p>
-                                </div>
-                                <div class="card-footer text-center py-2">
-                                    <a href="{% url 'network:equipment_detail' device.id %}" 
-                                       class="btn btn-sm btn-outline-primary w-100">
-                                        <i class="bi bi-info-circle"></i> Подробнее
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-            <div class="text-center py-5">
-                <i class="bi bi-diagram-3 display-1 text-muted"></i>
-                <h5 class="mt-3">Нет данных для отображения топологии</h5>
-                <p class="text-muted">Добавьте сетевое оборудование</p>
-                <a href="{% url 'network:equipment_list' %}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Перейти к оборудованию
-                </a>
+            <h5 class="mb-0">
+                <i class="bi bi-layout-wtf"></i> Сетевая топология
+                <span class="badge bg-primary ms-2" id="node-count">{{ device_count }} устройств</span>
+            </h5>
+            <div class="text-muted">
+                <small>Используйте колесо мыши для масштабирования, зажмите ЛКМ для перемещения</small>
             </div>
-            {% endif %}
+        </div>
+        <div class="card-body p-0">
+            <div id="network-topology-container" style="width: 100%; height: 650px;"></div>
         </div>
     </div>
 
-    <!-- Легенда -->
-    <div class="card mt-4">
-        <div class="card-body">
-            <h6><i class="bi bi-key"></i> Легенда:</h6>
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>Типы оборудования:</strong></p>
-                    <div class="d-flex flex-wrap gap-2 mb-2">
-                        <span class="badge bg-primary"><i class="bi bi-router"></i> Роутер</span>
-                        <span class="badge bg-info"><i class="bi bi-hdd-stack"></i> Коммутатор</span>
-                        <span class="badge bg-success"><i class="bi bi-server"></i> Сервер</span>
-                        <span class="badge bg-danger"><i class="bi bi-shield"></i> Фаервол</span>
-                        <span class="badge bg-warning"><i class="bi bi-wifi"></i> Точка доступа</span>
-                        <span class="badge bg-secondary"><i class="bi bi-pc"></i> Другое</span>
+    <!-- Статистика и легенда -->
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-graph-up"></i> Статистика оборудования</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-2">
+                            <div class="stat-box bg-primary text-white p-2 rounded">
+                                <h5 id="stat-routers">{{ type_stats.router|default:"0" }}</h5>
+                                <small>Роутеры</small>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="stat-box bg-info text-white p-2 rounded">
+                                <h5 id="stat-switches">{{ type_stats.switch|default:"0" }}</h5>
+                                <small>Коммутаторы</small>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="stat-box bg-success text-white p-2 rounded">
+                                <h5 id="stat-servers">{{ type_stats.server|default:"0" }}</h5>
+                                <small>Серверы</small>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="stat-box bg-danger text-white p-2 rounded">
+                                <h5 id="stat-firewalls">{{ type_stats.firewall|default:"0" }}</h5>
+                                <small>Фаерволы</small>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="stat-box bg-warning text-white p-2 rounded">
+                                <h5 id="stat-access-points">{{ type_stats.access_point|default:"0" }}</h5>
+                                <small>Точки доступа</small>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="stat-box bg-secondary text-white p-2 rounded">
+                                <h5 id="stat-others">{{ type_stats.other|default:"0" }}</h5>
+                                <small>Другие</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <p><strong>Статусы:</strong></p>
-                    <div class="d-flex flex-wrap gap-2">
-                        <span class="badge border border-success text-success">Активно</span>
-                        <span class="badge border border-danger text-danger">В ремонте</span>
-                        <span class="badge border border-warning text-warning">Резерв</span>
-                        <span class="badge border border-secondary text-secondary">Списано</span>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-key"></i> Легенда</h6>
+                </div>
+                <div class="card-body">
+                    <div class="legend-item mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="legend-node me-2" style="background: #4A90E2; border-color: #2C3E50;"></div>
+                            <span>Роутер (ромб)</span>
+                        </div>
+                    </div>
+                    <div class="legend-item mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="legend-node me-2" style="background: #50E3C2; border-color: #27AE60;"></div>
+                            <span>Коммутатор (квадрат)</span>
+                        </div>
+                    </div>
+                    <div class="legend-item mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="legend-node me-2" style="background: #7ED321; border-color: #2ECC71;"></div>
+                            <span>Сервер (овал)</span>
+                        </div>
+                    </div>
+                    <div class="legend-item mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="legend-node me-2" style="background: #D0021B; border-color: #C0392B;"></div>
+                            <span>Фаервол (треугольник)</span>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="d-flex align-items-center">
+                            <div class="legend-node me-2" style="background: #F5A623; border-color: #E67E22;"></div>
+                            <span>Точка доступа (круг)</span>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Инструкция -->
+    <div class="alert alert-info mt-4">
+        <h6><i class="bi bi-lightbulb"></i> Как использовать карту сети:</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="mb-0">
+                    <li><strong>Навигация:</strong> Зажмите ЛКМ для перемещения по схеме</li>
+                    <li><strong>Масштаб:</strong> Используйте колесо мыши или кнопки +/-</li>
+                    <li><strong>Выбор узла:</strong> Клик для выделения, двойной клик для перехода к устройству</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="mb-0">
+                    <li><strong>Фильтрация:</strong> Используйте выпадающие списки для фильтрации устройств</li>
+                    <li><strong>Подсказки:</strong> Наведите курсор на узел для подробной информации</li>
+                    <li><strong>Экспорт:</strong> Сохраните схему в PNG для отчетов</li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
+{% block extra_js %}
+<!-- Подключаем наш JS файл -->
+<script src="{% static 'js/network_topology.js' %}"></script>
+
+<!-- Инициализация после загрузки DOM -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Получаем данные из data-атрибутов
+    const dataContainer = document.getElementById('network-data');
+    const networkNodes = JSON.parse(dataContainer.dataset.nodes || '[]');
+    const networkEdges = JSON.parse(dataContainer.dataset.edges || '[]');
+    
+    console.log('Загружено узлов:', networkNodes.length);
+    console.log('Загружено связей:', networkEdges.length);
+    
+    // Инициализируем топологию
+    const topology = new NetworkTopology(
+        'network-topology-container',
+        networkNodes,
+        networkEdges
+    );
+    
+    // Обработчик выхода из полноэкранного режима
+    document.addEventListener('fullscreenchange', function() {
+        const btn = document.getElementById('btn-fullscreen');
+        const icon = btn.querySelector('i');
+        if (document.fullscreenElement) {
+            icon.className = 'bi bi-fullscreen-exit';
+            btn.title = 'Выйти из полноэкранного режима';
+        } else {
+            icon.className = 'bi bi-fullscreen';
+            btn.title = 'Полный экран';
+        }
+    });
+    
+    // Кнопка сброса фильтров
+    document.getElementById('btn-reset-filters').addEventListener('click', function() {
+        document.getElementById('location-filter').value = '';
+        document.getElementById('type-filter').value = '';
+        document.getElementById('status-filter').value = '';
+        
+        // Сбрасываем фильтры в топологии
+        topology.filterByType('');
+        topology.filterByLocation('');
+        topology.filterByStatus('');
+    });
+});
+</script>
+{% endblock %}
+
 {% block extra_css %}
 <style>
-.network-location {
+#network-topology-container {
     background: #f8f9fa;
-    transition: all 0.3s;
+    border-radius: 0 0 5px 5px;
 }
-.network-location:hover {
-    background: #e9ecef;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+.legend-node {
+    width: 20px;
+    height: 20px;
+    border: 2px solid;
+    border-radius: 4px;
+    display: inline-block;
 }
-.card {
+
+.stat-box {
     transition: transform 0.2s;
 }
-.card:hover {
-    transform: translateY(-5px);
+.stat-box:hover {
+    transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Стили для полноэкранного режима */
+#network-topology-container:fullscreen {
+    background: white;
+    padding: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    #network-topology-container {
+        height: 500px !important;
+    }
+    
+    .stat-box h5 {
+        font-size: 1rem;
+    }
 }
 </style>
 {% endblock %}

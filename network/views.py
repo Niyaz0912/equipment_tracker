@@ -1,7 +1,12 @@
+import json
 from django.shortcuts import render
 from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView
 from .models import Location, NetworkEquipment, Subnet, IPAddress
+from django.db.models import Count
+from django.urls import reverse
+from .models import NetworkEquipment, Location
+
 
 class EquipmentListView(ListView):
     model = NetworkEquipment
@@ -90,77 +95,60 @@ class SubnetDetailView(DetailView):
         ).select_related('device')
         return context
 
+# views.py - обновленный NetworkMapView
 class NetworkMapView(TemplateView):
-    """Топология сети - визуальная схема"""
+    """Карта сети с двумя режимами просмотра"""
     template_name = 'network/network_map.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Получаем параметры фильтрации из GET-запроса
+        # Параметры
+        view_mode = self.request.GET.get('mode', 'vector')  # 'vector' или 'location'
         location_filter = self.request.GET.get('location')
         type_filter = self.request.GET.get('type')
-        status_filter = self.request.GET.get('status')
         
-        # Базовый запрос оборудования
+        # Получаем оборудование
         devices = NetworkEquipment.objects.all().select_related('location')
         
         # Применяем фильтры
         if location_filter:
             devices = devices.filter(location_id=location_filter)
-        
         if type_filter:
             devices = devices.filter(type=type_filter)
         
-        if status_filter:
-            devices = devices.filter(status=status_filter)
+        # Данные для векторной схемы
+        if view_mode == 'vector':
+            network_nodes = []
+            for device in devices:
+                network_nodes.append({
+                    'id': device.id,
+                    'label': f"{device.name}\n{device.ip_address or '-'}",
+                    'group': device.type or 'other',
+                    'title': f"{device.name}",
+                    'url': reverse('network:equipment_detail', args=[device.id]),
+                })
+            context['network_nodes_json'] = json.dumps(network_nodes, ensure_ascii=False)
         
-        # Группируем оборудование по локациям для топологии
-        locations_data = {}
-        
-        for device in devices:
-            location_id = device.location_id if device.location else 0
-            location_name = device.location.name if device.location else "Без локации"
-            
-            if location_id not in locations_data:
-                locations_data[location_id] = {
-                    'id': location_id,
-                    'name': location_name,
-                    'devices': [],
-                    'device_stats': {
-                        'router': 0, 'switch': 0, 'server': 0, 
-                        'firewall': 0, 'access_point': 0, 'other': 0
+        # Данные для карты по локациям
+        elif view_mode == 'location':
+            locations_data = {}
+            for device in devices:
+                location_id = device.location_id if device.location else 0
+                if location_id not in locations_data:
+                    locations_data[location_id] = {
+                        'location': device.location,
+                        'devices': []
                     }
-                }
-            
-            locations_data[location_id]['devices'].append(device)
-            
-            # Считаем типы оборудования
-            device_type = device.type if device.type else 'other'
-            if device_type in locations_data[location_id]['device_stats']:
-                locations_data[location_id]['device_stats'][device_type] += 1
-            else:
-                locations_data[location_id]['device_stats']['other'] += 1
+                locations_data[location_id]['devices'].append(device)
+            context['locations_data'] = list(locations_data.values())
         
-        # Преобразуем в список
-        network_topology = list(locations_data.values())
-        
-        # Считаем общее количество устройств в топологии
-        filtered_devices_count = sum(len(location['devices']) for location in network_topology)
-        
-        # Получаем все локации для фильтра
-        all_locations = Location.objects.all()
-        
-        # Статистика
+        # Общие данные
         context.update({
-            'network_topology': network_topology,
-            'all_locations': all_locations,
-            'total_devices': devices.count(),
-            'filtered_devices_count': filtered_devices_count,  # Добавляем
-            'total_locations': len(network_topology),
-            'location_filter': location_filter,
-            'type_filter': type_filter,
-            'status_filter': status_filter,
+            'view_mode': view_mode,
+            'devices': devices,
+            'all_locations': Location.objects.all(),
+            'device_count': devices.count(),
         })
         
         return context
