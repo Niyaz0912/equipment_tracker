@@ -107,6 +107,31 @@ class Subnet(models.Model):
     added_by = models.CharField("Кем добавлено", max_length=100, default="admin")
     comment = models.TextField("Комментарий", blank=True, default="")
     
+    def get_ip_stats(self):
+        """Статистика IP адресов в подсети"""
+        from ipaddress import ip_network
+        
+        try:
+            # Рассчитываем общее количество адресов в подсети
+            network = ip_network(self.network, strict=False)
+            total = network.num_addresses - 2  # минус сеть и броадкаст
+            
+            if total < 0:
+                total = 0  # для /32 и /31 подсетей
+        except ValueError:
+            total = 254  # если ошибка в формате
+            
+        occupied = self.ipaddress_set.filter(status='occupied').count()
+        free = total - occupied if total > occupied else 0
+        percent = (occupied / total * 100) if total > 0 else 0
+        
+        return {
+            'total': total,
+            'occupied': occupied,
+            'free': free,
+            'percent': percent
+        }
+
     class Meta:
         db_table = 'network_subnet'
     
@@ -121,7 +146,7 @@ class IPAddress(models.Model):
         ('occupied', 'Занят'),
     ]
     
-    address = models.CharField("IP-адрес", max_length=15)  # 192.168.1.10
+    address = models.CharField("IP-адрес", max_length=15)
     subnet = models.ForeignKey(Subnet, on_delete=models.CASCADE, verbose_name="Подсеть")
     status = models.CharField("Статус", max_length=10, choices=STATUS_CHOICES, default='free')
     description = models.CharField("Описание", max_length=200, blank=True)
