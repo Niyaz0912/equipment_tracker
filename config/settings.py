@@ -132,9 +132,9 @@ MEDIA_URL = '/media/'
 
 
 # Настройки аутентификации
-LOGIN_URL = '/admin/login/'  # Используем админку для входа
-LOGIN_REDIRECT_URL = '/printers/'  # После входа на страницу принтеров
-LOGOUT_REDIRECT_URL = '/admin/login/'  # После выхода обратно в админку
+LOGIN_URL = '/admin/login/'  # Страница входа
+LOGIN_REDIRECT_URL = '/'     # После логина на главную
+LOGOUT_REDIRECT_URL = '/'    # После выхода на главную
 
 EXCEL_FOLDER = BASE_DIR / 'import_export'
 os.makedirs(EXCEL_FOLDER, exist_ok=True)

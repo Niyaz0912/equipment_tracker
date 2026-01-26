@@ -10,40 +10,221 @@
     --info-teal: #0dcaf0;
     --light-gray: #f8f9fa;
     --dark-gray: #212529;
+    --primary-dark: #0a58ca;
+    --primary-light: #3d8bfd;
+    --active-bg: rgba(255, 255, 255, 0.15);
 }
 
-/* Кастомные стили для таблиц */
+/* ===== ОБЩИЕ СТИЛИ ===== */
+.bg-image {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+/* ===== НАВИГАЦИЯ ===== */
+.navbar {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.navbar-brand i {
+    font-size: 1.4em;
+}
+
+.nav-item .nav-link {
+    color: rgba(175, 238, 238) !important;
+    font-weight: 500;
+    border-radius: 6px;
+    margin: 0 2px;
+    padding: 8px 16px !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-item .nav-link:hover {
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.nav-item .nav-link.active {
+    color: #fff !important;
+    background-color: var(--active-bg);
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 3px;
+    background: linear-gradient(90deg, #fff 0%, #a5d8ff 100%);
+    border-radius: 3px 3px 0 0;
+}
+
+/* Анимация для активной вкладки */
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.nav-item .nav-link.active {
+    animation: pulse-glow 2s infinite;
+}
+
+/* ===== ПОИСК ===== */
+.search-form .input-group {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.search-form input {
+    background: transparent !important;
+    border: none !important;
+    color: white !important;
+    min-width: 250px;
+}
+
+.search-form input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.search-form .btn {
+    border-radius: 6px !important;
+}
+
+/* ===== ДРОПДАУНЫ ===== */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 8px;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    padding-left: 25px;
+}
+
+/* ===== КАРТОЧКИ ===== */
+.card-custom {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+}
+
+.card-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== ТАБЛИЦЫ ===== */
 .table-custom {
     font-size: 0.9rem;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .table-custom th {
     background-color: var(--light-gray);
     font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
 }
 
-/* Кастомные карточки */
-.card-custom {
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Кнопки для Equipment Tracker */
+/* ===== КНОПКИ ===== */
 .btn-equipment {
     border-radius: 6px;
     font-weight: 500;
 }
 
-/* Навигация */
-.navbar-brand {
-    font-weight: 600;
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    border: none;
 }
 
-/* Футер */
+/* ===== УВЕДОМЛЕНИЯ ===== */
+.alert {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== ФУТЕР ===== */
 .footer-custom {
     background-color: var(--light-gray);
     border-top: 1px solid #dee2e6;
     padding: 1.5rem 0;
     margin-top: 3rem;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 991.98px) {
+    .search-form {
+        margin: 10px 0;
+        width: 100%;
+    }
+    
+    .search-form input {
+        min-width: auto;
+    }
+    
+    .nav-item .nav-link {
+        margin: 2px 0;
+        border-radius: 4px;
+    }
+    
+    .navbar-collapse {
+        padding: 10px 0;
+    }
+    
+    .main-content {
+        margin-top: 1rem !important;
+        padding: 1.5rem !important;
+    }
+}
+
+/* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ===== */
+.badge-custom {
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-weight: 500;
+}
+
+.pagination-custom .page-link {
+    border-radius: 6px;
+    margin: 0 2px;
+}
+
+/* Стили для форм */
+.form-control-custom {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s;
+}
+
+.form-control-custom:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }

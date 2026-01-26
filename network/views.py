@@ -2,13 +2,25 @@ import json
 from django.shortcuts import render
 from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView
-from .models import Location, NetworkEquipment, Subnet, IPAddress
+from .models import Location, NetworkEquipment, Location, Subnet, IPAddress
 from django.db.models import Count
 from django.urls import reverse
-from .models import NetworkEquipment, Location
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+
+class AdminRequiredMixin(LoginRequiredMixin):
+    """Миксин для страниц, требующих админ-прав"""
+    login_url = '/admin/login/'
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            # Сохраняем куда хотел попасть пользователь
+            next_url = request.get_full_path()
+            return redirect(f'/admin/login/?next={next_url}')
+        return super().dispatch(request, *args, **kwargs)
 
 
-class EquipmentListView(ListView):
+class EquipmentListView(AdminRequiredMixin, ListView):
     model = NetworkEquipment
     template_name = 'network/equipment_list.html'
     context_object_name = 'equipments'
@@ -96,7 +108,7 @@ class SubnetDetailView(DetailView):
         return context
 
 # views.py - обновленный NetworkMapView
-class NetworkMapView(TemplateView):
+class NetworkMapView(AdminRequiredMixin, TemplateView):
     """Карта сети с двумя режимами просмотра"""
     template_name = 'network/network_map.html'
     
@@ -150,5 +162,33 @@ class NetworkMapView(TemplateView):
             'all_locations': Location.objects.all(),
             'device_count': devices.count(),
         })
+        
+        return context
+
+
+class NetworkDashboardView(AdminRequiredMixin, TemplateView):
+    """Дашборд сетевой статистики"""
+    template_name = 'network/dashboard.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Статистика оборудования
+        equipment = NetworkEquipment.objects.all()
+        context['equipment_count'] = equipment.count()
+        context['equipment'] = equipment.order_by('-created_at')[:10]  # Последние 10
+        
+        # Статистика локаций
+        context['location_count'] = Location.objects.count()
+        
+        # Статистика подсетей
+        context['subnet_count'] = Subnet.objects.count()
+        
+        # Статистика IP-адресов
+        context['ip_count'] = IPAddress.objects.count()
+        
+        # Дополнительная статистика
+        context['active_count'] = NetworkEquipment.objects.filter(status='active').count()
+        context['repair_count'] = NetworkEquipment.objects.filter(status='repair').count()
         
         return context
