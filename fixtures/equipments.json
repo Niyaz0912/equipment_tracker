@@ -501,7 +501,7 @@
     "type": "printer",
     "brand": "Kyocera",
     "model": "Ecosys M4132idn",
-    "ip_address": null,
+    "ip_address": "192.168.11.212",
     "assigned_to": null,
     "assigned_department": 4,
     "status": "issued",
@@ -509,7 +509,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2025-12-31T12:32:56.695Z",
-    "updated_at": "2026-01-14T09:13:00.250Z"
+    "updated_at": "2026-01-26T04:43:33.111Z"
   }
 },
 {
@@ -4677,7 +4677,7 @@
   "model": "equipments.equipment",
   "pk": 247,
   "fields": {
-    "mc_number": "00603",
+    "mc_number": "000603",
     "type": "monitor",
     "brand": "Samsung",
     "model": "S24D330h",
@@ -4689,7 +4689,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-12T07:41:31.455Z",
-    "updated_at": "2026-01-16T12:32:07.666Z"
+    "updated_at": "2026-01-25T16:28:52.254Z"
   }
 },
 {
@@ -5175,7 +5175,7 @@
     "type": "printer",
     "brand": "Kyosera",
     "model": "Ecosys M2540dn",
-    "ip_address": null,
+    "ip_address": "192.168.11.185",
     "assigned_to": null,
     "assigned_department": 8,
     "status": "issued",
@@ -5183,7 +5183,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-12T08:10:01.029Z",
-    "updated_at": "2026-01-12T08:10:01.029Z"
+    "updated_at": "2026-01-26T04:48:59.798Z"
   }
 },
 {
@@ -5365,7 +5365,7 @@
     "type": "printer",
     "brand": "Kyosera",
     "model": "Ecosys M2040dn",
-    "ip_address": null,
+    "ip_address": "192.168.10.251",
     "assigned_to": null,
     "assigned_department": 13,
     "status": "issued",
@@ -5373,7 +5373,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-12T08:21:57.346Z",
-    "updated_at": "2026-01-12T08:21:57.346Z"
+    "updated_at": "2026-01-26T04:47:18.679Z"
   }
 },
 {
@@ -5403,7 +5403,7 @@
     "type": "printer",
     "brand": "Canon",
     "model": "F162100",
-    "ip_address": null,
+    "ip_address": "192.168.10.159",
     "assigned_to": null,
     "assigned_department": 12,
     "status": "issued",
@@ -5411,7 +5411,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-12T08:24:35.072Z",
-    "updated_at": "2026-01-12T08:24:35.072Z"
+    "updated_at": "2026-01-26T04:44:50.013Z"
   }
 },
 {
@@ -5688,7 +5688,7 @@
     "type": "printer",
     "brand": "HP",
     "model": "LaserJet M1132 MFP",
-    "ip_address": null,
+    "ip_address": "192.168.10.110",
     "assigned_to": null,
     "assigned_department": 5,
     "status": "issued",
@@ -5696,7 +5696,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-12T08:51:36.458Z",
-    "updated_at": "2026-01-12T08:51:36.458Z"
+    "updated_at": "2026-01-26T04:49:42.676Z"
   }
 },
 {
@@ -6961,7 +6961,7 @@
     "type": "printer",
     "brand": "HP",
     "model": "LaserJet M236sdw",
-    "ip_address": null,
+    "ip_address": "192.168.10.106",
     "assigned_to": 47,
     "assigned_department": null,
     "status": "issued",
@@ -6969,7 +6969,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-13T11:44:07.966Z",
-    "updated_at": "2026-01-14T09:11:23.124Z"
+    "updated_at": "2026-01-26T04:42:00.736Z"
   }
 },
 {
@@ -8196,7 +8196,7 @@
     "type": "printer",
     "brand": "Kyosera",
     "model": "Ecosys M2040dn",
-    "ip_address": null,
+    "ip_address": "192.168.10.177",
     "assigned_to": null,
     "assigned_department": 3,
     "status": "issued",
@@ -8204,7 +8204,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-14T07:59:29.904Z",
-    "updated_at": "2026-01-14T07:59:29.904Z"
+    "updated_at": "2026-01-26T04:50:49.892Z"
   }
 },
 {
@@ -8690,7 +8690,7 @@
     "type": "printer",
     "brand": "HP",
     "model": "LaserJet M236sdw",
-    "ip_address": null,
+    "ip_address": "192.168.11.171",
     "assigned_to": null,
     "assigned_department": 1,
     "status": "issued",
@@ -8698,7 +8698,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-14T09:10:39.902Z",
-    "updated_at": "2026-01-14T09:10:39.902Z"
+    "updated_at": "2026-01-26T04:51:36.049Z"
   }
 },
 {
@@ -8724,7 +8724,7 @@
   "model": "equipments.equipment",
   "pk": 461,
   "fields": {
-    "mc_number": "00696",
+    "mc_number": "000696",
     "type": "monitor",
     "brand": "MSI",
     "model": "",
@@ -8736,7 +8736,7 @@
     "warranty_until": null,
     "notes": "",
     "created_at": "2026-01-14T09:35:15.220Z",
-    "updated_at": "2026-01-14T09:35:15.220Z"
+    "updated_at": "2026-01-25T16:29:31.430Z"
   }
 },
 {

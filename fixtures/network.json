@@ -1,0 +1,309 @@
+[
+{
+  "model": "network.location",
+  "pk": 1,
+  "fields": {
+    "name": "Главный офис",
+    "description": "Центральное здание компании",
+    "address": "ул. Центральная, 1",
+    "created_at": "2024-01-15T10:00:00Z"
+  }
+},
+{
+  "model": "network.location",
+  "pk": 2,
+  "fields": {
+    "name": "Серверная комната",
+    "description": "Комната с сетевым оборудованием",
+    "address": "Главный офис, 2 этаж",
+    "created_at": "2024-01-15T10:00:00Z"
+  }
+},
+{
+  "model": "network.location",
+  "pk": 3,
+  "fields": {
+    "name": "Филиал Северный",
+    "description": "Северный филиал компании",
+    "address": "ул. Северная, 25",
+    "created_at": "2024-03-20T14:30:00Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 1,
+  "fields": {
+    "name": "Core Switch 1",
+    "type": "switch",
+    "model": "Cisco Catalyst 2960X",
+    "serial_number": "FOC1234ABCD",
+    "inventory_number": "NET-001",
+    "location": 2,
+    "rack": 1,
+    "unit": 10,
+    "ip_address": "192.168.1.1",
+    "mac_address": "00:1A:2B:3C:4D:5E",
+    "status": "active",
+    "notes": "Основной коммутатор, 48 портов",
+    "created_at": "2024-01-20T08:00:00Z",
+    "updated_at": "2024-01-20T08:00:00Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 2,
+  "fields": {
+    "name": "Главный роутер",
+    "type": "router",
+    "model": "Mikrotik RB4011",
+    "serial_number": "MKT987654",
+    "inventory_number": "NET-002",
+    "location": 2,
+    "rack": 1,
+    "unit": 11,
+    "ip_address": "192.168.1.254",
+    "mac_address": "AA:BB:CC:DD:EE:FF",
+    "status": "active",
+    "notes": "Интернет-шлюз, WiFi контроллер",
+    "created_at": "2024-01-20T08:30:00Z",
+    "updated_at": "2024-01-20T08:30:00Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 3,
+  "fields": {
+    "name": "Сервер 1С",
+    "type": "server",
+    "model": "Dell PowerEdge R740",
+    "serial_number": "DEL567890",
+    "inventory_number": "NET-003",
+    "location": 2,
+    "rack": 2,
+    "unit": 5,
+    "ip_address": "10.0.10.10",
+    "mac_address": "11:22:33:44:55:66",
+    "status": "active",
+    "notes": "Сервер баз данных 1С",
+    "created_at": "2024-02-01T10:00:00Z",
+    "updated_at": "2024-02-01T10:00:00Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 4,
+  "fields": {
+    "name": "Файрвол",
+    "type": "firewall",
+    "model": "FortiGate 60F",
+    "serial_number": "FGT123456",
+    "inventory_number": "NET-004",
+    "location": 2,
+    "rack": 1,
+    "unit": 12,
+    "ip_address": "192.168.1.2",
+    "mac_address": "77:88:99:AA:BB:CC",
+    "status": "active",
+    "notes": "Межсетевой экран",
+    "created_at": "2024-02-15T14:00:00Z",
+    "updated_at": "2024-02-15T14:00:00Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 5,
+  "fields": {
+    "name": "WiFi точка доступа",
+    "type": "access_point",
+    "model": "Ubiquiti UAP-AC-PRO",
+    "serial_number": "UBN789012",
+    "inventory_number": "NET-005",
+    "location": 1,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.1.100",
+    "mac_address": "DD:EE:FF:00:11:22",
+    "status": "active",
+    "notes": "Точка доступа в конференц-зале",
+    "created_at": "2024-03-01T11:30:00Z",
+    "updated_at": "2024-03-01T11:30:00Z"
+  }
+},
+{
+  "model": "network.subnet",
+  "pk": 1,
+  "fields": {
+    "network": "192.168.1.0/24",
+    "description": "Основная клиентская сеть",
+    "vlan_id": 10,
+    "location": 1,
+    "purpose": "client",
+    "date_added": "2024-01-15T10:30:00Z",
+    "added_by": "admin",
+    "comment": "Основная сеть для сотрудников"
+  }
+},
+{
+  "model": "network.subnet",
+  "pk": 2,
+  "fields": {
+    "network": "10.0.10.0/24",
+    "description": "Серверная сеть",
+    "vlan_id": 20,
+    "location": 2,
+    "purpose": "server",
+    "date_added": "2024-01-15T11:00:00Z",
+    "added_by": "admin",
+    "comment": "Сеть для серверов и виртуальных машин"
+  }
+},
+{
+  "model": "network.subnet",
+  "pk": 3,
+  "fields": {
+    "network": "172.16.1.0/24",
+    "description": "Сеть видеонаблюдения",
+    "vlan_id": 30,
+    "location": 1,
+    "purpose": "infrastructure",
+    "date_added": "2024-02-10T09:15:00Z",
+    "added_by": "admin",
+    "comment": "IP камеры и система безопасности"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 1,
+  "fields": {
+    "address": "192.168.1.1",
+    "subnet": 1,
+    "status": "occupied",
+    "description": "Основной коммутатор",
+    "device": 1,
+    "mac_address": "00:1A:2B:3C:4D:5E",
+    "dns_name": "core-switch1.company.local",
+    "last_updated": "2024-01-20T08:00:00Z",
+    "note": "Основное сетевое оборудование"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 2,
+  "fields": {
+    "address": "192.168.1.254",
+    "subnet": 1,
+    "status": "occupied",
+    "description": "Главный роутер",
+    "device": 2,
+    "mac_address": "AA:BB:CC:DD:EE:FF",
+    "dns_name": "gateway.company.local",
+    "last_updated": "2024-01-20T08:30:00Z",
+    "note": "Интернет-шлюз"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 3,
+  "fields": {
+    "address": "10.0.10.10",
+    "subnet": 2,
+    "status": "occupied",
+    "description": "Сервер 1С",
+    "device": 3,
+    "mac_address": "11:22:33:44:55:66",
+    "dns_name": "server1c.company.local",
+    "last_updated": "2024-02-01T10:00:00Z",
+    "note": "Сервер баз данных"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 4,
+  "fields": {
+    "address": "192.168.1.2",
+    "subnet": 1,
+    "status": "occupied",
+    "description": "Файрвол",
+    "device": 4,
+    "mac_address": "77:88:99:AA:BB:CC",
+    "dns_name": "firewall.company.local",
+    "last_updated": "2024-02-15T14:00:00Z",
+    "note": "Межсетевой экран"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 5,
+  "fields": {
+    "address": "192.168.1.100",
+    "subnet": 1,
+    "status": "occupied",
+    "description": "WiFi точка доступа",
+    "device": 5,
+    "mac_address": "DD:EE:FF:00:11:22",
+    "dns_name": "wifi-confroom.company.local",
+    "last_updated": "2024-03-01T11:30:00Z",
+    "note": "Беспроводная сеть"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 6,
+  "fields": {
+    "address": "192.168.1.50",
+    "subnet": 1,
+    "status": "occupied",
+    "description": "Сетевой принтер",
+    "device": null,
+    "mac_address": "33:44:55:66:77:88",
+    "dns_name": "printer-hr.company.local",
+    "last_updated": "2024-03-10T09:00:00Z",
+    "note": "Принтер в отделе кадров"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 7,
+  "fields": {
+    "address": "192.168.1.101",
+    "subnet": 1,
+    "status": "free",
+    "description": "Резервный адрес",
+    "device": null,
+    "mac_address": "",
+    "dns_name": "",
+    "last_updated": "2024-03-15T12:00:00Z",
+    "note": "Свободен для нового оборудования"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 8,
+  "fields": {
+    "address": "10.0.10.20",
+    "subnet": 2,
+    "status": "reserved",
+    "description": "Резерв для нового сервера",
+    "device": null,
+    "mac_address": "",
+    "dns_name": "",
+    "last_updated": "2024-03-20T15:00:00Z",
+    "note": "Зарезервирован для виртуальной машины"
+  }
+},
+{
+  "model": "network.ipaddress",
+  "pk": 9,
+  "fields": {
+    "address": "192.168.1.150",
+    "subnet": 1,
+    "status": "dynamic",
+    "description": "DHCP клиент",
+    "device": null,
+    "mac_address": "99:AA:BB:CC:DD:EE",
+    "dns_name": "pc-user15.company.local",
+    "last_updated": "2024-03-25T08:30:00Z",
+    "note": "Компьютер сотрудника (DHCP)"
+  }
+}
+]

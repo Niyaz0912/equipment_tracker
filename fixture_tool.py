@@ -1,290 +1,204 @@
+#!/usr/bin/env python3
+"""
+Минимальная утилита для работы с фикстурами Equipment Tracker
+Команды: create, load, list, cleanup
+"""
+
 import os
 import sys
 import json
-import subprocess
 import argparse
 from pathlib import Path
-import django
+from datetime import datetime
 
-# Настройка Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# ========== НАСТРОЙКА DJANGO ==========
+def setup_django():
+    """Настройка Django - должна быть первой функцией"""
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+    project_root = Path(__file__).resolve().parent
+    sys.path.insert(0, str(project_root))
+    
+    try:
+        import django
+        django.setup()
+        print("✅ Django настроен")
+        return True
+    except Exception as e:
+        print(f"❌ Ошибка Django: {e}")
+        return False
 
-try:
-    django.setup()
-except Exception as e:
-    print(f"Ошибка инициализации Django: {e}")
-    print("Запускаем в режиме без Django...")
-
-# Константы
-BASE_DIR = Path(__file__).resolve().parent
-FIXTURES_DIR = BASE_DIR / 'fixtures'
-DEFAULT_APPS = ['employees', 'equipments']
-BACKUP_DIR = BASE_DIR / 'backups'
-
-
+# ========== ОСНОВНОЙ КЛАСС ==========
 class FixtureTool:
-    """Утилита для работы с фикстурами"""
-    
     def __init__(self):
-        self.ensure_directories()
+        self.base_dir = Path(__file__).resolve().parent
+        self.fixtures_dir = self.base_dir / 'fixtures'
+        self.fixtures_dir.mkdir(exist_ok=True)
+        
+        # Порядок загрузки важен для связей!
+        self.apps_order = ['employees', 'equipments', 'network']
+        
+    # ========== СОЗДАНИЕ ФИКСТУР ==========
+    def create_all(self):
+        """Создает фикстуры для всех приложений"""
+        print("📦 Создаю фикстуры для всех приложений...")
+        
+        for app in self.apps_order:
+            self._create_fixture(app)
+        
+        print("✅ Все фикстуры созданы")
+        self.list_fixtures()
     
-    def ensure_directories(self):
-        """Создает необходимые директории"""
-        for directory in [FIXTURES_DIR, BACKUP_DIR]:
-            directory.mkdir(exist_ok=True)
-    
-    def create_fixtures(self, apps=None, output_name=None, indent=2):
-        """
-        Создает фикстуры для указанных приложений
-        
-        Args:
-            apps: список приложений или 'all' для всех
-            output_name: имя выходного файла (без .json)
-            indent: отступ в JSON
-        """
-        if apps is None:
-            apps = DEFAULT_APPS
-        elif apps == 'all':
-            # Получаем все приложения кроме стандартных Django
-            from django.apps import apps as django_apps
-            apps = [
-                app.name.split('.')[-1] 
-                for app in django_apps.get_app_configs()
-                if not app.name.startswith(('django.', 'auth.', 'admin.', 'sessions', 'contenttypes'))
-            ]
-        
-        print(f"Создаю фикстуры для приложений: {', '.join(apps)}")
-        
-        for app in apps:
-            try:
-                # Имя файла
-                if output_name:
-                    filename = f"{output_name}_{app}.json"
-                else:
-                    filename = f"{app}.json"
-                
-                filepath = FIXTURES_DIR / filename
-                
-                # Команда dumpdata
-                cmd = [
-                    sys.executable, 'manage.py', 'dumpdata',
-                    app,
-                    '--indent', str(indent),
-                    '--output', str(filepath)
-                ]
-                
-                print(f"  Создаю {filename}...", end=' ')
-                result = subprocess.run(cmd, capture_output=True, text=True)
-                
-                if result.returncode == 0:
-                    # Проверяем и исправляем кодировку если нужно
-                    self.ensure_utf8(filepath)
-                    print("✅ Успешно")
-                else:
-                    print(f"❌ Ошибка: {result.stderr}")
-                    
-            except Exception as e:
-                print(f"❌ Ошибка при создании фикстур для {app}: {e}")
-        
-        print("\nФикстуры созданы в папке:", FIXTURES_DIR)
-    
-    def load_fixtures(self, fixtures=None, clear_db=False):
-        """
-        Загружает фикстуры в базу данных
-        
-        Args:
-            fixtures: список файлов фикстур или 'all' для всех
-            clear_db: очистить базу перед загрузкой
-        """
-        if clear_db:
-            confirm = input("Вы уверены, что хотите очистить базу данных? (yes/no): ")
-            if confirm.lower() != 'yes':
-                print("Отменено")
-                return
-            
-            print("Очищаю базу данных...")
-            subprocess.run([sys.executable, 'manage.py', 'flush', '--no-input'])
-        
-        if fixtures is None or fixtures == 'all':
-            # Загружаем все JSON файлы из fixtures
-            fixtures = list(FIXTURES_DIR.glob('*.json'))
-        elif isinstance(fixtures, str):
-            fixtures = [FIXTURES_DIR / fixtures]
-        
-        print(f"Загружаю {len(fixtures)} фикстур...")
-        
-        for fixture in fixtures:
-            if not fixture.exists():
-                print(f"❌ Файл не найден: {fixture}")
-                continue
-            
-            print(f"  Загружаю {fixture.name}...", end=' ')
-            
-            cmd = [sys.executable, 'manage.py', 'loaddata', str(fixture)]
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            
-            if result.returncode == 0:
-                print("✅ Успешно")
-            else:
-                print(f"❌ Ошибка: {result.stderr}")
-    
-    def backup_database(self, backup_name=None):
-        """Создает резервную копию всей базы данных"""
-        import datetime
-        
-        if backup_name is None:
-            timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-            backup_name = f"backup_{timestamp}"
-        
-        backup_file = BACKUP_DIR / f"{backup_name}.json"
-        
-        print(f"Создаю резервную копию в {backup_file}...")
-        
-        cmd = [
-            sys.executable, 'manage.py', 'dumpdata',
-            '--all',
-            '--indent', '2',
-            '--output', str(backup_file)
-        ]
-        
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        
-        if result.returncode == 0:
-            self.ensure_utf8(backup_file)
-            print(f"✅ Резервная копия создана: {backup_file}")
-            
-            # Создаем список файлов
-            files_list = BACKUP_DIR / 'backup_files.txt'
-            with open(files_list, 'a', encoding='utf-8') as f:
-                f.write(f"{backup_name}.json\n")
-            
-            return backup_file
-        else:
-            print(f"❌ Ошибка: {result.stderr}")
-            return None
-    
-    def ensure_utf8(self, filepath):
-        """Гарантирует, что файл в кодировке UTF-8"""
-        try:
-            with open(filepath, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            # Перезаписываем с явным указанием UTF-8
-            with open(filepath, 'w', encoding='utf-8', newline='\n') as f:
-                f.write(content)
-            return True
-        except UnicodeDecodeError:
-            # Файл не в UTF-8, конвертируем
-            try:
-                with open(filepath, 'r', encoding='cp1251') as f:
-                    content = f.read()
-                
-                with open(filepath, 'w', encoding='utf-8', newline='\n') as f:
-                    f.write(content)
-                print(f"  Конвертирован в UTF-8: {filepath.name}")
-                return True
-            except Exception as e:
-                print(f"  Ошибка конвертации {filepath.name}: {e}")
-                return False
-    
-    def list_fixtures(self):
-        """Показывает список доступных фикстур"""
-        print("Доступные фикстуры:")
-        print("-" * 40)
-        
-        fixtures = list(FIXTURES_DIR.glob('*.json'))
-        
-        if not fixtures:
-            print("Файлы фикстур не найдены")
+    def create_app(self, app_name):
+        """Создает фикстуру для конкретного приложения"""
+        if app_name not in self.apps_order:
+            print(f"❌ Приложение '{app_name}' не найдено")
+            print(f"   Доступные: {', '.join(self.apps_order)}")
             return
         
-        for i, fixture in enumerate(fixtures, 1):
-            size = fixture.stat().st_size / 1024  # Размер в KB
-            print(f"{i:2}. {fixture.name:30} {size:6.1f} KB")
+        self._create_fixture(app_name)
+        print(f"✅ Фикстура для '{app_name}' создана")
     
-    def setup_new_deployment(self):
-        """Настройка нового развертывания"""
-        print("Настройка нового развертывания...")
+    def _create_fixture(self, app_name):
+        """Внутренний метод создания фикстуры"""
+        from django.core.management import call_command
+        
+        filename = f"{app_name}.json"
+        filepath = self.fixtures_dir / filename
+        
+        try:
+            print(f"  Создаю {filename}...", end=' ')
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                call_command('dumpdata', app_name, indent=2, stdout=f)
+            
+            # Проверяем размер
+            size_kb = filepath.stat().st_size / 1024
+            print(f"✅ ({size_kb:.1f} KB)")
+            
+        except Exception as e:
+            print(f"❌ Ошибка: {e}")
+    
+    # ========== ЗАГРУЗКА ФИКСТУР ==========
+    def load_all(self, clear_db=False):
+        """Загружает все фикстуры в правильном порядке"""
+        if clear_db:
+            if input("⚠️ Очистить базу данных? (yes/no): ").lower() != 'yes':
+                print("❌ Отменено")
+                return
+            self._clear_database()
+        
+        print("📥 Загружаю все фикстуры...")
+        
+        for app in self.apps_order:
+            self._load_fixture(f"{app}.json")
+        
+        print("✅ Все фикстуры загружены")
+    
+    def load_app(self, app_name, clear_db=False):
+        """Загружает фикстуру конкретного приложения"""
+        if clear_db:
+            if input("⚠️ Очистить базу данных? (yes/no): ").lower() != 'yes':
+                print("❌ Отменено")
+                return
+            self._clear_database()
+        
+        filename = f"{app_name}.json"
+        self._load_fixture(filename)
+    
+    def _load_fixture(self, filename):
+        """Внутренний метод загрузки фикстуры"""
+        from django.core.management import call_command
+        
+        filepath = self.fixtures_dir / filename
+        
+        if not filepath.exists():
+            print(f"❌ Файл не найден: {filename}")
+            return
+        
+        try:
+            print(f"  Загружаю {filename}...", end=' ')
+            call_command('loaddata', str(filepath))
+            print("✅")
+            
+        except Exception as e:
+            print(f"❌ Ошибка: {e}")
+    
+    def _clear_database(self):
+        """Очищает базу данных"""
+        from django.core.management import call_command
+        call_command('flush', '--no-input')
+        print("🗑️ База данных очищена")
+    
+    # ========== УТИЛИТЫ ==========
+    def list_fixtures(self):
+        """Показывает список всех фикстур"""
+        print("\n📁 Список фикстур:")
         print("-" * 40)
         
-        # 1. Создаем миграции
-        print("1. Создаю миграции...")
-        subprocess.run([sys.executable, 'manage.py', 'makemigrations'])
+        files = list(self.fixtures_dir.glob('*.json'))
         
-        # 2. Применяем миграции
-        print("2. Применяю миграции...")
-        subprocess.run([sys.executable, 'manage.py', 'migrate'])
+        if not files:
+            print("Файлы не найдены")
+            return
         
-        # 3. Загружаем фикстуры
-        print("3. Загружаю фикстуры...")
-        self.load_fixtures('all')
+        total_size = 0
+        for i, file in enumerate(sorted(files), 1):
+            size_kb = file.stat().st_size / 1024
+            total_size += size_kb
+            
+            # Статус (есть ли данные)
+            with open(file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                count = len(data)
+            
+            print(f"{i:2}. {file.name:25} {size_kb:6.1f} KB ({count} записей)")
         
-        # 4. Создаем суперпользователя если его нет
-        print("4. Проверяю суперпользователя...")
-        try:
-            from django.contrib.auth import get_user_model
-            User = get_user_model()
-            if not User.objects.filter(is_superuser=True).exists():
-                print("   Создайте суперпользователя:")
-                subprocess.run([sys.executable, 'manage.py', 'createsuperuser'])
-            else:
-                print("   Суперпользователь уже существует")
-        except:
-            print("   Не удалось проверить суперпользователя")
+        print("-" * 40)
+        print(f"Всего: {len(files)} файлов, {total_size:.1f} KB")
+    
+    def cleanup(self, keep=5):
+        """Удаляет старые фикстуры, оставляет только keep последних"""
+        print(f"🧹 Очистка фикстур (оставляю {keep} последних)...")
         
-        print("\n✅ Настройка завершена!")
-        print("Запустите сервер: python manage.py runserver")
+        backup_files = []
+        for app in self.apps_order:
+            files = list(self.fixtures_dir.glob(f"{app}_*.json"))
+            files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            
+            for file in files[keep:]:
+                print(f"  Удаляю {file.name}...", end=' ')
+                file.unlink()
+                print("✅")
+        
+        print("✅ Очистка завершена")
 
-
+# ========== ГЛАВНАЯ ФУНКЦИЯ ==========
 def main():
-    """Основная функция"""
     parser = argparse.ArgumentParser(
-        description='Утилита для работы с фикстурами Equipment Tracker',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Примеры использования:
-  %(prog)s create                    # Создать фикстуры по умолчанию
-  %(prog)s create --all              # Создать фикстуры для всех приложений
-  %(prog)s create -a employees       # Только сотрудники
-  %(prog)s load                      # Загрузить все фикстуры
-  %(prog)s load --file employees.json # Загрузить конкретную фикстуру
-  %(prog)s backup                    # Создать резервную копию
-  %(prog)s setup                     # Настройка нового развертывания
-  %(prog)s list                      # Показать список фикстур
-        """
+        description='Минимальная утилита для фикстур Equipment Tracker'
     )
     
     subparsers = parser.add_subparsers(dest='command', help='Команда')
     
-    # Команда create
+    # create
     create_parser = subparsers.add_parser('create', help='Создать фикстуры')
-    create_parser.add_argument('apps', nargs='*', default=['employees', 'equipments'],
-                              help='Приложения для дампа (по умолчанию: employees equipments)')
-    create_parser.add_argument('--all', action='store_true', 
-                              help='Создать фикстуры для всех приложений')
-    create_parser.add_argument('--output', '-o', 
-                              help='Имя выходного файла (без .json)')
-    create_parser.add_argument('--indent', '-i', type=int, default=2,
-                              help='Отступ в JSON (по умолчанию: 2)')
+    create_group = create_parser.add_mutually_exclusive_group()
+    create_group.add_argument('--all', action='store_true', help='Все приложения')
+    create_group.add_argument('--app', help='Конкретное приложение')
     
-    # Команда load
+    # load
     load_parser = subparsers.add_parser('load', help='Загрузить фикстуры')
-    load_parser.add_argument('files', nargs='*', 
-                            help='Файлы для загрузки (по умолчанию: все)')
-    load_parser.add_argument('--clear', '-c', action='store_true',
-                            help='Очистить базу данных перед загрузкой')
+    load_group = load_parser.add_mutually_exclusive_group()
+    load_group.add_argument('--all', action='store_true', help='Все приложения')
+    load_group.add_argument('--app', help='Конкретное приложение')
+    load_parser.add_argument('--clear', '-c', action='store_true', help='Очистить БД перед загрузкой')
     
-    # Команда backup
-    backup_parser = subparsers.add_parser('backup', help='Создать резервную копию')
-    backup_parser.add_argument('--name', '-n', 
-                              help='Имя резервной копии')
-    
-    # Команда setup
-    subparsers.add_parser('setup', help='Настройка нового развертывания')
-    
-    # Команда list
+    # list
     subparsers.add_parser('list', help='Показать список фикстур')
+    
+    # cleanup
+    cleanup_parser = subparsers.add_parser('cleanup', help='Очистить старые фикстуры')
+    cleanup_parser.add_argument('--keep', type=int, default=5, help='Сколько оставить файлов')
     
     args = parser.parse_args()
     
@@ -292,30 +206,34 @@ def main():
         parser.print_help()
         return
     
+    # Инициализация Django
+    if not setup_django():
+        sys.exit(1)
+    
+    # Запуск команды
     tool = FixtureTool()
     
     if args.command == 'create':
         if args.all:
-            tool.create_fixtures(apps='all', output_name=args.output, indent=args.indent)
+            tool.create_all()
+        elif args.app:
+            tool.create_app(args.app)
         else:
-            tool.create_fixtures(apps=args.apps, output_name=args.output, indent=args.indent)
+            print("❌ Укажите --all или --app <имя>")
     
     elif args.command == 'load':
-        if args.files:
-            tool.load_fixtures(fixtures=args.files, clear_db=args.clear)
+        if args.all:
+            tool.load_all(clear_db=args.clear)
+        elif args.app:
+            tool.load_app(args.app, clear_db=args.clear)
         else:
-            tool.load_fixtures(fixtures='all', clear_db=args.clear)
-    
-    elif args.command == 'backup':
-        tool.backup_database(args.name)
-    
-    elif args.command == 'setup':
-        tool.setup_new_deployment()
+            print("❌ Укажите --all или --app <имя>")
     
     elif args.command == 'list':
         tool.list_fixtures()
-
+    
+    elif args.command == 'cleanup':
+        tool.cleanup(keep=args.keep)
 
 if __name__ == '__main__':
     main()
-    
