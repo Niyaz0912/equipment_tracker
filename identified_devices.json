@@ -1,0 +1,136 @@
+[
+  {
+    "ip": "192.168.10.104",
+    "hostname": "Metallurg-113",
+    "open_ports": [
+      445,
+      139
+    ],
+    "device_type": "Windows File Server",
+    "possible_types": [
+      "SMB (Windows Share)",
+      "NetBIOS"
+    ]
+  },
+  {
+    "ip": "192.168.10.109",
+    "hostname": "Metallurg-72",
+    "open_ports": [
+      3389,
+      445,
+      139
+    ],
+    "device_type": "Windows Machine",
+    "possible_types": [
+      "RDP (Windows)",
+      "SMB (Windows Share)",
+      "NetBIOS"
+    ]
+  },
+  {
+    "ip": "192.168.10.11",
+    "hostname": null,
+    "open_ports": [
+      22,
+      80
+    ],
+    "device_type": "Linux/Network Device (SSH)",
+    "possible_types": [
+      "SSH (Linux/Network Device)",
+      "HTTP (Web Server/Device)"
+    ]
+  },
+  {
+    "ip": "192.168.10.110",
+    "hostname": "HP7C4D8F866F38",
+    "open_ports": [
+      80,
+      443
+    ],
+    "device_type": "Web Server/Device",
+    "possible_types": [
+      "HTTP (Web Server/Device)",
+      "HTTPS (Secure Web)"
+    ]
+  },
+  {
+    "ip": "192.168.10.111",
+    "hostname": null,
+    "open_ports": [
+      22,
+      80
+    ],
+    "device_type": "Linux/Network Device (SSH)",
+    "possible_types": [
+      "SSH (Linux/Network Device)",
+      "HTTP (Web Server/Device)"
+    ]
+  },
+  {
+    "ip": "192.168.10.112",
+    "hostname": "Metallurg-79",
+    "open_ports": [
+      445,
+      139
+    ],
+    "device_type": "Windows File Server",
+    "possible_types": [
+      "SMB (Windows Share)",
+      "NetBIOS"
+    ]
+  },
+  {
+    "ip": "192.168.10.113",
+    "hostname": null,
+    "open_ports": [
+      22,
+      80
+    ],
+    "device_type": "Linux/Network Device (SSH)",
+    "possible_types": [
+      "SSH (Linux/Network Device)",
+      "HTTP (Web Server/Device)"
+    ]
+  },
+  {
+    "ip": "192.168.10.116",
+    "hostname": null,
+    "open_ports": [
+      80
+    ],
+    "device_type": "Web Server/Device",
+    "possible_types": [
+      "HTTP (Web Server/Device)"
+    ]
+  },
+  {
+    "ip": "192.168.10.118",
+    "hostname": "Metallurg-60",
+    "open_ports": [
+      3389,
+      445,
+      139
+    ],
+    "device_type": "Windows Machine",
+    "possible_types": [
+      "RDP (Windows)",
+      "SMB (Windows Share)",
+      "NetBIOS"
+    ]
+  },
+  {
+    "ip": "192.168.10.119",
+    "hostname": "Metallurg-43",
+    "open_ports": [
+      3389,
+      445,
+      139
+    ],
+    "device_type": "Windows Machine",
+    "possible_types": [
+      "RDP (Windows)",
+      "SMB (Windows Share)",
+      "NetBIOS"
+    ]
+  }
+]

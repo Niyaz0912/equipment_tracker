@@ -1,0 +1,143 @@
+<!-- network/templates/network/subnet_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}Подсеть {{ subnet.network_address }}/{{ subnet.prefix_length }} - Equipment Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">{% include 'network/network_sidebar.html' %}</div>
+    <div class="col-md-9">
+        
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-diagram-3"></i> Подсеть {{ subnet.network_address }}/{{ subnet.prefix_length }}
+            </h1>
+        </div>
+
+        <!-- Основная информация -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h6>Диапазон:</h6>
+                        <p class="text-muted">{{ subnet.get_ip_range.0 }} - {{ subnet.get_ip_range.1 }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Статистика:</h6>
+                        <p class="text-muted">{{ used_count }} / {{ total_count }} ({{ free_count }} свободно)</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Локация:</h6>
+                        <p class="text-muted">{{ subnet.location.name|default:"Не указана" }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Шлюз:</h6>
+                        <p class="text-muted">{{ subnet.gateway|default:"Не указан" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Использованные IP -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-check"></i> Назначенные IP адреса
+                            <span class="badge bg-primary">{{ used_count }}</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if ip_addresses %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>IP адрес</th>
+                                        <th>Устройство</th>
+                                        <th>MAC адрес</th>
+                                        <th>Статус</th>
+                                        <th>Дата</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ip in ip_addresses %}
+                                    <tr>
+                                        <td><code>{{ ip.address }}</code></td>
+                                        <td>
+                                            {% if ip.device %}
+                                            <a href="{% url 'network:equipment_detail' ip.device.id %}">
+                                                {{ ip.device.name }}
+                                            </a>
+                                            {% else %}
+                                            <span class="text-muted">Не назначено</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ ip.mac_address|default:"-" }}</td>
+                                        <td>
+                                            {% if ip.status == 'active' %}
+                                            <span class="badge bg-success">Активен</span>
+                                            {% elif ip.status == 'reserved' %}
+                                            <span class="badge bg-warning">Зарезервирован</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">{{ ip.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ ip.last_updated|date:"d.m.Y" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox display-3"></i>
+                            <p>Нет назначенных IP адресов</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Свободные IP -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-stars"></i> Свободные IP
+                            <span class="badge bg-success">{{ free_count }}</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if free_ips %}
+                        <div class="free-ips-list">
+                            {% for ip in free_ips %}
+                            <span class="badge bg-light text-dark border me-1 mb-1">{{ ip }}</span>
+                            {% endfor %}
+                            
+                            {% if free_count > 50 %}
+                            <div class="mt-2 text-muted">
+                                <small>Показано 50 из {{ free_count }} свободных адресов</small>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reserveIpModal">
+                                <i class="bi bi-plus-circle"></i> Зарезервировать IP
+                            </button>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-exclamation-triangle display-4"></i>
+                            <p class="mt-2">Нет свободных IP адресов</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

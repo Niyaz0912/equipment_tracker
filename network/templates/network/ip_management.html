@@ -1,0 +1,136 @@
+<!-- network/templates/network/ip_management.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Управление IP-адресами - Equipment Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">{% include 'network/network_sidebar.html' %}</div>
+    <div class="col-md-9">
+        <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-hdd-rack"></i> Управление IP-адресами
+            </h1>
+        </div>
+
+        <div class="row">
+            <!-- Поиск IP -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-search"></i> Поиск IP адреса
+                        </h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" name="search_ip" placeholder="192.168.10.100"
+                                    value="{{ search_ip }}">
+                                <button class="btn btn-primary" type="submit">
+                                    Найти
+                                </button>
+                            </div>
+                        </form>
+
+                        {% if ip_result or equipment_result %}
+                        <div class="mt-3">
+                            {% if ip_result %}
+                            <div class="alert alert-success">
+                                <h6>Найден в таблице IP:</h6>
+                                <p><strong>IP:</strong> {{ ip_result.address }}</p>
+                                {% if ip_result.device %}
+                                <p><strong>Устройство:</strong>
+                                    <a href="{% url 'network:equipment_detail' ip_result.device.id %}">
+                                        {{ ip_result.device.name }}
+                                    </a>
+                                </p>
+                                {% endif %}
+                                {% if ip_result.subnet %}
+                                <p><strong>Подсеть:</strong> {{ ip_result.subnet.network_address }}/{{
+                                    ip_result.subnet.prefix_length }}</p>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            {% if equipment_result %}
+                            <div class="alert alert-warning">
+                                <h6>Найден как IP устройства:</h6>
+                                <p><strong>IP:</strong> {{ equipment_result.ip_address }}</p>
+                                <p><strong>Устройство:</strong>
+                                    <a href="{% url 'network:equipment_detail' equipment_result.id %}">
+                                        {{ equipment_result.name }}
+                                    </a>
+                                </p>
+                                <p class="text-muted"><small>Не привязан к подсети в IP-менеджменте</small></p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статистика подсетей -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-pie-chart"></i> Статистика IP-адресов
+                        </h5>
+
+                        {% if ip_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Подсеть</th>
+                                        <th>Использовано</th>
+                                        <th>Свободно</th>
+                                        <th>Всего</th>
+                                        <th>Заполнение</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in ip_stats %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'network:subnet_detail' stat.subnet.id %}">
+                                                {{ stat.cidr }}
+                                            </a>
+                                        </td>
+                                        <td>{{ stat.used }}</td>
+                                        <td>{{ stat.free }}</td>
+                                        <td>{{ stat.total }}</td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                {% with pc=stat.usage_percent %}
+                                                <div class="progress-bar 
+                                                    {% if pc > 90 %}bg-danger
+                                                    {% elif pc > 70 %}bg-warning
+                                                    {% else %}bg-success{% endif %}" role="progressbar"
+                                                    style="width: {{ pc }}%;">
+                                                    {{ pc|floatformat:1 }}%
+                                                </div>
+                                                {% endwith %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-diagram-3 display-1"></i>
+                            <p class="mt-3">Подсети не настроены</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

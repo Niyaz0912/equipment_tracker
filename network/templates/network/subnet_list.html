@@ -5,151 +5,129 @@
 {% block title %}Подсети сети - Equipment Tracker{% endblock %}
 
 {% block content %}
-<!-- Внутренняя навигация -->
-{% include 'network/_navigation.html' %}
-
-<div class="container-fluid py-4">
-    <!-- Заголовок -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1><i class="bi bi-diagram-3"></i> Подсети сети</h1>
-            <p class="text-muted">Все IP-подсети компании с информацией о занятости</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="/admin/network/subnet/add/" class="btn btn-primary" target="_blank">
-                <i class="bi bi-plus-circle"></i> Добавить подсеть
-            </a>
-        </div>
-    </div>
-
-    <!-- Таблица подсетей -->
-    <div class="card">
-        <div class="card-body">
-            {% if subnets %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Подсеть</th>
-                            <th>Описание</th>
-                            <th>Назначение</th>
-                            <th>VLAN</th>
-                            <th>Место</th>
-                            <th>IP всего</th>
-                            <th>Занято</th>
-                            <th>Свободно</th>
-                            <th>Заполнено</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for subnet in subnets %}
-                        {% with subnet.get_ip_stats as stats %}
-                        {% with percent=stats.percent|default:0 %}
-                        <tr>
-                            <td>
-                                <strong><code>{{ subnet.network }}</code></strong>
-                            </td>
-                            <td>{{ subnet.description|truncatechars:50 }}</td>
-                            <td>
-                                <span class="badge 
-                                    {% if subnet.purpose == 'client' %}bg-primary
-                                    {% elif subnet.purpose == 'server' %}bg-success
-                                    {% elif subnet.purpose == 'infrastructure' %}bg-info
-                                    {% elif subnet.purpose == 'management' %}bg-secondary
-                                    {% elif subnet.purpose == 'dmz' %}bg-danger
-                                    {% elif subnet.purpose == 'wireless' %}bg-warning
-                                    {% else %}bg-dark{% endif %}">
-                                    {{ subnet.get_purpose_display }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if subnet.vlan_id %}
-                                <span class="badge bg-dark">VLAN {{ subnet.vlan_id }}</span>
-                                {% else %}
-                                <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if subnet.location %}
-                                {{ subnet.location.name }}
-                                {% else %}
-                                <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ stats.total|default:"?" }}</td>
-                            <td>
-                                <span class="text-success">{{ stats.occupied|default:"0" }}</span>
-                            </td>
-                            <td>
-                                <span class="text-primary">{{ stats.free|default:"?" }}</span>
-                            </td>
-                            <td>
-                                <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar 
-                                        {% if percent < 50 %}bg-success
-                                        {% elif percent < 80 %}bg-warning
-                                        {% else %}bg-danger{% endif %}"
-                                        role="progressbar" 
-                                        style="width: {{ percent }}%;"
-                                        aria-valuenow="{{ percent }}" 
-                                        aria-valuemin="0" 
-                                        aria-valuemax="100">
-                                        {{ percent|floatformat:0 }}%
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{% url 'network:subnet_detail' subnet.pk %}" 
-                                       class="btn btn-outline-primary">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="/admin/network/subnet/{{ subnet.pk }}/change/" 
-                                       class="btn btn-outline-secondary" target="_blank">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endwith %}
-                        {% endwith %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div class="text-center py-5">
-                <i class="bi bi-inbox display-1 text-muted"></i>
-                <h5 class="mt-3">Подсети не найдены</h5>
-                <p class="text-muted">Добавьте первую подсеть через админку</p>
-                <a href="/admin/network/subnet/add/" class="btn btn-primary" target="_blank">
-                    <i class="bi bi-plus-circle"></i> Добавить подсеть
-                </a>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Пояснение -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card border-info">
-                <div class="card-header bg-info text-white">
-                    <h6 class="card-title mb-0">
-                        <i class="bi bi-info-circle"></i> О подсетях
-                    </h6>
+<div class="row">
+    <div class="col-md-3">{% include 'network/network_sidebar.html' %}</div>
+    <div class="col-md-9">
+        
+        <div class="container-fluid py-4">
+            <!-- Заголовок -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h1><i class="bi bi-diagram-3"></i> Подсети сети</h1>
+                    <p class="text-muted">Все IP-подсети компании с информацией о занятости</p>
                 </div>
+                <div class="col-md-4 text-end">
+                    <a href="/admin/network/subnet/add/" class="btn btn-primary" target="_blank">
+                        <i class="bi bi-plus-circle"></i> Добавить подсеть
+                    </a>
+                </div>
+            </div>
+
+            <!-- Список подсетей -->
+            <div class="card">
                 <div class="card-body">
-                    <p>
-                        <strong>Подсеть</strong> — это логическое разделение IP-сети. Например,
-                        <code>192.168.1.0/24</code> содержит 254 адреса (192.168.1.1 - 192.168.1.254).
-                    </p>
-                    <p class="mb-0">
-                        • <span class="text-success">Зеленый прогресс</span> — мало занято (&lt; 50%)<br>
-                        • <span class="text-warning">Желтый прогресс</span> — умеренная занятость (50-80%)<br>
-                        • <span class="text-danger">Красный прогресс</span> — почти заполнено (&gt; 80%)
-                    </p>
+                    {% if subnets %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Подсеть</th>
+                                    <th>Описание</th>
+                                    <th>Локация</th>
+                                    <th>Шлюз</th>
+                                    <th>IP адресов</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subnet in subnets %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ subnet.network_address }}/{{ subnet.prefix_length }}</strong><br>
+                                        <small class="text-muted">{{ subnet.name }}</small>
+                                    </td>
+                                    <td>{{ subnet.description|default:"-"|truncatechars:50 }}</td>
+                                    <td>
+                                        {% if subnet.location %}
+                                        <i class="bi bi-geo-alt"></i> {{ subnet.location.name }}
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if subnet.gateway %}
+                                        <code>{{ subnet.gateway }}</code>
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if subnet.total_ips %}
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: {{ subnet.usage_percent }}%;">
+                                            </div>
+                                        </div>
+                                        <small>{{ subnet.used_ips }} / {{ subnet.total_ips }}</small>
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'network:subnet_detail' subnet.id %}" 
+                                               class="btn btn-outline-primary" title="Просмотр">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="/admin/network/subnet/{{ subnet.id }}/change/" 
+                                               class="btn btn-outline-secondary" title="Редактировать">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-diagram-3 display-1 text-muted"></i>
+                        <p class="mt-3">Подсети не найдены</p>
+                        <p class="text-muted">Добавьте подсети через административную панель</p>
+                        <a href="/admin/network/subnet/add/" class="btn btn-primary mt-2" target="_blank">
+                            <i class="bi bi-plus-circle"></i> Добавить первую подсеть
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Статистика -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Всего подсетей</h5>
+                            <h2>{{ subnets.count }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Активных</h5>
+                            <h2>{{ subnets.count }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">IP-адресов</h5>
+                            <h2>{{ total_ips|default:"0" }}</h2>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

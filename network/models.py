@@ -55,6 +55,8 @@ class NetworkEquipment(models.Model):
     model = models.CharField(max_length=100, verbose_name="Модель", blank=True, null=True)
     serial_number = models.CharField(max_length=100, verbose_name="Серийный номер", blank=True, null=True)
     inventory_number = models.CharField(max_length=100, verbose_name="Инвентарный номер", blank=True, null=True)
+    mac_address = models.CharField(max_length=17, blank=True, null=True)
+    manufacturer = models.CharField(max_length=100, blank=True, null=True)
     
     # Связь с Location
     location = models.ForeignKey(

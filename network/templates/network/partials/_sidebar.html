@@ -1,0 +1,88 @@
+<!-- network/templates/network/partials/_sidebar.html -->
+<div class="network-sidebar">
+    <div class="sidebar-sticky pt-3">
+        
+        <!-- Заголовок -->
+        <div class="px-3 mb-3">
+            <h5 class="text-muted">
+                <i class="bi bi-wifi"></i> СЕТЕВАЯ ИНФРАСТРУКТУРА
+            </h5>
+            <hr class="mt-2">
+        </div>
+        
+        <!-- Основной раздел -->
+        <ul class="nav flex-column mb-3">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'network:equipment_list' %}">
+                    <i class="bi bi-router me-2"></i>
+                    Оборудование
+                    <span class="badge bg-secondary float-end">
+                        {% if equipment_count %}{{ equipment_count }}{% else %}0{% endif %}
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'network:subnet_list' %}">
+                    <i class="bi bi-diagram-3 me-2"></i>
+                    Подсети
+                </a>
+            </li>
+        </ul>
+        
+        <!-- IP-менеджмент -->
+        <div class="px-3 mb-2">
+            <small class="text-muted">IP-МЕНЕДЖМЕНТ</small>
+        </div>
+        <ul class="nav flex-column mb-3">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'network:ip_management' %}">
+                    <i class="bi bi-hdd-rack me-2"></i>
+                    Управление IP
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Топология -->
+        <div class="px-3 mb-2">
+            <small class="text-muted">ТОПОЛОГИЯ</small>
+        </div>
+        <ul class="nav flex-column mb-3">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'network:network_map' %}">
+                    <i class="bi bi-map me-2"></i>
+                    Карта сети
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Быстрое сканирование -->
+        <div class="px-3 mb-2">
+            <small class="text-muted">СКАНИРОВАНИЕ</small>
+        </div>
+        <div class="px-3 mb-3">
+            <div class="card border-0 bg-light">
+                <div class="card-body p-2">
+                    <small class="d-block mb-1">Быстрое сканирование</small>
+                    <form method="post" action="{% url 'network:equipment_list' %}" id="quick-scan-form">
+                        {% csrf_token %}
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control form-control-sm" 
+                                   name="network" placeholder="192.168.10.0/24"
+                                   value="{{ detected_network|default:'192.168.10.0/24' }}">
+                            <button class="btn btn-primary btn-sm" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> 
+                            Сканер на вкладке "Оборудование"
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>

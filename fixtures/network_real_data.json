@@ -1,0 +1,2052 @@
+[
+{
+  "model": "network.location",
+  "pk": 6,
+  "fields": {
+    "name": "Corp network",
+    "description": "Корпоративная сеть",
+    "address": null,
+    "created_at": "2026-01-27T07:54:30.777Z"
+  }
+},
+{
+  "model": "network.location",
+  "pk": 7,
+  "fields": {
+    "name": "Corp network 2",
+    "description": "Продолжение корпоративной сети",
+    "address": null,
+    "created_at": "2026-01-27T07:54:30.785Z"
+  }
+},
+{
+  "model": "network.location",
+  "pk": 8,
+  "fields": {
+    "name": "DJns crankos",
+    "description": "Сеть DJns crankos",
+    "address": null,
+    "created_at": "2026-01-27T07:54:30.788Z"
+  }
+},
+{
+  "model": "network.location",
+  "pk": 5,
+  "fields": {
+    "name": "Kavleger",
+    "description": "Сеть Kavleger",
+    "address": null,
+    "created_at": "2026-01-27T07:54:30.770Z"
+  }
+},
+{
+  "model": "network.location",
+  "pk": 4,
+  "fields": {
+    "name": "Network device & server",
+    "description": "Основное сетевое оборудование",
+    "address": null,
+    "created_at": "2026-01-27T07:54:30.766Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 6,
+  "fields": {
+    "name": "Устройство 192.168.10.104",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.104",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.799Z",
+    "updated_at": "2026-01-27T07:54:30.799Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 7,
+  "fields": {
+    "name": "Устройство 192.168.10.105",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.105",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.805Z",
+    "updated_at": "2026-01-27T07:54:30.805Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 8,
+  "fields": {
+    "name": "Устройство 192.168.10.109",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.109",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.819Z",
+    "updated_at": "2026-01-27T07:54:30.819Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 9,
+  "fields": {
+    "name": "Устройство 192.168.10.11",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.11",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.826Z",
+    "updated_at": "2026-01-27T07:54:30.827Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 10,
+  "fields": {
+    "name": "Устройство 192.168.10.110",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.110",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.835Z",
+    "updated_at": "2026-01-27T07:54:30.835Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 11,
+  "fields": {
+    "name": "Устройство 192.168.10.111",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.111",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.845Z",
+    "updated_at": "2026-01-27T07:54:30.845Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 12,
+  "fields": {
+    "name": "Устройство 192.168.10.112",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.112",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.851Z",
+    "updated_at": "2026-01-27T07:54:30.851Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 13,
+  "fields": {
+    "name": "Устройство 192.168.10.113",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.113",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.859Z",
+    "updated_at": "2026-01-27T07:54:30.859Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 14,
+  "fields": {
+    "name": "Устройство 192.168.10.116",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.116",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.866Z",
+    "updated_at": "2026-01-27T07:54:30.866Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 15,
+  "fields": {
+    "name": "Устройство 192.168.10.118",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.118",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.870Z",
+    "updated_at": "2026-01-27T07:54:30.870Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 16,
+  "fields": {
+    "name": "Устройство 192.168.10.119",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.119",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.879Z",
+    "updated_at": "2026-01-27T07:54:30.879Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 17,
+  "fields": {
+    "name": "Устройство 192.168.10.120",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.120",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.885Z",
+    "updated_at": "2026-01-27T07:54:30.885Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 18,
+  "fields": {
+    "name": "Устройство 192.168.10.122",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.122",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.897Z",
+    "updated_at": "2026-01-27T07:54:30.897Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 19,
+  "fields": {
+    "name": "Устройство 192.168.10.123",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.123",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.902Z",
+    "updated_at": "2026-01-27T07:54:30.902Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 20,
+  "fields": {
+    "name": "Устройство 192.168.10.128",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.128",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.909Z",
+    "updated_at": "2026-01-27T07:54:30.909Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 21,
+  "fields": {
+    "name": "Устройство 192.168.10.129",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.129",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.915Z",
+    "updated_at": "2026-01-27T07:54:30.915Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 22,
+  "fields": {
+    "name": "Устройство 192.168.10.13",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.13",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.920Z",
+    "updated_at": "2026-01-27T07:54:30.920Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 23,
+  "fields": {
+    "name": "Устройство 192.168.10.132",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.132",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.927Z",
+    "updated_at": "2026-01-27T07:54:30.927Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 24,
+  "fields": {
+    "name": "Устройство 192.168.10.135",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.135",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.932Z",
+    "updated_at": "2026-01-27T07:54:30.932Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 25,
+  "fields": {
+    "name": "Устройство 192.168.10.138",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.138",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.938Z",
+    "updated_at": "2026-01-27T07:54:30.938Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 26,
+  "fields": {
+    "name": "Устройство 192.168.10.139",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.139",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.946Z",
+    "updated_at": "2026-01-27T07:54:30.946Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 27,
+  "fields": {
+    "name": "Устройство 192.168.10.14",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.14",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.950Z",
+    "updated_at": "2026-01-27T07:54:30.951Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 28,
+  "fields": {
+    "name": "Устройство 192.168.10.141",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.141",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.957Z",
+    "updated_at": "2026-01-27T07:54:30.957Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 29,
+  "fields": {
+    "name": "Устройство 192.168.10.144",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.144",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.961Z",
+    "updated_at": "2026-01-27T07:54:30.961Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 30,
+  "fields": {
+    "name": "Устройство 192.168.10.145",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.145",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.965Z",
+    "updated_at": "2026-01-27T07:54:30.965Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 31,
+  "fields": {
+    "name": "Устройство 192.168.10.146",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.146",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.969Z",
+    "updated_at": "2026-01-27T07:54:30.969Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 32,
+  "fields": {
+    "name": "Устройство 192.168.10.15",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.15",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.974Z",
+    "updated_at": "2026-01-27T07:54:30.974Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 33,
+  "fields": {
+    "name": "Устройство 192.168.10.150",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.150",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.978Z",
+    "updated_at": "2026-01-27T07:54:30.978Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 34,
+  "fields": {
+    "name": "Устройство 192.168.10.151",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.151",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.983Z",
+    "updated_at": "2026-01-27T07:54:30.983Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 35,
+  "fields": {
+    "name": "Устройство 192.168.10.152",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.152",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.986Z",
+    "updated_at": "2026-01-27T07:54:30.986Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 36,
+  "fields": {
+    "name": "Устройство 192.168.10.154",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.154",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.991Z",
+    "updated_at": "2026-01-27T07:54:30.991Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 37,
+  "fields": {
+    "name": "Устройство 192.168.10.155",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.155",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.996Z",
+    "updated_at": "2026-01-27T07:54:30.996Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 38,
+  "fields": {
+    "name": "Устройство 192.168.10.158",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.158",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:30.999Z",
+    "updated_at": "2026-01-27T07:54:30.999Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 39,
+  "fields": {
+    "name": "Устройство 192.168.10.159",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.159",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.004Z",
+    "updated_at": "2026-01-27T07:54:31.004Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 40,
+  "fields": {
+    "name": "Устройство 192.168.10.16",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.16",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.009Z",
+    "updated_at": "2026-01-27T07:54:31.009Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 41,
+  "fields": {
+    "name": "Устройство 192.168.10.160",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.160",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.013Z",
+    "updated_at": "2026-01-27T07:54:31.013Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 42,
+  "fields": {
+    "name": "Устройство 192.168.10.161",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.161",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.016Z",
+    "updated_at": "2026-01-27T07:54:31.017Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 43,
+  "fields": {
+    "name": "Устройство 192.168.10.165",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.165",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.020Z",
+    "updated_at": "2026-01-27T07:54:31.020Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 44,
+  "fields": {
+    "name": "Устройство 192.168.10.17",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.17",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.025Z",
+    "updated_at": "2026-01-27T07:54:31.025Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 45,
+  "fields": {
+    "name": "Устройство 192.168.10.171",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.171",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.028Z",
+    "updated_at": "2026-01-27T07:54:31.028Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 46,
+  "fields": {
+    "name": "Устройство 192.168.10.172",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.172",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.033Z",
+    "updated_at": "2026-01-27T07:54:31.033Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 47,
+  "fields": {
+    "name": "Устройство 192.168.10.175",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.175",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.037Z",
+    "updated_at": "2026-01-27T07:54:31.037Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 48,
+  "fields": {
+    "name": "Устройство 192.168.10.177",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.177",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.041Z",
+    "updated_at": "2026-01-27T07:54:31.041Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 49,
+  "fields": {
+    "name": "Устройство 192.168.10.178",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.178",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.047Z",
+    "updated_at": "2026-01-27T07:54:31.047Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 50,
+  "fields": {
+    "name": "Устройство 192.168.10.179",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.179",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.051Z",
+    "updated_at": "2026-01-27T07:54:31.051Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 51,
+  "fields": {
+    "name": "Устройство 192.168.10.182",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.182",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.054Z",
+    "updated_at": "2026-01-27T07:54:31.054Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 52,
+  "fields": {
+    "name": "Устройство 192.168.10.184",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.184",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.059Z",
+    "updated_at": "2026-01-27T07:54:31.059Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 53,
+  "fields": {
+    "name": "Устройство 192.168.10.185",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.185",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.063Z",
+    "updated_at": "2026-01-27T07:54:31.063Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 54,
+  "fields": {
+    "name": "Устройство 192.168.10.186",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.186",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.067Z",
+    "updated_at": "2026-01-27T07:54:31.067Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 55,
+  "fields": {
+    "name": "Устройство 192.168.10.188",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.188",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.073Z",
+    "updated_at": "2026-01-27T07:54:31.073Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 56,
+  "fields": {
+    "name": "Устройство 192.168.10.189",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.189",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.077Z",
+    "updated_at": "2026-01-27T07:54:31.077Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 57,
+  "fields": {
+    "name": "Устройство 192.168.10.19",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.19",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.082Z",
+    "updated_at": "2026-01-27T07:54:31.082Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 58,
+  "fields": {
+    "name": "Устройство 192.168.10.190",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.190",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.086Z",
+    "updated_at": "2026-01-27T07:54:31.086Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 59,
+  "fields": {
+    "name": "Устройство 192.168.10.192",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.192",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.091Z",
+    "updated_at": "2026-01-27T07:54:31.091Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 60,
+  "fields": {
+    "name": "Устройство 192.168.10.193",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.193",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.095Z",
+    "updated_at": "2026-01-27T07:54:31.095Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 61,
+  "fields": {
+    "name": "Устройство 192.168.10.195",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.195",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.099Z",
+    "updated_at": "2026-01-27T07:54:31.099Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 62,
+  "fields": {
+    "name": "Устройство 192.168.10.196",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.196",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.102Z",
+    "updated_at": "2026-01-27T07:54:31.102Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 63,
+  "fields": {
+    "name": "Устройство 192.168.10.2",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.2",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.107Z",
+    "updated_at": "2026-01-27T07:54:31.107Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 64,
+  "fields": {
+    "name": "Устройство 192.168.10.20",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.20",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.111Z",
+    "updated_at": "2026-01-27T07:54:31.111Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 65,
+  "fields": {
+    "name": "Устройство 192.168.10.200",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.200",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.114Z",
+    "updated_at": "2026-01-27T07:54:31.114Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 66,
+  "fields": {
+    "name": "Устройство 192.168.10.201",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.201",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.118Z",
+    "updated_at": "2026-01-27T07:54:31.118Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 67,
+  "fields": {
+    "name": "Устройство 192.168.10.202",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.202",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.123Z",
+    "updated_at": "2026-01-27T07:54:31.123Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 68,
+  "fields": {
+    "name": "Устройство 192.168.10.203",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.203",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.127Z",
+    "updated_at": "2026-01-27T07:54:31.127Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 69,
+  "fields": {
+    "name": "Устройство 192.168.10.204",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.204",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.133Z",
+    "updated_at": "2026-01-27T07:54:31.133Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 70,
+  "fields": {
+    "name": "Устройство 192.168.10.206",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.206",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.137Z",
+    "updated_at": "2026-01-27T07:54:31.137Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 71,
+  "fields": {
+    "name": "Устройство 192.168.10.210",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.210",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.140Z",
+    "updated_at": "2026-01-27T07:54:31.140Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 72,
+  "fields": {
+    "name": "Устройство 192.168.10.213",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.213",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.144Z",
+    "updated_at": "2026-01-27T07:54:31.144Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 73,
+  "fields": {
+    "name": "Устройство 192.168.10.216",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.216",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.152Z",
+    "updated_at": "2026-01-27T07:54:31.152Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 74,
+  "fields": {
+    "name": "Устройство 192.168.10.217",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.217",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.158Z",
+    "updated_at": "2026-01-27T07:54:31.158Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 75,
+  "fields": {
+    "name": "Устройство 192.168.10.218",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.218",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.164Z",
+    "updated_at": "2026-01-27T07:54:31.164Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 76,
+  "fields": {
+    "name": "Устройство 192.168.10.219",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.219",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.169Z",
+    "updated_at": "2026-01-27T07:54:31.169Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 77,
+  "fields": {
+    "name": "Устройство 192.168.10.220",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.220",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.174Z",
+    "updated_at": "2026-01-27T07:54:31.174Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 78,
+  "fields": {
+    "name": "Устройство 192.168.10.221",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.221",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.178Z",
+    "updated_at": "2026-01-27T07:54:31.178Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 79,
+  "fields": {
+    "name": "Устройство 192.168.10.222",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.222",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.182Z",
+    "updated_at": "2026-01-27T07:54:31.182Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 80,
+  "fields": {
+    "name": "Устройство 192.168.10.223",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.223",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.186Z",
+    "updated_at": "2026-01-27T07:54:31.186Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 81,
+  "fields": {
+    "name": "Устройство 192.168.10.224",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.224",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.191Z",
+    "updated_at": "2026-01-27T07:54:31.191Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 82,
+  "fields": {
+    "name": "Устройство 192.168.10.225",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.225",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.196Z",
+    "updated_at": "2026-01-27T07:54:31.196Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 83,
+  "fields": {
+    "name": "Устройство 192.168.10.226",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.226",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.201Z",
+    "updated_at": "2026-01-27T07:54:31.201Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 84,
+  "fields": {
+    "name": "Устройство 192.168.10.227",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.227",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.205Z",
+    "updated_at": "2026-01-27T07:54:31.205Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 85,
+  "fields": {
+    "name": "Устройство 192.168.10.228",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.228",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.209Z",
+    "updated_at": "2026-01-27T07:54:31.209Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 86,
+  "fields": {
+    "name": "Устройство 192.168.10.229",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.229",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.213Z",
+    "updated_at": "2026-01-27T07:54:31.213Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 87,
+  "fields": {
+    "name": "Устройство 192.168.10.23",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.23",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.217Z",
+    "updated_at": "2026-01-27T07:54:31.217Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 88,
+  "fields": {
+    "name": "Устройство 192.168.10.230",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.230",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.222Z",
+    "updated_at": "2026-01-27T07:54:31.222Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 89,
+  "fields": {
+    "name": "Устройство 192.168.10.231",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.231",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.226Z",
+    "updated_at": "2026-01-27T07:54:31.226Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 90,
+  "fields": {
+    "name": "Устройство 192.168.10.234",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.234",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.231Z",
+    "updated_at": "2026-01-27T07:54:31.231Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 91,
+  "fields": {
+    "name": "Устройство 192.168.10.236",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.236",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.237Z",
+    "updated_at": "2026-01-27T07:54:31.237Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 92,
+  "fields": {
+    "name": "Устройство 192.168.10.238",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.238",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.240Z",
+    "updated_at": "2026-01-27T07:54:31.240Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 93,
+  "fields": {
+    "name": "Устройство 192.168.10.239",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.239",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.246Z",
+    "updated_at": "2026-01-27T07:54:31.246Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 94,
+  "fields": {
+    "name": "Устройство 192.168.10.24",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.24",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.251Z",
+    "updated_at": "2026-01-27T07:54:31.251Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 95,
+  "fields": {
+    "name": "Устройство 192.168.10.240",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.240",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.256Z",
+    "updated_at": "2026-01-27T07:54:31.257Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 96,
+  "fields": {
+    "name": "Устройство 192.168.10.242",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.242",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.261Z",
+    "updated_at": "2026-01-27T07:54:31.261Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 97,
+  "fields": {
+    "name": "Устройство 192.168.10.249",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.249",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.266Z",
+    "updated_at": "2026-01-27T07:54:31.266Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 98,
+  "fields": {
+    "name": "Устройство 192.168.10.25",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.25",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.270Z",
+    "updated_at": "2026-01-27T07:54:31.270Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 99,
+  "fields": {
+    "name": "Устройство 192.168.10.250",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.250",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.275Z",
+    "updated_at": "2026-01-27T07:54:31.275Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 100,
+  "fields": {
+    "name": "Устройство 192.168.10.251",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.251",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.279Z",
+    "updated_at": "2026-01-27T07:54:31.279Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 101,
+  "fields": {
+    "name": "Устройство 192.168.10.26",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.26",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.283Z",
+    "updated_at": "2026-01-27T07:54:31.283Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 102,
+  "fields": {
+    "name": "Устройство 192.168.10.27",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.27",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.290Z",
+    "updated_at": "2026-01-27T07:54:31.290Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 103,
+  "fields": {
+    "name": "Устройство 192.168.10.28",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.28",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.297Z",
+    "updated_at": "2026-01-27T07:54:31.297Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 104,
+  "fields": {
+    "name": "Устройство 192.168.10.30",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.30",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.302Z",
+    "updated_at": "2026-01-27T07:54:31.302Z"
+  }
+},
+{
+  "model": "network.networkequipment",
+  "pk": 105,
+  "fields": {
+    "name": "Устройство 192.168.10.31",
+    "type": "other",
+    "model": null,
+    "serial_number": null,
+    "inventory_number": null,
+    "location": 6,
+    "rack": null,
+    "unit": null,
+    "ip_address": "192.168.10.31",
+    "mac_address": null,
+    "status": "active",
+    "notes": "Найдено автоматическим сканированием",
+    "created_at": "2026-01-27T07:54:31.306Z",
+    "updated_at": "2026-01-27T07:54:31.306Z"
+  }
+}
+]
