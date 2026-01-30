@@ -369,13 +369,16 @@ class ScanResultsView(AdminRequiredMixin, View):
         return redirect(f'{reverse("network:scan_results")}?network={network}')        
 
 class AddDeviceView(AdminRequiredMixin, View):
-    """ДОБАВЛЕНИЕ ОДНОГО УСТРОЙСТВА В БАЗУ"""
-    
     def post(self, request, *args, **kwargs):
+        print("="*50)
+        print("📥 AddDeviceView вызван")
+        
         ip = request.POST.get('ip', '').strip()
         mac = request.POST.get('mac', '').strip()
         manufacturer = request.POST.get('manufacturer', '').strip()
         hostname = request.POST.get('hostname', '').strip()
+        
+        print(f"📥 Данные: IP={ip}, MAC={mac}, Manufacturer={manufacturer}")
         
         if not ip:
             messages.error(request, 'Не указан IP адрес')
@@ -387,49 +390,88 @@ class AddDeviceView(AdminRequiredMixin, View):
             return redirect('network:scan_results')
         
         try:
-            # Определяем тип устройства
+            # ИСПРАВЛЕННОЕ ОПРЕДЕЛЕНИЕ ТИПА
             device_type = 'unknown'
-            if manufacturer:
-                man_lower = manufacturer.lower()
-                if 'mikrotik' in man_lower or 'routerboard' in man_lower:
-                    device_type = 'router'
-                elif 'ubiquiti' in man_lower:
-                    device_type = 'access_point'
-                elif 'grandstream' in man_lower:
-                    device_type = 'voip_phone'
-                elif 'hp' in man_lower or 'kyocera' in man_lower:
-                    device_type = 'printer'
-                elif 'cisco' in man_lower:
-                    device_type = 'switch'
-                elif 'd-link' in man_lower or 'tp-link' in man_lower:
-                    device_type = 'switch'
+            man_lower = str(manufacturer).lower()
+            
+            if 'giga-byte' in man_lower or 'gigabyte' in man_lower:
+                device_type = 'computer'
+            elif 'azurewave' in man_lower:
+                device_type = 'computer'
+            elif 'micro-star' in man_lower:
+                device_type = 'computer'
+            elif 'intel' in man_lower:
+                device_type = 'computer'
+            elif 'realtek' in man_lower:
+                device_type = 'computer'
+            elif 'cisco' in man_lower:
+                device_type = 'router' if 'router' in man_lower else 'switch'
+            elif 'mikrotik' in man_lower:
+                device_type = 'router'
+            elif 'ubiquiti' in man_lower:
+                device_type = 'access_point'
+            elif 'hp' in man_lower:
+                device_type = 'printer' if 'printer' in man_lower or 'laserjet' in man_lower else 'server'
+            elif 'kyocera' in man_lower:
+                device_type = 'printer'
+            elif 'd-link' in man_lower or 'tp-link' in man_lower:
+                device_type = 'switch'
+            elif 'grandstream' in man_lower:
+                device_type = 'voip_phone'
+            elif 'dahua' in man_lower or 'hikvision' in man_lower:
+                device_type = 'camera'
+            
+            # ИСПРАВЛЕННОЕ ИМЯ
+            name = ''
+            if hostname and hostname != ip:
+                name = hostname
+            elif manufacturer and manufacturer != "не определен":
+                name = f"{manufacturer} ({ip})"
+            else:
+                name = f"Устройство {ip}"
+            
+            # ОЧИСТКА MAC
+            mac_clean = None
+            if mac and mac != 'не определен' and len(mac) >= 12:
+                mac_clean = mac
+            
+            # ОЧИСТКА ПРОИЗВОДИТЕЛЯ
+            manufacturer_clean = None
+            if manufacturer and manufacturer != 'не определен':
+                manufacturer_clean = manufacturer
             
             # Создаем устройство
             device = NetworkEquipment.objects.create(
-                name=hostname or f"Устройство {ip}",
+                name=name,
                 type=device_type,
                 ip_address=ip,
-                mac_address=mac if mac and mac != 'не определен' else None,
-                manufacturer=manufacturer if manufacturer and manufacturer != 'не определен' else None,
+                mac_address=mac_clean,
+                manufacturer=manufacturer_clean,
                 status='active',
                 scan_source='scanner'
             )
+            
+            print(f"📥 Создано устройство: {name} (тип: {device_type})")
             
             messages.success(request, f'Устройство {ip} добавлено в базу')
             return redirect('network:equipment_detail', pk=device.id)
             
         except Exception as e:
+            print(f"❌ Ошибка в AddDeviceView: {str(e)}")
             messages.error(request, f'Ошибка при добавлении устройства: {str(e)}')
             return redirect('network:scan_results')
 
 
 class BulkAddDevicesView(AdminRequiredMixin, View):
-    """МАССОВОЕ ДОБАВЛЕНИЕ УСТРОЙСТВ"""
-    
     def post(self, request, *args, **kwargs):
-        # Получаем список IP из формы
+        print("="*50)
+        print("📦 BulkAddDevicesView вызван")
+        
         selected_ips = request.POST.getlist('selected_devices')
         scan_results = request.session.get('scan_results', {}).get('devices', [])
+        
+        print(f"📦 Выбрано IP: {selected_ips}")
+        print(f"📦 Устройств в сессии: {len(scan_results)}")
         
         if not selected_ips:
             messages.warning(request, 'Не выбрано ни одного устройства')
@@ -439,7 +481,6 @@ class BulkAddDevicesView(AdminRequiredMixin, View):
         skipped = 0
         errors = 0
         
-        # Создаем список устройств для массового добавления
         devices_to_create = []
         
         for device_data in scan_results:
@@ -452,38 +493,86 @@ class BulkAddDevicesView(AdminRequiredMixin, View):
                     continue
                 
                 try:
-                    # Определяем тип устройства
+                    # ДАННЫЕ ИЗ СКАНЕРА
+                    mac = device_data.get('mac', '')
+                    manufacturer = device_data.get('manufacturer', '')
+                    hostname = device_data.get('hostname', '')
+                    device_type_scanner = device_data.get('device_type', '')
+                    device_name_scanner = device_data.get('device_name', '')
+                    
+                    # 1. ИСПРАВЛЯЕМ НАЗВАНИЕ
+                    name = ''
+                    if device_name_scanner and device_name_scanner != ip:
+                        name = device_name_scanner
+                    elif hostname and hostname != ip:
+                        name = hostname
+                    elif manufacturer and manufacturer != "не определен":
+                        name = f"{manufacturer} ({ip})"
+                    else:
+                        name = f"Устройство {ip}"
+                    
+                    # 2. ИСПРАВЛЯЕМ ТИП УСТРОЙСТВА
                     device_type = 'unknown'
-                    manufacturer = device_data.get('manufacturer', '').lower()
+                    man_lower = str(manufacturer).lower()
                     
-                    if 'mikrotik' in manufacturer or 'routerboard' in manufacturer:
+                    if 'giga-byte' in man_lower or 'gigabyte' in man_lower:
+                        device_type = 'computer'
+                    elif 'azurewave' in man_lower:
+                        device_type = 'computer'
+                    elif 'micro-star' in man_lower:
+                        device_type = 'computer'
+                    elif 'intel' in man_lower:
+                        device_type = 'computer'
+                    elif 'realtek' in man_lower:
+                        device_type = 'computer'
+                    elif 'cisco' in man_lower:
+                        device_type = 'router' if 'router' in man_lower else 'switch'
+                    elif 'mikrotik' in man_lower:
                         device_type = 'router'
-                    elif 'ubiquiti' in manufacturer:
+                    elif 'ubiquiti' in man_lower:
                         device_type = 'access_point'
-                    elif 'grandstream' in manufacturer:
-                        device_type = 'voip_phone'
-                    elif 'hp' in manufacturer or 'kyocera' in manufacturer:
+                    elif 'hp' in man_lower:
+                        device_type = 'printer' if 'printer' in man_lower or 'laserjet' in man_lower else 'server'
+                    elif 'kyocera' in man_lower:
                         device_type = 'printer'
-                    elif 'cisco' in manufacturer:
+                    elif 'd-link' in man_lower or 'tp-link' in man_lower:
                         device_type = 'switch'
-                    elif 'd-link' in manufacturer or 'tp-link' in manufacturer:
-                        device_type = 'switch'
+                    elif 'grandstream' in man_lower:
+                        device_type = 'voip_phone'
+                    elif 'dahua' in man_lower or 'hikvision' in man_lower:
+                        device_type = 'camera'
                     
-                    # Собираем данные для создания
+                    # Если из сканера уже пришел тип
+                    if device_type_scanner and device_type_scanner != 'unknown':
+                        device_type = device_type_scanner
+                    
+                    # 3. ОБРАБАТЫВАЕМ MAC И ПРОИЗВОДИТЕЛЯ
+                    mac_clean = None
+                    if mac and mac != 'не определен' and len(mac) >= 12:
+                        mac_clean = mac
+                    
+                    manufacturer_clean = None
+                    if manufacturer and manufacturer != 'не определен':
+                        manufacturer_clean = manufacturer
+                    
+                    # 4. СОЗДАЕМ УСТРОЙСТВО
                     devices_to_create.append(
                         NetworkEquipment(
-                            name=device_data.get('hostname', f"Устройство {ip}"),
+                            name=name,
                             type=device_type,
                             ip_address=ip,
-                            mac_address=device_data['mac'] if device_data['mac'] != 'не определен' else None,
-                            manufacturer=device_data.get('manufacturer'),
+                            mac_address=mac_clean,
+                            manufacturer=manufacturer_clean,
                             status='active',
                             scan_source='scanner'
                         )
                     )
                     
+                    print(f"📦 Подготовлено: {name} ({ip}) - тип: {device_type}")
+                    
                 except Exception as e:
                     errors += 1
+                    print(f"❌ Ошибка обработки устройства {ip}: {str(e)}")
                     messages.error(request, f'Ошибка обработки устройства {ip}: {str(e)}')
         
         # Массовое создание
@@ -491,7 +580,9 @@ class BulkAddDevicesView(AdminRequiredMixin, View):
             try:
                 NetworkEquipment.objects.bulk_create(devices_to_create)
                 added = len(devices_to_create)
+                print(f"✅ Добавлено устройств: {added}")
             except Exception as e:
+                print(f"❌ Ошибка при массовом добавлении: {str(e)}")
                 messages.error(request, f'Ошибка при массовом добавлении: {str(e)}')
         
         # Результат

@@ -138,14 +138,8 @@
                                     <tr class="{% if device.in_database %}table-active{% endif %}">
                                         <!-- Чекбокс -->
                                         <td class="text-center">
-                                            {% if not device.in_database %}
                                             <input type="checkbox" name="selected_devices" value="{{ device.ip }}"
-                                                class="form-check-input device-checkbox" data-ip="{{ device.ip }}"
-                                                data-mac="{{ device.mac }}"
-                                                data-manufacturer="{{ device.manufacturer }}">
-                                            {% else %}
-                                            <i class="bi bi-check-circle text-success"></i>
-                                            {% endif %}
+                                                class="form-check-input device-checkbox">
                                         </td>
 
                                         <!-- Информация об устройстве -->
@@ -473,6 +467,78 @@
             selectAllNew();
         }, 1000);
     });
+
+// ПРОСТОЙ ТЕСТ - проверяем, видит ли JS элементы
+console.log("DOM загружен. Чекбоксов найдено:", 
+    document.querySelectorAll('.device-checkbox').length);
+
+// Функция обновления счетчика (УПРОЩЕННАЯ)
+function updateSelectedCount() {
+    console.log("updateSelectedCount вызвана");
+    
+    try {
+        const checkboxes = document.querySelectorAll('.device-checkbox');
+        console.log("Всего чекбоксов:", checkboxes.length);
+        
+        const checked = document.querySelectorAll('.device-checkbox:checked');
+        const count = checked.length;
+        console.log("Выбрано чекбоксов:", count);
+        
+        // Обновляем счетчик в шапке
+        const selectedCountEl = document.getElementById('selected-count');
+        const addBtn = document.getElementById('add-selected-btn');
+        
+        if (selectedCountEl) {
+            selectedCountEl.textContent = count;
+        }
+        
+        if (addBtn) {
+            addBtn.disabled = count === 0;
+            addBtn.innerHTML = `<i class="bi bi-plus-circle"></i> Добавить выбранные (${count})`;
+        }
+    } catch (error) {
+        console.error("Ошибка в updateSelectedCount:", error);
+    }
+}
+
+// ГАРАНТИРОВАННАЯ ИНИЦИАЛИЗАЦИЯ
+function initSelection() {
+    console.log("Инициализация чекбоксов...");
+    
+    // Вешаем обработчики на каждый чекбокс
+    document.querySelectorAll('.device-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            console.log("Чекбокс изменен:", this.value, this.checked);
+            updateSelectedCount();
+        });
+    });
+    
+    // Кнопка в шапке
+    const addBtn = document.getElementById('add-selected-btn');
+    if (addBtn) {
+        addBtn.addEventListener('click', function() {
+            console.log("Кнопка добавления нажата");
+            const count = document.querySelectorAll('.device-checkbox:checked').length;
+            if (count > 0 && confirm(`Добавить ${count} устройств?`)) {
+                document.getElementById('bulk-add-form').submit();
+            }
+        });
+    }
+    
+    // Автовыбор через 500мс
+    setTimeout(() => {
+        console.log("Автовыполнение...");
+        document.querySelectorAll('.device-checkbox').forEach(cb => cb.checked = true);
+        updateSelectedCount();
+    }, 500);
+}
+
+// Запускаем когда DOM готов
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSelection);
+} else {
+    initSelection(); // DOM уже загружен
+}
 </script>
 
 <style>

@@ -90,6 +90,13 @@ class NetworkEquipment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     
+    scan_source = models.CharField(
+        max_length=50,
+        verbose_name="Источник обнаружения",
+        blank=True,
+        null=True
+    )
+
     class Meta:
         db_table = 'network_networkequipment'
         verbose_name = 'Сетевое оборудование'
