@@ -151,92 +151,138 @@ class NetworkMapView(AdminRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
+        # ПАРАМЕТР ФИЛЬТРА
+        device_filter = self.request.GET.get('filter', 'all')
+        
+        # ФИЛЬТРАЦИЯ УСТРОЙСТВ
         devices = NetworkEquipment.objects.all().select_related('location')
+        
+        if device_filter == 'network_only':
+            # ТОЛЬКО СЕТЕВОЕ ОБОРУДОВАНИЕ
+            devices = devices.filter(
+                type__in=['router', 'switch', 'firewall', 'access_point', 'server']
+            )
+        elif device_filter == 'computers':
+            # ТОЛЬКО КОМПЬЮТЕРЫ
+            devices = devices.filter(type='computer')
+        elif device_filter == 'printers':
+            # ТОЛЬКО ПРИНТЕРЫ
+            devices = devices.filter(type='printer')
         
         # Данные для векторной схемы
         network_nodes = []
         network_edges = []
         
-        # 1. Создаем узлы (устройства)
+        # 1. СОЗДАЕМ УЗЛЫ
         for device in devices:
+            # Иконка в зависимости от типа
+            icon = self._get_device_icon(device.type)
+            
             network_nodes.append({
                 'id': device.id,
-                'label': f"{device.name}\n{device.ip_address or '-'}",
+                'label': f"{icon} {device.name}\n{device.ip_address or '-'}",
                 'group': device.type or 'other',
-                'title': f"{device.name}",
+                'title': f"{device.name}\nIP: {device.ip_address or 'нет'}",
                 'url': reverse('network:equipment_detail', args=[device.id]),
+                'level': self._get_device_level(device.type),  # Уровень в иерархии
             })
         
-        # 2. СОЗДАЕМ СВЯЗИ (edges) - ключевое!
+        # 2. СОЗДАЕМ ИЕРАРХИЧЕСКИЕ СВЯЗИ (ДЕРЕВО)
         
-        # Вариант A: Связь роутер ↔ все устройства в его подсети
-        routers = [d for d in devices if d.type == 'router' and d.ip_address]
-        for router in routers:
-            router_ip_parts = router.ip_address.split('.')
-            router_subnet = f"{router_ip_parts[0]}.{router_ip_parts[1]}.{router_ip_parts[2]}."
-            
-            for device in devices:
-                if (device.id != router.id and 
-                    device.ip_address and 
-                    device.ip_address.startswith(router_subnet)):
-                    
+        # Собираем устройства по уровням
+        network_devices = [d for d in devices if d.type in ['router', 'switch', 'firewall']]
+        servers = [d for d in devices if d.type == 'server']
+        other_devices = [d for d in devices if d.type not in ['router', 'switch', 'firewall', 'server']]
+        
+        # Правило 1: Роутеры → Коммутаторы
+        routers = [d for d in devices if d.type == 'router']
+        switches = [d for d in devices if d.type == 'switch']
+        
+        if routers and switches:
+            for router in routers:
+                for switch in switches:
+                    # Связываем роутер с коммутаторами
                     network_edges.append({
                         'from': router.id,
-                        'to': device.id,
-                        'label': 'LAN',
-                        'color': {'color': '#3498db'},
+                        'to': switch.id,
+                        'label': 'Uplink',
+                        'color': {'color': '#e74c3c'},
                         'arrows': 'to'
                     })
         
-        # Вариант B: Связь по локациям
-        devices_by_location = {}
-        for device in devices:
-            if device.location_id:
-                loc_id = device.location_id
-                if loc_id not in devices_by_location:
-                    devices_by_location[loc_id] = []
-                devices_by_location[loc_id].append(device.id)
+        # Правило 2: Коммутаторы → Остальные устройства (если нет коммутаторов, то роутеры)
+        distribution_devices = switches if switches else routers
         
-        # Связываем устройства в одном помещении
-        for location_id, device_ids in devices_by_location.items():
-            if len(device_ids) > 1:
-                # Создаем "хаб" для локации
-                for i in range(len(device_ids) - 1):
-                    for j in range(i + 1, len(device_ids)):
-                        network_edges.append({
-                            'from': device_ids[i],
-                            'to': device_ids[j],
-                            'label': 'локация',
-                            'color': {'color': '#95a5a6'},
-                            'dashes': True
-                        })
-        
-        # Вариант C: Иерархия по типам (если нет сетевых данных)
-        if not network_edges and devices:
-            # Простая древовидная структура
-            network_devices = [d for d in devices if d.type in ['router', 'switch', 'firewall']]
-            other_devices = [d for d in devices if d.type not in ['router', 'switch', 'firewall']]
-            
-            if network_devices:
-                main_device = network_devices[0]
+        if distribution_devices:
+            for distributor in distribution_devices[:3]:  # Первые 3 распределителя
                 for device in other_devices:
-                    if device.id != main_device.id:
-                        network_edges.append({
-                            'from': main_device.id,
-                            'to': device.id,
-                            'label': 'сеть'
-                        })
+                    if device.id != distributor.id:
+                        # Связываем с вероятностью 70%, чтобы не все было связано
+                        import random
+                        if random.random() < 0.7:
+                            network_edges.append({
+                                'from': distributor.id,
+                                'to': device.id,
+                                'label': 'Access',
+                                'color': {'color': '#3498db'},
+                                'arrows': 'to'
+                            })
         
-        context['network_nodes_json'] = json.dumps(network_nodes, ensure_ascii=False)
-        context['network_edges_json'] = json.dumps(network_edges, ensure_ascii=False)  # <-- ДОБАВЛЕНО
+        # Правило 3: Серверы к основному роутеру
+        if routers and servers:
+            main_router = routers[0]
+            for server in servers:
+                network_edges.append({
+                    'from': main_router.id,
+                    'to': server.id,
+                    'label': 'Server',
+                    'color': {'color': '#9b59b6'},
+                    'arrows': 'to'
+                })
+        
+        context['network_nodes_json'] = json.dumps(network_nodes or [], ensure_ascii=False)
+        context['network_edges_json'] = json.dumps(network_edges or [], ensure_ascii=False)
         context['devices'] = devices
-        context['all_locations'] = Location.objects.all()
-        
-        # Для отладки
-        print(f"🔗 Узлов: {len(network_nodes)}, Связей: {len(network_edges)}")
+        context['device_filter'] = device_filter
+        context['filter_options'] = {
+            'all': 'Все устройства',
+            'network_only': 'Только сетевое оборудование',
+            'computers': 'Только компьютеры',
+            'printers': 'Только принтеры'
+        }
         
         return context
-        
+    
+    def _get_device_icon(self, device_type):
+        """Возвращает иконку для типа устройства"""
+        icons = {
+            'router': '🛜',
+            'switch': '🔀',
+            'firewall': '🛡️',
+            'server': '🖥️',
+            'computer': '💻',
+            'printer': '🖨️',
+            'voip_phone': '📞',
+            'access_point': '📶',
+            'camera': '📹'
+        }
+        return icons.get(device_type, '🔘')
+    
+    def _get_device_level(self, device_type):
+        """Определяет уровень в иерархии"""
+        levels = {
+            'router': 1,
+            'firewall': 1,
+            'switch': 2,
+            'access_point': 2,
+            'server': 3,
+            'computer': 4,
+            'printer': 4,
+            'voip_phone': 4,
+            'camera': 4
+        }
+        return levels.get(device_type, 5)
+                
 
 class IPManagementView(AdminRequiredMixin, TemplateView):
     """УПРАВЛЕНИЕ IP-АДРЕСАМИ"""
