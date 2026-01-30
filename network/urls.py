@@ -5,7 +5,7 @@ from . import views
 app_name = 'network'
 
 urlpatterns = [
-    # Главная страница (оборудование + сканер)
+    # Главная страница (ОБОРУДОВАНИЕ)
     path('', views.EquipmentListView.as_view(), name='equipment_list'),
     
     # Оборудование
@@ -18,12 +18,19 @@ urlpatterns = [
     # Карта сети
     path('network-map/', views.NetworkMapView.as_view(), name='network_map'),
     
-    # IP-менеджмент (замена поиску IP)
+    # IP-менеджмент
     path('ip-management/', views.IPManagementView.as_view(), name='ip_management'),
     
-    # API для сканирования
-    path('api/scan/', views.ScanDevicesAPIView.as_view(), name='api_scan'),
-    path('api/scan-results/', views.GetScanResultsAPIView.as_view(), name='api_scan_results'),
-    path('api/add-device/', views.AddScannedDeviceView.as_view(), name='api_add_device'),
-    path('api/bulk-add/', views.BulkAddDevicesView.as_view(), name='api_bulk_add'),
+    # ============ СКАНЕР СЕТИ (ПРОСТОЙ ВАРИАНТ) ============
+    # Страница сканера
+    path('scanner/', views.NetworkScannerView.as_view(), name='scanner'),
+    
+    # Запуск сканирования и показ результатов
+    path('scan-results/', views.ScanResultsView.as_view(), name='scan_results'),
+    
+    # Добавление одного устройства
+    path('add-device/', views.AddDeviceView.as_view(), name='add_device'),
+    
+    # Массовое добавление устройств
+    path('bulk-add-devices/', views.BulkAddDevicesView.as_view(), name='bulk_add_devices'),
 ]

@@ -2,11 +2,13 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Управление IP-адресами - Equipment Tracker{% endblock %}
-
 {% block content %}
 <div class="row">
-    <div class="col-md-3">{% include 'network/network_sidebar.html' %}</div>
+    <div class="col-md-3">
+        {% with equipment_count=equipments.count %}
+        {% include 'network/partials/_sidebar.html' %}
+        {% endwith %}
+    </div>
     <div class="col-md-9">
         <div
             class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">

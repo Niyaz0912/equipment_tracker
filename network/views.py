@@ -30,22 +30,29 @@ class AdminRequiredMixin(LoginRequiredMixin):
 
 try:
     from .services.scanner import scanner
+    SCANNER_AVAILABLE = True
 except ImportError:
-    # Если сервис еще не создан, создаем заглушку
+    SCANNER_AVAILABLE = False
+    # Заглушка если скрипта нет
     class DummyScanner:
         def detect_network(self):
             return "192.168.10.0/24"
         def perform_scan(self, network):
-            return []
+            return [{
+                'ip': '192.168.10.1', 
+                'mac': '00:11:22:33:44:55', 
+                'manufacturer': 'Тестовый производитель', 
+                'hostname': 'test-device'
+            }]
     
     scanner = DummyScanner()
 
 # ============================================================================
-# ОСНОВНЫЕ VIEW
+# ОСНОВНЫЕ СТРАНИЦЫ
 # ============================================================================
 
 class EquipmentListView(AdminRequiredMixin, ListView):
-    """Список оборудования + сканер на вкладке"""
+    """СПИСОК ОБОРУДОВАНИЯ"""
     model = NetworkEquipment
     template_name = 'network/equipment_list.html'
     context_object_name = 'equipments'
@@ -82,48 +89,22 @@ class EquipmentListView(AdminRequiredMixin, ListView):
             'decommissioned': NetworkEquipment.objects.filter(status='decommissioned').count(),
         }
         
-        # Данные для вкладки сканера
-        context['detected_network'] = scanner.detect_network()
-        context['last_scan'] = self.request.session.get('network_scan_results', {})
-        
         # Параметры фильтров
         context['status_filter'] = self.request.GET.get('status', '')
         context['search_query'] = self.request.GET.get('search', '')
         
         return context
-    
-    def post(self, request, *args, **kwargs):
-        """Обработка сканирования сети"""
-        network = request.POST.get('network', scanner.detect_network())
-        
-        # Запускаем сканирование
-        devices = scanner.perform_scan(network)
-        
-        # Сохраняем в сессии
-        request.session['network_scan_results'] = {
-            'devices': devices,
-            'network': network,
-            'timestamp': timezone.now().isoformat(),
-            'total': len(devices)
-        }
-        
-        messages.success(
-            request, 
-            f'Найдено {len(devices)} устройств в сети {network}'
-        )
-        
-        return redirect('network:equipment_list')
 
 
 class EquipmentDetailView(DetailView):
-    """Детали оборудования"""
+    """ДЕТАЛИ ОБОРУДОВАНИЯ"""
     model = NetworkEquipment
     template_name = 'network/equipment_detail.html'
     context_object_name = 'equipment'
 
 
 class SubnetListView(ListView):
-    """Список всех подсетей"""
+    """СПИСОК ПОДСЕТЕЙ"""
     model = Subnet
     template_name = 'network/subnet_list.html'
     context_object_name = 'subnets'
@@ -133,7 +114,7 @@ class SubnetListView(ListView):
 
 
 class SubnetDetailView(DetailView):
-    """Детали подсети + IP адреса"""
+    """ДЕТАЛИ ПОДСЕТИ + IP АДРЕСА"""
     model = Subnet
     template_name = 'network/subnet_detail.html'
     context_object_name = 'subnet'
@@ -154,7 +135,7 @@ class SubnetDetailView(DetailView):
         
         context.update({
             'ip_addresses': ip_addresses,
-            'free_ips': free_ips[:50],  # Показываем первые 50 свободных
+            'free_ips': free_ips[:50],
             'free_count': len(free_ips),
             'used_count': len(used_ips),
             'total_count': len(all_ips),
@@ -164,80 +145,47 @@ class SubnetDetailView(DetailView):
 
 
 class NetworkMapView(AdminRequiredMixin, TemplateView):
-    """Карта сети с двумя режимами просмотра"""
+    """КАРТА СЕТИ"""
     template_name = 'network/network_map.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Параметры
-        view_mode = self.request.GET.get('mode', 'vector')  # 'vector' или 'location'
-        location_filter = self.request.GET.get('location')
-        type_filter = self.request.GET.get('type')
-        
-        # Получаем оборудование
         devices = NetworkEquipment.objects.all().select_related('location')
         
-        # Применяем фильтры
-        if location_filter:
-            devices = devices.filter(location_id=location_filter)
-        if type_filter:
-            devices = devices.filter(type=type_filter)
-        
         # Данные для векторной схемы
-        if view_mode == 'vector':
-            network_nodes = []
-            for device in devices:
-                network_nodes.append({
-                    'id': device.id,
-                    'label': f"{device.name}\n{device.ip_address or '-'}",
-                    'group': device.type or 'other',
-                    'title': f"{device.name}",
-                    'url': reverse('network:equipment_detail', args=[device.id]),
-                })
-            context['network_nodes_json'] = json.dumps(network_nodes, ensure_ascii=False)
+        network_nodes = []
+        for device in devices:
+            network_nodes.append({
+                'id': device.id,
+                'label': f"{device.name}\n{device.ip_address or '-'}",
+                'group': device.type or 'other',
+                'title': f"{device.name}",
+                'url': reverse('network:equipment_detail', args=[device.id]),
+            })
         
-        # Данные для карты по локациям
-        elif view_mode == 'location':
-            locations_data = {}
-            for device in devices:
-                location_id = device.location_id if device.location else 0
-                if location_id not in locations_data:
-                    locations_data[location_id] = {
-                        'location': device.location,
-                        'devices': []
-                    }
-                locations_data[location_id]['devices'].append(device)
-            context['locations_data'] = list(locations_data.values())
-        
-        # Общие данные
-        context.update({
-            'view_mode': view_mode,
-            'devices': devices,
-            'all_locations': Location.objects.all(),
-            'device_count': devices.count(),
-        })
+        context['network_nodes_json'] = json.dumps(network_nodes, ensure_ascii=False)
+        context['devices'] = devices
+        context['all_locations'] = Location.objects.all()
         
         return context
 
 
 class IPManagementView(AdminRequiredMixin, TemplateView):
-    """IP-менеджмент (замена поиску IP)"""
+    """УПРАВЛЕНИЕ IP-АДРЕСАМИ"""
     template_name = 'network/ip_management.html'
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        # Статистика по IP
+    def _get_ip_stats(self):
+        """Вспомогательный метод для статистики IP"""
         subnets = Subnet.objects.all().prefetch_related('ipaddress_set')
+        stats = []
         
-        ip_stats = []
         for subnet in subnets:
             total_ips = subnet.get_ip_count()
             used_ips = subnet.ipaddress_set.count()
             free_ips = total_ips - used_ips
             
-            ip_stats.append({
+            stats.append({
                 'subnet': subnet,
                 'cidr': f"{subnet.network_address}/{subnet.prefix_length}",
                 'total': total_ips,
@@ -246,225 +194,312 @@ class IPManagementView(AdminRequiredMixin, TemplateView):
                 'usage_percent': (used_ips / total_ips * 100) if total_ips > 0 else 0
             })
         
+        return stats
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
         context.update({
-            'ip_stats': ip_stats,
-            'total_subnets': len(subnets),
+            'ip_stats': self._get_ip_stats(),
+            'total_subnets': Subnet.objects.count(),
             'search_ip': self.request.GET.get('search_ip', '')
         })
         
         return context
     
     def post(self, request, *args, **kwargs):
-        """Поиск IP адреса"""
+        """ПОИСК IP АДРЕСА"""
         ip = request.POST.get('search_ip', '').strip()
-        if ip:
+        if not ip:
+            messages.warning(request, 'Введите IP адрес для поиска')
+            return redirect('network:ip_management')
+        
+        context = self.get_context_data()
+        context['search_ip'] = ip
+        
+        try:
             # Проверяем в IPAddress
             ip_address = IPAddress.objects.filter(address=ip).select_related('device', 'subnet').first()
             
-            # Если не найдено в IPAddress, проверяем в NetworkEquipment
-            if not ip_address:
-                equipment = NetworkEquipment.objects.filter(ip_address=ip).first()
+            if ip_address:
+                context['ip_result'] = ip_address
+            else:
+                # Если не найдено в IPAddress, проверяем в NetworkEquipment
+                equipment = NetworkEquipment.objects.filter(
+                    Q(ip_address=ip) | Q(management_ip=ip)
+                ).first()
                 if equipment:
-                    return render(request, 'network/ip_management.html', {
-                        'search_ip': ip,
-                        'equipment_result': equipment,
-                        'ip_stats': []  # Добавить логику получения статистики
-                    })
-            
-            return render(request, 'network/ip_management.html', {
-                'search_ip': ip,
-                'ip_result': ip_address,
-                'ip_stats': []  # Добавить логику получения статистики
-            })
+                    context['equipment_result'] = equipment
+                else:
+                    messages.info(request, f'IP адрес {ip} не найден в базе')
         
-        return redirect('network:ip_management')
-
+        except Exception as e:
+            messages.error(request, f'Ошибка при поиске IP: {str(e)}')
+        
+        return render(request, self.template_name, context)
 
 # ============================================================================
-# API VIEW ДЛЯ СКАНИРОВАНИЯ И ДОБАВЛЕНИЯ
+# СКАНЕР СЕТИ
 # ============================================================================
 
-class ScanDevicesAPIView(AdminRequiredMixin, View):
-    """API для сканирования устройств (AJAX)"""
+class NetworkScannerView(AdminRequiredMixin, TemplateView):
+    """СТРАНИЦА СКАНЕРА СЕТИ"""
+    template_name = 'network/scanner.html'
     
-    def post(self, request, *args, **kwargs):
-        network = request.POST.get('network', scanner.detect_network())
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         
         try:
-            # Запускаем сканирование
-            devices = scanner.perform_scan(network)
-            
-            # Сохраняем в сессии
-            request.session['network_scan_results'] = {
-                'devices': devices,
-                'network': network,
-                'timestamp': timezone.now().isoformat(),
-                'total': len(devices)
-            }
-            
-            return JsonResponse({
-                'success': True,
-                'count': len(devices),
-                'network': network,
-                'devices': devices[:10]  # Возвращаем первые 10 для предпросмотра
-            })
-            
+            detected_network = scanner.detect_network()
         except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'error': str(e)
-            })
+            detected_network = "192.168.10.0/24"
+        
+        context.update({
+            'detected_network': detected_network,
+            'scanner_available': SCANNER_AVAILABLE,
+            'scanning': False
+        })
+        
+        return context
 
 
-class GetScanResultsAPIView(AdminRequiredMixin, View):
-    """API для получения результатов сканирования"""
+# network/views.py
+class ScanResultsView(AdminRequiredMixin, View):
+    """РЕЗУЛЬТАТЫ СКАНИРОВАНИЯ СЕТИ"""
     
     def get(self, request, *args, **kwargs):
-        scan_data = request.session.get('network_scan_results', {})
-        devices = scan_data.get('devices', [])
+        network = request.GET.get('network', '').strip()  # GET параметр
+        if not network:
+            try:
+                network = scanner.detect_network()
+            except:
+                network = "192.168.10.0/24"
         
-        # Сравниваем с базой
-        devices_with_status = []
-        new_count = 0
-        existing_count = 0
+        print(f"🔍 Запрашиваю сканирование сети: {network}")
         
-        for device in devices:
-            # Проверяем в базе
-            existing = NetworkEquipment.objects.filter(
-                Q(ip_address=device['ip']) | 
-                Q(mac_address=device['mac'])
-            ).first()
+        try:
+            # Получаем устройства через сканер
+            raw_devices = scanner.perform_scan(network)
             
-            devices_with_status.append({
-                **device,
-                'in_database': bool(existing),
-                'existing_device': {
-                    'id': existing.id,
-                    'name': existing.name
-                } if existing else None
-            })
+            print(f"✅ Получено устройств: {len(raw_devices)}")
             
-            if existing:
-                existing_count += 1
-            else:
-                new_count += 1
+            processed_devices = []
+            for device_data in raw_devices:
+                if not isinstance(device_data, dict):
+                    continue
+                    
+                ip = device_data.get('ip', '')
+                if not ip:
+                    continue
+                
+                mac = device_data.get('mac', 'не определен')
+                manufacturer = device_data.get('manufacturer', 'не определен')
+                hostname = device_data.get('hostname', ip)
+                device_type = device_data.get('device_type', 'unknown')
+                device_name = device_data.get('device_name', f"Устройство {ip}")
+                
+                # Проверяем в базе данных
+                existing_device = None
+                if ip:
+                    existing_device = NetworkEquipment.objects.filter(ip_address=ip).first()
+                if not existing_device and mac and mac != 'не определен':
+                    existing_device = NetworkEquipment.objects.filter(mac_address=mac).first()
+                
+                # Преобразуем объект в словарь для шаблона
+                existing_dict = None
+                if existing_device:
+                    existing_dict = {
+                        'id': existing_device.id,
+                        'name': existing_device.name,
+                        'type': existing_device.type,
+                        'model': existing_device.model,
+                        'status': existing_device.status,
+                    }
+                
+                processed_devices.append({
+                    'ip': ip,
+                    'mac': mac,
+                    'manufacturer': manufacturer,
+                    'hostname': hostname,
+                    'device_type': device_type,
+                    'device_name': device_name,
+                    'in_database': bool(existing_device),
+                    'existing_device': existing_dict
+                })
         
-        return JsonResponse({
-            'scan_info': scan_data,
-            'devices': devices_with_status,
+        except Exception as e:
+            print(f"❌ Ошибка в ScanResultsView: {e}")
+            import traceback
+            traceback.print_exc()
+            processed_devices = []
+            messages.error(request, f'Ошибка сканирования: {str(e)}')
+        
+        # Сохраняем в сессии
+        request.session['scan_results'] = {
+            'devices': processed_devices,
+            'network': network,
+            'total': len(processed_devices),
+            'timestamp': timezone.now().isoformat()
+        }
+        
+        # Статистика
+        new_count = sum(1 for d in processed_devices if not d['in_database'])
+        existing_count = len(processed_devices) - new_count
+        
+        context = {
+            'devices': processed_devices,
+            'network': network,
+            'total': len(processed_devices),
             'new_count': new_count,
-            'existing_count': existing_count
-        })
+            'existing_count': existing_count,
+            'timestamp': timezone.now(),
+            'scanner_available': True,
+        }
+        
+        return render(request, 'network/scan_results.html', context)
+    
+    # УДАЛИТЕ этот POST-метод или сделайте так:
+    def post(self, request, *args, **kwargs):
+        """Альтернатива: обрабатываем POST и перенаправляем на GET"""
+        network = request.POST.get('network', '').strip()
+        if not network:
+            messages.warning(request, 'Введите сеть для сканирования')
+            return redirect('network:scanner')
+        
+        return redirect(f'{reverse("network:scan_results")}?network={network}')        
 
-
-class AddScannedDeviceView(AdminRequiredMixin, View):
-    """API для добавления устройства"""
+class AddDeviceView(AdminRequiredMixin, View):
+    """ДОБАВЛЕНИЕ ОДНОГО УСТРОЙСТВА В БАЗУ"""
     
     def post(self, request, *args, **kwargs):
+        ip = request.POST.get('ip', '').strip()
+        mac = request.POST.get('mac', '').strip()
+        manufacturer = request.POST.get('manufacturer', '').strip()
+        hostname = request.POST.get('hostname', '').strip()
+        
+        if not ip:
+            messages.error(request, 'Не указан IP адрес')
+            return redirect('network:scan_results')
+        
+        # Проверяем, нет ли уже в базе
+        if NetworkEquipment.objects.filter(ip_address=ip).exists():
+            messages.warning(request, f'Устройство {ip} уже есть в базе')
+            return redirect('network:scan_results')
+        
         try:
-            data = json.loads(request.body)
-            
-            # Проверяем, нет ли уже в базе
-            if NetworkEquipment.objects.filter(ip_address=data['ip']).exists():
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Устройство уже существует'
-                })
-            
-            # Создаем имя устройства
-            device_name = data.get('hostname') or f"Устройство {data['ip']}"
-            
             # Определяем тип устройства
-            device_type = self._detect_device_type(data)
+            device_type = 'unknown'
+            if manufacturer:
+                man_lower = manufacturer.lower()
+                if 'mikrotik' in man_lower or 'routerboard' in man_lower:
+                    device_type = 'router'
+                elif 'ubiquiti' in man_lower:
+                    device_type = 'access_point'
+                elif 'grandstream' in man_lower:
+                    device_type = 'voip_phone'
+                elif 'hp' in man_lower or 'kyocera' in man_lower:
+                    device_type = 'printer'
+                elif 'cisco' in man_lower:
+                    device_type = 'switch'
+                elif 'd-link' in man_lower or 'tp-link' in man_lower:
+                    device_type = 'switch'
             
             # Создаем устройство
-            equipment = NetworkEquipment.objects.create(
-                name=device_name,
+            device = NetworkEquipment.objects.create(
+                name=hostname or f"Устройство {ip}",
                 type=device_type,
-                ip_address=data['ip'],
-                mac_address=data['mac'] if data['mac'] != 'не определен' else None,
-                manufacturer=data.get('manufacturer'),
+                ip_address=ip,
+                mac_address=mac if mac and mac != 'не определен' else None,
+                manufacturer=manufacturer if manufacturer and manufacturer != 'не определен' else None,
                 status='active',
-                scan_source='auto'
+                scan_source='scanner'
             )
             
-            return JsonResponse({
-                'success': True,
-                'message': 'Устройство добавлено',
-                'id': equipment.id,
-                'name': equipment.name
-            })
+            messages.success(request, f'Устройство {ip} добавлено в базу')
+            return redirect('network:equipment_detail', pk=device.id)
             
         except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'error': str(e)
-            })
-    
-    def _detect_device_type(self, device_data):
-        """Определение типа устройства по данным"""
-        manufacturer = device_data.get('manufacturer', '').lower()
-        
-        if any(word in manufacturer for word in ['mikrotik', 'routerboard', 'cisco', 'juniper']):
-            return 'router'
-        elif any(word in manufacturer for word in ['ubiquiti', 'aruba', 'ruckus']):
-            return 'access_point'
-        elif any(word in manufacturer for word in ['hp', 'arista', 'extreme']):
-            return 'switch'
-        elif any(word in manufacturer for word in ['grandstream', 'yealink', 'polycom']):
-            return 'voip_phone'
-        elif any(word in manufacturer for word in ['hp', 'kyocera', 'xerox', 'canon']):
-            return 'printer'
-        elif any(word in manufacturer for word in ['dell', 'lenovo', 'supermicro']):
-            return 'server'
-        
-        return 'unknown'
+            messages.error(request, f'Ошибка при добавлении устройства: {str(e)}')
+            return redirect('network:scan_results')
 
 
 class BulkAddDevicesView(AdminRequiredMixin, View):
-    """Массовое добавление устройств"""
+    """МАССОВОЕ ДОБАВЛЕНИЕ УСТРОЙСТВ"""
     
     def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            device_ips = data.get('devices', [])
-            scan_results = request.session.get('network_scan_results', {}).get('devices', [])
-            
-            added_devices = []
-            skipped_devices = []
-            
-            for device_data in scan_results:
-                if device_data['ip'] in device_ips:
-                    # Проверяем, нет ли уже в базе
-                    if NetworkEquipment.objects.filter(ip_address=device_data['ip']).exists():
-                        skipped_devices.append(device_data['ip'])
-                        continue
+        # Получаем список IP из формы
+        selected_ips = request.POST.getlist('selected_devices')
+        scan_results = request.session.get('scan_results', {}).get('devices', [])
+        
+        if not selected_ips:
+            messages.warning(request, 'Не выбрано ни одного устройства')
+            return redirect('network:scan_results')
+        
+        added = 0
+        skipped = 0
+        errors = 0
+        
+        # Создаем список устройств для массового добавления
+        devices_to_create = []
+        
+        for device_data in scan_results:
+            if device_data['ip'] in selected_ips:
+                ip = device_data['ip']
+                
+                # Проверяем, нет ли уже в базе
+                if NetworkEquipment.objects.filter(ip_address=ip).exists():
+                    skipped += 1
+                    continue
+                
+                try:
+                    # Определяем тип устройства
+                    device_type = 'unknown'
+                    manufacturer = device_data.get('manufacturer', '').lower()
                     
-                    # Создаем устройство
-                    device_type = AddScannedDeviceView()._detect_device_type(device_data)
-                    device_name = device_data.get('hostname') or f"Устройство {device_data['ip']}"
+                    if 'mikrotik' in manufacturer or 'routerboard' in manufacturer:
+                        device_type = 'router'
+                    elif 'ubiquiti' in manufacturer:
+                        device_type = 'access_point'
+                    elif 'grandstream' in manufacturer:
+                        device_type = 'voip_phone'
+                    elif 'hp' in manufacturer or 'kyocera' in manufacturer:
+                        device_type = 'printer'
+                    elif 'cisco' in manufacturer:
+                        device_type = 'switch'
+                    elif 'd-link' in manufacturer or 'tp-link' in manufacturer:
+                        device_type = 'switch'
                     
-                    equipment = NetworkEquipment.objects.create(
-                        name=device_name,
-                        type=device_type,
-                        ip_address=device_data['ip'],
-                        mac_address=device_data.get('mac'),
-                        manufacturer=device_data.get('manufacturer'),
-                        status='active',
-                        scan_source='auto'
+                    # Собираем данные для создания
+                    devices_to_create.append(
+                        NetworkEquipment(
+                            name=device_data.get('hostname', f"Устройство {ip}"),
+                            type=device_type,
+                            ip_address=ip,
+                            mac_address=device_data['mac'] if device_data['mac'] != 'не определен' else None,
+                            manufacturer=device_data.get('manufacturer'),
+                            status='active',
+                            scan_source='scanner'
+                        )
                     )
                     
-                    added_devices.append(equipment.name)
-            
-            return JsonResponse({
-                'success': True,
-                'added': added_devices,
-                'skipped': skipped_devices,
-                'added_count': len(added_devices)
-            })
-            
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'error': str(e)
-            })
+                except Exception as e:
+                    errors += 1
+                    messages.error(request, f'Ошибка обработки устройства {ip}: {str(e)}')
+        
+        # Массовое создание
+        if devices_to_create:
+            try:
+                NetworkEquipment.objects.bulk_create(devices_to_create)
+                added = len(devices_to_create)
+            except Exception as e:
+                messages.error(request, f'Ошибка при массовом добавлении: {str(e)}')
+        
+        # Результат
+        if added:
+            messages.success(request, f'Успешно добавлено {added} устройств')
+        if skipped:
+            messages.info(request, f'{skipped} устройств уже были в базе и пропущены')
+        if errors:
+            messages.error(request, f'При обработке {errors} устройств возникли ошибки')
+        
+        return redirect('network:equipment_list')

@@ -1,0 +1,498 @@
+<!-- network/templates/network/scan_results.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Результаты сканирования - Equipment Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Сайдбар -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                {% include 'network/partials/_sidebar.html' %}
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <!-- Шапка с кнопками -->
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="bi bi-search text-primary"></i> Результаты сканирования сети
+                </h1>
+                <div class="btn-toolbar">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-success" id="add-selected-btn" disabled>
+                            <i class="bi bi-plus-circle"></i> Добавить выбранные (<span id="selected-count">0</span>)
+                        </button>
+                        <a href="{% url 'network:scanner' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Новое сканирование
+                        </a>
+                        <a href="{% url 'network:equipment_list' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-list-ul"></i> Все оборудование
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информационная панель -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-wifi"></i> Параметры сканирования
+                            </h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">Сеть:</small>
+                                    <p class="mb-1"><strong>{{ network }}</strong></p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Время:</small>
+                                    <p class="mb-1"><strong>{{ timestamp|date:"d.m.Y H:i:s" }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card border-success">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-pie-chart"></i> Статистика
+                            </h6>
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <h3 class="text-success">{{ total }}</h3>
+                                    <small class="text-muted">Всего</small>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h3 class="text-warning">{{ new_count }}</h3>
+                                    <small class="text-muted">Новых</small>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h3 class="text-info">{{ existing_count }}</h3>
+                                    <small class="text-muted">В базе</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Предупреждение если нет сканера -->
+            {% if not scanner_available %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Внимание!</strong> Сканер сети недоступен. Отображаются тестовые данные.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endif %}
+
+            <!-- Панель управления выбором -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-check-square"></i> Управление выбором
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary" onclick="selectAllNew()">
+                                <i class="bi bi-check-all"></i> Выбрать все новые
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="deselectAll()">
+                                <i class="bi bi-x-square"></i> Снять все
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица устройств -->
+            <div class="card">
+                <div class="card-body p-0">
+                    {% if devices %}
+                    <form method="POST" action="{% url 'network:bulk_add_devices' %}" id="bulk-add-form">
+                        {% csrf_token %}
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="40" class="text-center">
+                                            <input type="checkbox" id="select-all-checkbox" class="form-check-input"
+                                                onchange="toggleAll(this)">
+                                        </th>
+                                        <th>Устройство</th>
+                                        <th>Сетевые данные</th>
+                                        <th>Статус</th>
+                                        <th class="text-center">Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for device in devices %}
+                                    <tr class="{% if device.in_database %}table-active{% endif %}">
+                                        <!-- Чекбокс -->
+                                        <td class="text-center">
+                                            {% if not device.in_database %}
+                                            <input type="checkbox" name="selected_devices" value="{{ device.ip }}"
+                                                class="form-check-input device-checkbox" data-ip="{{ device.ip }}"
+                                                data-mac="{{ device.mac }}"
+                                                data-manufacturer="{{ device.manufacturer }}">
+                                            {% else %}
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- Информация об устройстве -->
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <!-- Иконка и бейдж типа устройства -->
+                                                    {% if device.device_type == 'computer' %}
+                                                    <i class="bi bi-pc-display text-success fs-4"></i>
+                                                    <span class="badge bg-success ms-2">Компьютер</span>
+                                                    {% elif device.device_type == 'printer' %}
+                                                    <i class="bi bi-printer text-danger fs-4"></i>
+                                                    <span class="badge bg-danger ms-2">Принтер</span>
+                                                    {% elif device.device_type == 'router' %}
+                                                    <i class="bi bi-router text-primary fs-4"></i>
+                                                    <span class="badge bg-primary ms-2">Роутер</span>
+                                                    {% elif device.device_type == 'voip_phone' %}
+                                                    <i class="bi bi-telephone text-info fs-4"></i>
+                                                    <span class="badge bg-info ms-2">IP-телефон</span>
+                                                    {% elif device.device_type == 'web_device' %}
+                                                    <i class="bi bi-globe text-warning fs-4"></i>
+                                                    <span class="badge bg-warning ms-2">Веб-устройство</span>
+                                                    {% elif device.device_type == 'camera' %}
+                                                    <i class="bi bi-camera-video text-secondary fs-4"></i>
+                                                    <span class="badge bg-secondary ms-2">Камера</span>
+                                                    {% elif device.device_type == 'server' %}
+                                                    <i class="bi bi-server text-warning fs-4"></i>
+                                                    <span class="badge bg-warning ms-2">Сервер</span>
+                                                    {% elif device.device_type == 'mobile' %}
+                                                    <i class="bi bi-phone text-info fs-4"></i>
+                                                    <span class="badge bg-info ms-2">Мобильное</span>
+                                                    {% elif device.device_type == 'network_device' %}
+                                                    <i class="bi bi-wifi text-primary fs-4"></i>
+                                                    <span class="badge bg-primary ms-2">Сетевое</span>
+                                                    {% elif device.device_type == 'switch' %}
+                                                    <i class="bi bi-hdd-network text-secondary fs-4"></i>
+                                                    <span class="badge bg-secondary ms-2">Коммутатор</span>
+                                                    {% else %}
+                                                    <i class="bi bi-question-circle text-muted fs-4"></i>
+                                                    <span class="badge bg-secondary ms-2">
+                                                        {{ device.device_type|default:"Неизвестно" }}
+                                                    </span>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <!-- Название устройства -->
+                                                    <strong>{{ device.device_name }}</strong>
+                                                    <div class="text-muted small">
+                                                        {% if device.manufacturer != "не определен" %}
+                                                        {{ device.manufacturer }}
+                                                        {% endif %}
+                                                        {% if device.hostname and device.hostname != device.ip %}
+                                                        • {{ device.hostname }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Сетевые данные -->
+                                        <td>
+                                            <div class="mb-1">
+                                                <span class="badge bg-dark">IP:</span>
+                                                <code class="ms-1">{{ device.ip }}</code>
+                                            </div>
+                                            {% if device.mac and device.mac != "не определен" %}
+                                            <div>
+                                                <span class="badge bg-secondary">MAC:</span>
+                                                <small class="ms-1">{{ device.mac }}</small>
+                                            </div>
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- Статус -->
+                                        <td>
+                                            {% if device.in_database %}
+                                            <span class="badge bg-info">
+                                                <i class="bi bi-database-check"></i> В базе
+                                                {% if device.existing_device %}
+                                                <a href="{% url 'network:equipment_detail' device.existing_device.id %}"
+                                                    class="text-white text-decoration-none ms-1">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                                {% endif %}
+                                            </span>
+                                            {% else %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-exclamation-diamond"></i> Новое
+                                            </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- Действия -->
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-sm">
+                                                {% if device.in_database %}
+                                                {% if device.existing_device %}
+                                                <a href="{% url 'network:equipment_detail' device.existing_device.id %}"
+                                                    class="btn btn-outline-primary btn-sm" title="Просмотреть">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                {% endif %}
+                                                {% else %}
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm add-single-btn"
+                                                    data-ip="{{ device.ip }}" data-mac="{{ device.mac }}"
+                                                    data-manufacturer="{{ device.manufacturer }}"
+                                                    title="Добавить в базу">
+                                                    <i class="bi bi-plus-lg"></i>
+                                                </button>
+                                                {% endif %}
+
+                                                <!-- Кнопка сканирования портов -->
+                                                <button type="button" class="btn btn-outline-info btn-sm"
+                                                    onclick="scanDevice('{{ device.ip }}')" title="Сканировать порты">
+                                                    <i class="bi bi-search"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                    {% else %}
+                    <!-- Если нет устройств -->
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <h3 class="mt-3">Устройства не найдены</h3>
+                        <p class="text-muted mb-4">Попробуйте изменить параметры сканирования или проверьте доступность
+                            сети</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{% url 'network:scanner' %}" class="btn btn-primary">
+                                <i class="bi bi-arrow-left"></i> Вернуться к сканеру
+                            </a>
+                            <button type="button" class="btn btn-outline-secondary" onclick="location.reload()">
+                                <i class="bi bi-arrow-clockwise"></i> Повторить
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Панель итогов -->
+            {% if devices %}
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-lightbulb"></i> Рекомендации
+                            </h6>
+                            <ul class="small mb-0">
+                                <li>Новые устройства автоматически определяются по IP/MAC адресам</li>
+                                <li>Устройства уже находящиеся в базе отмечены синим цветом</li>
+                                <li>Для добавления выберите нужные устройства и нажмите "Добавить выбранные"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Выбрано устройств:</h6>
+                                    <p class="mb-0 text-muted small">Готовы к добавлению в базу</p>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-success" onclick="submitBulkForm()"
+                                        id="submit-bulk-btn" disabled>
+                                        <i class="bi bi-cloud-upload"></i> Добавить выбранные
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+
+<!-- Форма для добавления одного устройства -->
+<form method="POST" action="{% url 'network:add_device' %}" id="single-add-form" style="display: none;">
+    {% csrf_token %}
+    <input type="hidden" name="ip" id="single-ip">
+    <input type="hidden" name="mac" id="single-mac">
+    <input type="hidden" name="manufacturer" id="single-manufacturer">
+    <input type="hidden" name="hostname" id="single-hostname">
+</form>
+
+<!-- Модальное окно для сканирования портов -->
+<div class="modal fade" id="scanModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Сканирование портов</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Сканирую устройство: <code id="scan-ip"></code></p>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                </div>
+                <div id="scan-results" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Управление чекбоксами
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.device-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = source.checked;
+        });
+        updateSelectedCount();
+    }
+
+    function selectAllNew() {
+        const checkboxes = document.querySelectorAll('.device-checkbox');
+        checkboxes.forEach(checkbox => checkbox.checked = true);
+        updateSelectedCount();
+    }
+
+    function deselectAll() {
+        const checkboxes = document.querySelectorAll('.device-checkbox');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+        updateSelectedCount();
+    }
+
+    // Обновление счетчика выбранных
+    function updateSelectedCount() {
+        const checkboxes = document.querySelectorAll('.device-checkbox:checked');
+        const count = checkboxes.length;
+
+        // Обновляем счетчики
+        document.getElementById('selected-count').textContent = count;
+        document.getElementById('add-selected-btn').disabled = count === 0;
+        document.getElementById('add-selected-btn').innerHTML =
+            `<i class="bi bi-plus-circle"></i> Добавить выбранные (${count})`;
+
+        document.getElementById('submit-bulk-btn').disabled = count === 0;
+    }
+
+    // Добавление одного устройства
+    document.querySelectorAll('.add-single-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const ip = this.getAttribute('data-ip');
+            const mac = this.getAttribute('data-mac');
+            const manufacturer = this.getAttribute('data-manufacturer');
+
+            if (confirm(`Добавить устройство ${ip} в базу данных?`)) {
+                document.getElementById('single-ip').value = ip;
+                document.getElementById('single-mac').value = mac;
+                document.getElementById('single-manufacturer').value = manufacturer;
+                document.getElementById('single-hostname').value = 'Устройство ' + ip;
+                document.getElementById('single-add-form').submit();
+            }
+        });
+    });
+
+    // Отправка формы массового добавления
+    function submitBulkForm() {
+        const count = document.querySelectorAll('.device-checkbox:checked').length;
+        if (count > 0 && confirm(`Добавить ${count} устройств в базу данных?`)) {
+            document.getElementById('bulk-add-form').submit();
+        }
+    }
+
+    // Сканирование портов устройства
+    function scanDevice(ip) {
+        const modal = new bootstrap.Modal(document.getElementById('scanModal'));
+        document.getElementById('scan-ip').textContent = ip;
+        document.getElementById('scan-results').innerHTML =
+            '<div class="text-center"><div class="spinner-border"></div></div>';
+
+        // Показываем модальное окно
+        modal.show();
+
+        // Имитация сканирования (заглушка)
+        setTimeout(() => {
+            document.getElementById('scan-results').innerHTML = `
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Это демо-функция
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Порт 80 (HTTP)</span>
+                    <span class="badge bg-success">Открыт</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Порт 22 (SSH)</span>
+                    <span class="badge bg-success">Открыт</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Порт 443 (HTTPS)</span>
+                    <span class="badge bg-danger">Закрыт</span>
+                </li>
+            </ul>
+        `;
+        }, 1500);
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function () {
+        // Слушатели для чекбоксов
+        document.querySelectorAll('.device-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+
+        // Кнопка добавления выбранных в шапке
+        document.getElementById('add-selected-btn').addEventListener('click', submitBulkForm);
+
+        // Обновляем счетчик при загрузке
+        updateSelectedCount();
+
+        // Автовыбор всех новых устройств через 1 секунду
+        setTimeout(() => {
+            selectAllNew();
+        }, 1000);
+    });
+</script>
+
+<style>
+    /* Дополнительные стили */
+    .sidebar {
+        background-color: #f8f9fa;
+        border-right: 1px solid #dee2e6;
+    }
+
+    .device-checkbox:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+    .badge {
+        font-size: 0.85em;
+    }
+</style>
+{% endblock %}
