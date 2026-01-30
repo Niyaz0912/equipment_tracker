@@ -155,6 +155,9 @@ class NetworkMapView(AdminRequiredMixin, TemplateView):
         
         # Данные для векторной схемы
         network_nodes = []
+        network_edges = []
+        
+        # 1. Создаем узлы (устройства)
         for device in devices:
             network_nodes.append({
                 'id': device.id,
@@ -164,12 +167,76 @@ class NetworkMapView(AdminRequiredMixin, TemplateView):
                 'url': reverse('network:equipment_detail', args=[device.id]),
             })
         
+        # 2. СОЗДАЕМ СВЯЗИ (edges) - ключевое!
+        
+        # Вариант A: Связь роутер ↔ все устройства в его подсети
+        routers = [d for d in devices if d.type == 'router' and d.ip_address]
+        for router in routers:
+            router_ip_parts = router.ip_address.split('.')
+            router_subnet = f"{router_ip_parts[0]}.{router_ip_parts[1]}.{router_ip_parts[2]}."
+            
+            for device in devices:
+                if (device.id != router.id and 
+                    device.ip_address and 
+                    device.ip_address.startswith(router_subnet)):
+                    
+                    network_edges.append({
+                        'from': router.id,
+                        'to': device.id,
+                        'label': 'LAN',
+                        'color': {'color': '#3498db'},
+                        'arrows': 'to'
+                    })
+        
+        # Вариант B: Связь по локациям
+        devices_by_location = {}
+        for device in devices:
+            if device.location_id:
+                loc_id = device.location_id
+                if loc_id not in devices_by_location:
+                    devices_by_location[loc_id] = []
+                devices_by_location[loc_id].append(device.id)
+        
+        # Связываем устройства в одном помещении
+        for location_id, device_ids in devices_by_location.items():
+            if len(device_ids) > 1:
+                # Создаем "хаб" для локации
+                for i in range(len(device_ids) - 1):
+                    for j in range(i + 1, len(device_ids)):
+                        network_edges.append({
+                            'from': device_ids[i],
+                            'to': device_ids[j],
+                            'label': 'локация',
+                            'color': {'color': '#95a5a6'},
+                            'dashes': True
+                        })
+        
+        # Вариант C: Иерархия по типам (если нет сетевых данных)
+        if not network_edges and devices:
+            # Простая древовидная структура
+            network_devices = [d for d in devices if d.type in ['router', 'switch', 'firewall']]
+            other_devices = [d for d in devices if d.type not in ['router', 'switch', 'firewall']]
+            
+            if network_devices:
+                main_device = network_devices[0]
+                for device in other_devices:
+                    if device.id != main_device.id:
+                        network_edges.append({
+                            'from': main_device.id,
+                            'to': device.id,
+                            'label': 'сеть'
+                        })
+        
         context['network_nodes_json'] = json.dumps(network_nodes, ensure_ascii=False)
+        context['network_edges_json'] = json.dumps(network_edges, ensure_ascii=False)  # <-- ДОБАВЛЕНО
         context['devices'] = devices
         context['all_locations'] = Location.objects.all()
         
+        # Для отладки
+        print(f"🔗 Узлов: {len(network_nodes)}, Связей: {len(network_edges)}")
+        
         return context
-
+        
 
 class IPManagementView(AdminRequiredMixin, TemplateView):
     """УПРАВЛЕНИЕ IP-АДРЕСАМИ"""
