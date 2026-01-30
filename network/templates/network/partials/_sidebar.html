@@ -1,0 +1,140 @@
+<!-- network/templates/network/partials/_sidebar.html -->
+<div class="network-sidebar">
+    <div class="sidebar-sticky pt-3">
+        
+        <!-- Заголовок -->
+        <div class="px-3 mb-3">
+            <h5 class="text-muted">
+                <i class="bi bi-wifi"></i> СЕТЕВАЯ ИНФРАСТРУКТУРА
+            </h5>
+            <hr class="mt-2">
+        </div>
+        
+        <!-- Основной раздел -->
+        <ul class="nav flex-column mb-3">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/network/' %}active{% endif %}" 
+                   href="{% url 'network:equipment_list' %}">
+                    <i class="bi bi-router me-2"></i>
+                    Оборудование
+                    {% if equipment_count %}
+                    <span class="badge bg-secondary float-end">{{ equipment_count }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if 'subnets' in request.path %}active{% endif %}" 
+                   href="{% url 'network:subnet_list' %}">
+                    <i class="bi bi-diagram-3 me-2"></i>
+                    Подсети
+                </a>
+            </li>
+        </ul>
+        
+        <!-- IP-менеджмент -->
+        <div class="px-3 mb-2">
+            <small class="text-muted">IP-МЕНЕДЖМЕНТ</small>
+        </div>
+        <ul class="nav flex-column mb-3">
+            <li class="nav-item">
+                <a class="nav-link {% if 'ip-management' in request.path %}active{% endif %}" 
+                   href="{% url 'network:ip_management' %}">
+                    <i class="bi bi-hdd-rack me-2"></i>
+                    Управление IP
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Топология -->
+        <div class="px-3 mb-2">
+            <small class="text-muted">ТОПОЛОГИЯ</small>
+        </div>
+        <ul class="nav flex-column mb-3">
+            <li class="nav-item">
+                <a class="nav-link {% if 'network-map' in request.path %}active{% endif %}" 
+                   href="{% url 'network:network_map' %}">
+                    <i class="bi bi-map me-2"></i>
+                    Карта сети
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Сканирование -->
+        <div class="px-3 mb-2">
+            <small class="text-muted">СКАНИРОВАНИЕ</small>
+        </div>
+        <ul class="nav flex-column mb-3">
+            <li class="nav-item">
+                <a class="nav-link {% if 'scanner' in request.path %}active{% endif %}" 
+                   href="{% url 'network:scanner' %}">
+                    <i class="bi bi-search me-2"></i>
+                    Сканер сети
+                    {% if request.session.scan_results %}
+                    <span class="badge bg-success float-end">{{ request.session.scan_results.total }}</span>
+                    {% endif %}
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Быстрый доступ -->
+        <div class="px-3 mb-3">
+            <div class="card border-0 bg-light">
+                <div class="card-body p-2">
+                    <small class="d-block mb-1">Быстрый доступ</small>
+                    <a href="{% url 'admin:network_networkequipment_add' %}" 
+                       class="btn btn-sm btn-outline-primary w-100 mb-1"
+                       target="_blank">
+                        <i class="bi bi-plus-circle"></i> Добавить устройство
+                    </a>
+                    <a href="{% url 'admin:network_subnet_add' %}" 
+                       class="btn btn-sm btn-outline-secondary w-100"
+                       target="_blank">
+                        <i class="bi bi-plus-lg"></i> Добавить подсеть
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<style>
+.network-sidebar {
+    background: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    padding: 1rem 0;
+    min-height: calc(100vh - 150px);
+}
+
+.network-sidebar .nav-link {
+    color: #495057;
+    padding: 0.5rem 1rem;
+    margin: 2px 0.5rem;
+    border-radius: 5px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.network-sidebar .nav-link:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+    color: #0d6efd;
+    border-left-color: #0d6efd;
+}
+
+.network-sidebar .nav-link.active {
+    background-color: #0d6efd;
+    color: white !important;
+    font-weight: 500;
+    border-left-color: #0a58ca;
+}
+
+.network-sidebar .badge {
+    font-size: 0.7em;
+    padding: 0.25em 0.5em;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: 20px;
+}
+</style>

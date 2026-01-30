@@ -1,11 +1,15 @@
+<!-- network/templates/network/equipment_detail.html -->
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ equipment.name }} - Equipment Tracker{% endblock %}
-
 {% block content %}
-{% include 'network/_navigation.html' %}
-<div class="container-fluid py-4">
+<div class="row">
+    <div class="col-md-3">
+        {% with equipment_count=equipments.count %}
+        {% include 'network/partials/_sidebar.html' %}
+        {% endwith %}
+    </div>
+    <div class="col-md-9">
     <!-- Заголовок -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>

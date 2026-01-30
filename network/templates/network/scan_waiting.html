@@ -1,0 +1,96 @@
+<!-- network/templates/network/scan_waiting.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Сканирование сети... - Equipment Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'network/partials/_sidebar.html' %}
+    </div>
+    
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-hourglass-split"></i> Сканирование сети
+            </h1>
+        </div>
+
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <!-- Анимация -->
+                <div class="mb-4">
+                    <i class="bi bi-wifi display-1 text-primary"></i>
+                    <div class="spinner-border text-primary mt-3" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                </div>
+                
+                <h3>Сканирую сеть {{ network }}...</h3>
+                <p class="text-muted">Это займет 1-3 минуты. Пожалуйста, не закрывайте страницу.</p>
+                
+                <!-- Прогресс -->
+                <div class="progress mt-4" style="height: 20px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 100%">
+                        Идет сканирование
+                    </div>
+                </div>
+                
+                <!-- Что происходит -->
+                <div class="mt-4 text-start">
+                    <h6><i class="bi bi-list-check"></i> Что происходит сейчас:</h6>
+                    <ul>
+                        <li>Поиск активных устройств в сети {{ network }}</li>
+                        <li>Определение MAC-адресов и производителей</li>
+                        <li>Проверка открытых портов</li>
+                        <li>Сравнение с базой данных</li>
+                    </ul>
+                </div>
+                
+                <!-- Автоперезагрузка -->
+                <div class="mt-4">
+                    <p class="text-muted">
+                        <small>
+                            <i class="bi bi-info-circle"></i>
+                            Страница автоматически обновится, когда сканирование завершится
+                        </small>
+                    </p>
+                </div>
+                
+                <!-- Кнопка отмены -->
+                <div class="mt-4">
+                    <a href="{% url 'network:scanner' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Отменить сканирование
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Автопереадресация через 5 секунд -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ждем 5 секунд и перенаправляем на результаты
+    setTimeout(function() {
+        window.location.href = "{% url 'network:scan_results' %}?network={{ network }}";
+    }, 5000);
+    
+    // Показываем таймер
+    let seconds = 5;
+    const timerElement = document.createElement('div');
+    timerElement.className = 'mt-2 text-muted';
+    document.querySelector('.card-body').appendChild(timerElement);
+    
+    const timerInterval = setInterval(function() {
+        seconds--;
+        timerElement.innerHTML = `<small>Переадресация через ${seconds} секунд...</small>`;
+        if (seconds <= 0) {
+            clearInterval(timerInterval);
+        }
+    }, 1000);
+});
+</script>
+{% endblock %}
