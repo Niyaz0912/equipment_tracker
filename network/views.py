@@ -292,21 +292,20 @@ class IPManagementView(AdminRequiredMixin, TemplateView):
         """Вспомогательный метод для статистики IP"""
         subnets = Subnet.objects.all().prefetch_related('ipaddress_set')
         stats = []
-        
+    
         for subnet in subnets:
-            total_ips = subnet.get_ip_count()
-            used_ips = subnet.ipaddress_set.count()
-            free_ips = total_ips - used_ips
-            
+            # Используем существующий метод get_ip_stats()
+            subnet_stats = subnet.get_ip_stats()
+        
             stats.append({
                 'subnet': subnet,
-                'cidr': f"{subnet.network_address}/{subnet.prefix_length}",
-                'total': total_ips,
-                'used': used_ips,
-                'free': free_ips,
-                'usage_percent': (used_ips / total_ips * 100) if total_ips > 0 else 0
+                'cidr': subnet.network,  # сеть уже в формате "192.168.1.0/24"
+                'total': subnet_stats['total'],
+                'used': subnet_stats['occupied'],
+                'free': subnet_stats['free'],
+                'usage_percent': subnet_stats['percent']
             })
-        
+    
         return stats
     
     def get_context_data(self, **kwargs):
